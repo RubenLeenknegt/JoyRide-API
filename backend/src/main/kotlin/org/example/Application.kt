@@ -38,7 +38,8 @@ fun main() {
                     </head>
                     <body>
                         <div class="box">
-                            fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor
+                            fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor<br />
+                            Jira / Git integration for projectmanagement
                         </div>
                     </body>
                     </html>
