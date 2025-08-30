@@ -1,0 +1,35 @@
+# docker-compose.prod.yml
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    image: gielvangaal/fantastic-lamp-backend:prod
+    env_file: .env.prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    image: myapp/frontend:prod
+    ports:
+      - "443:80"
+
+  db:
+    image: mysql:8
+    env_file: .env.prod
+    volumes:
+      - prod_db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    env_file: .env.prod
+    ports:
+      - "8084:80"
+    depends_on:
+      - db
+
+volumes:
+  prod_db_data:

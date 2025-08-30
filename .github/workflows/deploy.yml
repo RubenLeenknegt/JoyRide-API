@@ -1,0 +1,92 @@
+# .github/workflows/deploy.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run Kotlin tests
+        run: ./gradlew test
+
+      - name: Build backend fat jar
+        run: ./gradlew :backend:shadowJar
+
+      - name: Build Docker image
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
+          docker build -t gielvangaal/fantastic-lamp-backend:acc ./backend
+          elif [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+          docker build -t gielvangaal/fantastic-lamp-backend:prod ./backend
+          fi
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          if [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
+            docker push gielvangaal/fantastic-lamp-backend:acc
+          elif [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            docker push gielvangaal/fantastic-lamp-backend:prod
+          fi
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -x  # alles echo'en voor logging
+            echo "Huidige map:"
+            pwd
+            echo "Inhoud van map:"
+            ls -la
+            echo "Docker containers voor deploy:"
+            docker ps -a
+            cd ~/fantastic-lamp
+
+            if [[ "${{ GITHUB.REF_NAME }}" == "develop" ]]; then
+              echo "Stopping and removing containers (down)"
+              docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc down || echo "down command faalde"
+              echo "Pulling latest images"
+              docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc pull
+              echo "Starting containers"
+              docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc up -d
+            elif [[ "${{ GITHUB.REF_NAME }}" == "main" ]]; then
+              echo "Stopping and removing containers (down)"
+              docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod down || echo "down command faalde"
+              echo "Pulling latest images"
+              docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod pull
+              echo "Starting containers"
+              docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod up -d
+            fi
+
+#            echo "Docker containers na deploy:"
+#            docker ps -a
+#            echo "Logs van backend container:"
+#            if [[ "$GITHUB_REF_NAME" == "develop" ]]; then
+#              docker logs $(docker ps -q -f "name=fantastic-lamp-acc-backend-1") --tail 50
+#            elif [[ "$GITHUB_REF_NAME" == "main" ]]; then
+#              docker logs $(docker ps -q -f "name=fantastic-lamp-backend-1") --tail 50
+#            fi
