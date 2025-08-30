@@ -46,13 +46,12 @@ bin/
 .DS_Store
 
 # Environment
-.env
+.env*
 
 # Media
 videos/
 photos/
 DSdocs/
-
 # Logs
 *.log
 
