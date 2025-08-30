@@ -38,7 +38,7 @@ fun main() {
                     </head>
                     <body>
                         <div class="box">
-                            P1 Avans CICD pipeline, Kotlin/Ktor
+                            fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor
                         </div>
                     </body>
                     </html>
