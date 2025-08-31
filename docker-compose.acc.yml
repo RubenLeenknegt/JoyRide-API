@@ -16,6 +16,8 @@ services:
     env_file: .env.acc
     volumes:
       - acc_db_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
