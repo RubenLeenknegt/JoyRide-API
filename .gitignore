@@ -47,6 +47,7 @@ bin/
 
 # Environment
 .env*
+.env.local
 
 # Media
 videos/
