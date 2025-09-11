@@ -11,8 +11,8 @@ fun main() {
         routing {
             get("/") {
                 val data = fetchData("SELECT * FROM users") // haalt users uit DB
-
                 val userListHtml = data.joinToString("<br>") { "id=${it["id"]}, name=${it["name"]}" }
+                val name: String = "Giel van Gaal"
 
                 call.respondText(
                     """
@@ -45,7 +45,11 @@ fun main() {
                 fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor<br />
                 Jira / Git integration for projectmanagement<br /><br />
                 Users:<br />
-                $userListHtml
+                <br />
+                Database connection test: <br />
+                $userListHtml<br />
+                <br />
+                Hello, my name is: $name<br />
             </div>
         </body>
         </html>
