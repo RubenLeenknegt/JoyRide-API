@@ -58,3 +58,6 @@ DSdocs/
 
 # Temporary files
 *.tmp
+
+#IDEA files
+*.idea
