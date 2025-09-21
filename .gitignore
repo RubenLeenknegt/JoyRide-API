@@ -10,6 +10,7 @@ build/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/*
 *.iws
 *.iml
 *.ipr
@@ -58,6 +59,3 @@ DSdocs/
 
 # Temporary files
 *.tmp
-
-#IDEA files
-*.idea
