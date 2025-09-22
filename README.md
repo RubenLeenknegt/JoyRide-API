@@ -1,93 +1,170 @@
 # Fantastic Lamp
 
-## Project overzicht
+A Kotlin/Java backend with **MySQL**, containerized via **Docker**.  
+CI/CD builds, tests, packages, and deploys images to a VPS via **Docker Hub**.
 
-Fantastic Lamp is een fullstack applicatie bestaande uit een Kotlin/Java backend en een MySQL database, gecontaineriseerd met Docker. Het project is opgezet met een CI/CD pipeline die automatisch bouwt, test, en deployt naar een VPS via Docker Hub. Het doel is een stabiele ontwikkel- en testworkflow, zodat features veilig en gecontroleerd uitgerold kunnen worden naar acceptatie en productie.
+---
 
-## Lokaal testen
+## 🚀 Tech Stack
+- **Kotlin/Java** (Gradle, Shadow JAR)
+- **MySQL 8**
+- **Docker & Docker Compose**
+- **GitHub Actions (CI/CD)**
 
-Om de backend lokaal te draaien:
+---
 
-1. Vanuit de root van het project:
+## ⚙️ Prerequisites
+- **JDK 17+**
+- **Docker & Docker Compose**
+- **Git**
+
+---
+
+## ▶️ Quick Start (Local)
+
+### Linux/macOS
 ```bash
 ./gradlew :backend:build
 docker-compose -f docker-compose.local.yml up --build
 ```
 
-De applicatie start op http://localhost:8081 en maakt verbinding met een lokale MySQL-database via Docker.
+### Windows
+```powershell
+.\gradlew.bat :backend:build
+docker-compose -f docker-compose.local.yml up --build
+```
 
-## Workflow
+### Services
+- **Backend** → [http://localhost:8081](http://localhost:8081)
+- **PHPMyAdmin** → [http://localhost:8083](http://localhost:8083)
 
-Het project wordt ontwikkeld in wekelijkse sprints, genaamd Staging.1-2Test.
+---
 
-- Elke week wordt een nieuwe staging-branch aangemaakt in Git en wijzigingen worden hiernaar gepusht.
-- Develop accepteert alleen pull requests vanaf staging-branches.
-- Main accepteert alleen pull requests vanaf develop.
-- Dit wordt afgedwongen via enforce-branch-sources.yml en GitHub Rulesets.
+## 🌱 Environment Variables
+Create a `.env.local` in the project root:
 
-## Deployment
+```env
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=testdb
+#Normal user/pass for local development
+MYSQL_USER=local_user
+MYSQL_PASSWORD=local_pass
+```
 
-Bij push naar develop of main wordt de GitHub Action getriggerd. In simpele taal gebeurt het volgende:
+**Notes**
+- `docker-compose.local.yml` reads `.env.local` via `env_file`.
+- Files in `db-init` are executed by the MySQL image on first start of the data volume.
+- SQL files do **not** expand environment variables. Use `MYSQL_*` vars directly, or wrap with a shell script if substitution is needed.
 
-1. **Code ophalen**: nieuwste code uit de repository.
-2. **Java instellen**: Java 17 wordt klaargezet in een VM om de app te bouwen.
-3. **Tests draaien**: alle Kotlin/Java tests in backend/src/test/kotlin en backend/src/test/java worden uitgevoerd.
-4. **Backend bouwen**: de fat jar van de backend wordt gemaakt via shadowJar.
-5. **Docker image maken**:
-    - Develop → acceptatie-image (acc)
-    - Main → productie-image (prod)
-6. **Docker Hub push**: de images worden naar Docker Hub gestuurd.
-7. **Deploy naar VPS**: via SSH worden oude containers gestopt/verwijderd, nieuwste images gepulled en de containers opnieuw gestart met de juiste docker-compose.
+---
 
-Kortom: bij elke push wordt de code getest, gebouwd, verpakt in Docker, naar Docker Hub gestuurd en automatisch op de VPS uitgerold.
+## 🛠 Local Development
 
-## Tips voor lokale ontwikkeling
+### Common commands
 
-### Database resetten / initialiseren
+Build fat jar:
+```bash
+./gradlew :backend:build
+```
+
+Start stack:
+```bash
+docker-compose -f docker-compose.local.yml up --build
+```
+
+Follow backend logs:
+```bash
+docker-compose -f docker-compose.local.yml logs -f backend
+```
+
+Reset DB (drops volume):
 ```bash
 docker-compose -f docker-compose.local.yml down
 docker volume rm local_db_data
 docker-compose -f docker-compose.local.yml up --build
 ```
 
-### Omgevingsvariabelen
-Zorg voor een .env.local met bijvoorbeeld:
-```
-MYSQL_ROOT_PASSWORD=root
-MYSQL_DATABASE=testdb
- #this is a normal user
-MYSQL_USER=local_user
-MYSQL_PASSWORD=local_pass
-```
+---
 
-### Logs bekijken
-```bash
-docker-compose -f docker-compose.local.yml logs -f backend
-```
+## 📂 Project Files of Interest
+- `backend/Dockerfile`
+- `backend/src/main/kotlin/`
+- `db-init/init.sql`
+- `docker-compose.local.yml`
+- `docker-compose.acc.yml`
+- `docker-compose.prod.yml`
 
-### Fat jar rebuilden
-```bash
-./gradlew :backend:build
-docker-compose -f docker-compose.local.yml up --build
-```
+---
 
-## Poorten en toegang
+## 🌿 Branching & Workflow
+- Work on **weekly staging branches**
+- **develop** accepts PRs only from staging branches
+- **main** accepts PRs only from develop
+- Enforced via `enforce-branch-sources.yml` & GitHub Rulesets
 
-- **Backend lokaal**: http://localhost:8081
-- **PHPMyAdmin**: http://localhost:8083
+---
 
-## Best practices
+## 🔄 CI/CD & Environments
 
-- Werk op aparte feature-branches.
-- Test lokaal vóór push naar develop.
-- Commit duidelijke messages en update de README indien nodig.
+### Branches
+- **develop** → acceptance image
+- **main** → production image
 
-## Logging & Resources
+### Pipeline steps
+1. Checkout
+2. Setup Java 17
+3. Run tests (`backend/src/test/kotlin`, `backend/src/test/java`)
+4. Build Shadow JAR
+5. Build & push Docker image
+6. SSH deploy on VPS (pull images, restart stack)
 
-- **Docker Hub**: fantastic-lamp-backend
-- **GitHub Actions**: CI/CD Pipeline
-- **Acceptatie omgeving**: http://\<server-ip\>:8081
-- **SCP upload**:
+### Environments
+- **Local** → `docker-compose.local.yml`
+- **Acceptance** → `docker-compose.acc.yml`
+- **Production** → `docker-compose.prod.yml`
+
+---
+
+## 🗃 Database Init
+- Bootstrap schema/data in `db-init/init.sql`.
+- Avoid invalid statements like `SELECT testdb;` → use `USE testdb;`.
+- For env substitution, use an init `*.sh` wrapper that executes SQL with `mysql`.
+
+---
+
+## 📡 Ports
+- **Backend** → 8081
+- **PHPMyAdmin** → 8083
+- **MySQL (internal)** → 3306
+
+---
+
+## 🩺 Troubleshooting
+
+**Access denied for user local_user:**
+- Ensure `.env.local` `MYSQL_*` matches backend `DB_*`.
+- Recreate containers:
   ```bash
-  scp <filename> root@<server-ip>:~/fantastic-lamp/
+  docker-compose -f docker-compose.local.yml up -d --force-recreate
   ```
+
+**SQL syntax errors on init:**
+- Remove invalid lines like `SELECT testdb;`.
+- Use valid MySQL syntax with `USE testdb;`.
+
+---
+
+## 📜 Logging & Resources
+- **Docker Hub:** `fantastic-lamp-backend`
+- **GitHub Actions:** CI/CD pipeline
+- **Acceptance:** `http://<server-ip>:8081`
+
+SCP example:
+```bash
+scp <filename> root@<server-ip>:~/fantastic-lamp/
+```
+
+---
+
+## 📄 License
+**MIT** (update if applicable).
