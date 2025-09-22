@@ -53,9 +53,11 @@ docker-compose -f docker-compose.local.yml up --build
 ### Omgevingsvariabelen
 Zorg voor een .env.local met bijvoorbeeld:
 ```
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=testdb
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=testdb
+ #this is a normal user
+MYSQL_USER=local_user
+MYSQL_PASSWORD=local_pass
 ```
 
 ### Logs bekijken
