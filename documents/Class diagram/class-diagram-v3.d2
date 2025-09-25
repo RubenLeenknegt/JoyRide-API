@@ -1,0 +1,112 @@
+User: {
+  shape: class
+  label: "«abstract» User"
+  - id: String
+  - firstName: String
+  - lastName: String
+  - age: Int
+  - emailAdress: String
+  - passwordHash: String
+  - userType: Enum
+  + getAll(): List
+}
+
+Renter: {
+  shape: class
+  label: "Renter"
+}
+
+Owner: {
+  shape: class
+  label: "Owner"
+}
+
+Admin: {
+  shape: class
+  label: "Admin"
+}
+
+Car: {
+  shape: class
+  label: "Car"
+  - id: String
+  - brand: String
+  - model: String
+  - buildYear: Int
+  - transmissionType: Enum
+  - color: Enum
+  - fuelType: Enum
+  - length: Int
+  - width: Int
+  - seats: Int
+  - isofixCompatible: Boolean
+  - phoneMount: Boolean
+  - luggageSpace: Double
+  - parkingSensors: Boolean
+  - locationX: Float
+  - locationY: Float
+  + getAll() List
+}
+
+Reservation: {
+  shape: class
+  label: "Reservation\n(koppeltabel User-Car)"
+  - id: String
+  - startDate: DateTime
+  - startTime: DateTime
+  - endDate: DateTime
+  - endTime: DateTime
+  + getAll(): List
+}
+
+Ride: {
+  shape: class
+  label: "Ride\n(koppeltabel User-Car)"
+  - id: Int
+  - startX: Float
+  - startY: Float
+  - endX: Float
+  - endY: Float
+  - length: Int
+  - duration: Int
+  + getAll(): List
+}
+
+Photo: {
+  shape: class
+  # label: "RidePhoto\n(koppeltabel Reservation-Ride)"
+  - id: String
+  - filePath: String
+}
+
+BonusPoints: {
+  shape: class
+  label: "BonusPoints\n(koppeltabel User-Ride)"
+  - id: String
+  - points: Int
+  + getAll(): List
+}
+
+Renter -> User: "inherits"
+Owner -> User: "inherits"
+Admin -> User: "inherits"
+
+Owner -> Car: "0..*"
+Car -> Owner: "1"
+
+Car -> Reservation: "0..*"
+Reservation -> Car: "1"
+
+User -> Reservation: "0..*"
+Reservation -> User: "1"
+
+Reservation -> Ride: "0..*"
+Ride -> Reservation: "1"
+
+Reservation -> Photo: "0..1"
+Photo -> Reservation: "0..*"
+
+User -> BonusPoints: "0..*"
+BonusPoints -> User: "1"
+
+Ride -> BonusPoints: "0..*"
