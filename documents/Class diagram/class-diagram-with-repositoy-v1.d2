@@ -52,7 +52,7 @@ Admin -> User: "inherits"
 # Repositories
 BaseRepository: {
   shape: class
-  label: "BaseRepository"
+  label: "<<interface>> BaseRepository"
   + getAll(): List
   + getById(id): List
   + save(entity): (Entity)
