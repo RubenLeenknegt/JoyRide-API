@@ -1,0 +1,102 @@
+# Domeinklassen
+User: {
+  shape: class
+  label: "«abstract» User"
+}
+
+Renter: {
+  shape: class
+  label: "Renter"
+}
+
+Owner: {
+  shape: class
+  label: "Owner"
+}
+
+Admin: {
+  shape: class
+  label: "Admin"
+}
+
+Car: {
+  shape: class
+  label: "Car"
+}
+
+Reservation: {
+  shape: class
+  label: "Reservation"
+}
+
+Ride: {
+  shape: class
+  label: "Ride"
+}
+
+Photo: {
+  shape: class
+  label: "Photo"
+}
+
+BonusPoints: {
+  shape: class
+  label: "BonusPoints"
+}
+
+# Domein-erfenis
+Renter -> User: "inherits"
+Owner -> User: "inherits"
+Admin -> User: "inherits"
+
+# Repositories
+BaseRepository: {
+  shape: class
+  label: "BaseRepository"
+  + getAll(): List
+  + getById(id): List
+  + save(entity): (Entity)
+  + delete(entity): (Entity)
+}
+
+CarRepository: {
+  shape: class
+  label: "CarRepository"
+}
+CarRepository -> BaseRepository: "inherits"
+CarRepository -> Car: "manages"
+
+ReservationRepository: {
+  shape: class
+  label: "ReservationRepository"
+}
+ReservationRepository -> BaseRepository: "inherits"
+ReservationRepository -> Reservation: "manages"
+
+UserRepository: {
+  shape: class
+  label: "UserRepository"
+}
+UserRepository -> BaseRepository: "inherits"
+UserRepository -> User: "manages"
+
+RideRepository: {
+  shape: class
+  label: "RideRepository"
+}
+RideRepository -> BaseRepository: "inherits"
+RideRepository -> Ride: "manages"
+
+PhotoRepository: {
+  shape: class
+  label: "PhotoRepository"
+}
+PhotoRepository -> BaseRepository: "inherits"
+PhotoRepository -> Photo: "manages"
+
+BonusPointsRepository: {
+  shape: class
+  label: "BonusPointsRepository"
+}
+BonusPointsRepository -> BaseRepository: "inherits"
+BonusPointsRepository -> BonusPoints: "manages"
