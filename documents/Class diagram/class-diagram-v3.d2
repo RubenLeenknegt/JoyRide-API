@@ -50,7 +50,6 @@ Car: {
 
 Reservation: {
   shape: class
-  label: "Reservation\n(koppeltabel User-Car)"
   - id: String
   - startDate: DateTime
   - startTime: DateTime
@@ -61,7 +60,6 @@ Reservation: {
 
 Ride: {
   shape: class
-  label: "Ride\n(koppeltabel User-Car)"
   - id: Int
   - startX: Float
   - startY: Float
@@ -74,14 +72,12 @@ Ride: {
 
 Photo: {
   shape: class
-  # label: "RidePhoto\n(koppeltabel Reservation-Ride)"
   - id: String
   - filePath: String
 }
 
 BonusPoints: {
   shape: class
-  label: "BonusPoints\n(koppeltabel User-Ride)"
   - id: String
   - points: Int
   + getAll(): List
@@ -91,22 +87,42 @@ Renter -> User: "inherits"
 Owner -> User: "inherits"
 Admin -> User: "inherits"
 
-Owner -> Car: "0..*"
-Car -> Owner: "1"
+Owner <-> Car: "0..* / 1"
+Car <-> Photo: "1..* / 0..1"
+Car <-> Reservation: "0..* / 1"
+Car <-> Ride: "0..* / 1"
+User <-> Reservation: "0..* / 1"
+User -> BonusPoints: "0..* / 1"
+User -> Photo: "1 / 0..1"
+Reservation -> Ride: "0..* / 1"
+Reservation -> Photo: "0..1 / 0..*"
+Ride -> BonusPoints: "0..* / 1"
+Photo -> Reservation: "0..1 / 0..*"
 
-Car -> Reservation: "0..*"
-Reservation -> Car: "1"
+# Color <-> Car
+# fuelType <-> Car
+# transmissionType <-> Car
 
-User -> Reservation: "0..*"
-Reservation -> User: "1"
+# Color: {
+#   shape: class
+#   style: {
+#     stroke-dash: 3
+#   }
+#   label: "<<interface>> Color"
+# }
 
-Reservation -> Ride: "0..*"
-Ride -> Reservation: "1"
+# fuelType: {
+#   shape: class
+#   style: {
+#     stroke-dash: 3
+#   }
+#   label: "<<interface>> fuelType"
+# }
 
-Reservation -> Photo: "0..1"
-Photo -> Reservation: "0..*"
-
-User -> BonusPoints: "0..*"
-BonusPoints -> User: "1"
-
-Ride -> BonusPoints: "0..*"
+# transmissionType: {
+#   shape: class
+#   style: {
+#     stroke-dash: 3
+#   }
+#   label: "<<interface>> transmissionType"
+# }
