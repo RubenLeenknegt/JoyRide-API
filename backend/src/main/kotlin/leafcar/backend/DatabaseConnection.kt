@@ -1,9 +1,8 @@
-package org.example
+package leafcar.backend
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
-import java.sql.ResultSet
 
 object DatabaseConnection {
     private val config = HikariConfig().apply {
@@ -28,5 +27,6 @@ object DatabaseConnection {
         throw RuntimeException("Kan geen connectie maken met DB na 5 pogingen")
     }
 
-    fun getConnection(): Connection = ds.connection
+//    fun getConnection(): Connection = ds.connection
+    fun getDataSource(): HikariDataSource = ds
 }
