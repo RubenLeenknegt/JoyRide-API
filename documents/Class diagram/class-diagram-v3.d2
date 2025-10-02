@@ -1,0 +1,128 @@
+User: {
+  shape: class
+  label: "«abstract» User"
+  - id: String
+  - firstName: String
+  - lastName: String
+  - age: Int
+  - emailAdress: String
+  - passwordHash: String
+  - userType: Enum
+  + getAll(): List
+}
+
+Renter: {
+  shape: class
+  label: "Renter"
+}
+
+Owner: {
+  shape: class
+  label: "Owner"
+}
+
+Admin: {
+  shape: class
+  label: "Admin"
+}
+
+Car: {
+  shape: class
+  label: "Car"
+  - id: String
+  - brand: String
+  - model: String
+  - buildYear: Int
+  - transmissionType: Enum
+  - color: Enum
+  - fuelType: Enum
+  - length: Int
+  - width: Int
+  - seats: Int
+  - isofixCompatible: Boolean
+  - phoneMount: Boolean
+  - luggageSpace: Double
+  - parkingSensors: Boolean
+  - locationX: Float
+  - locationY: Float
+  + getAll() List
+}
+
+Reservation: {
+  shape: class
+  - id: String
+  - startDate: DateTime
+  - startTime: DateTime
+  - endDate: DateTime
+  - endTime: DateTime
+  + getAll(): List
+}
+
+Ride: {
+  shape: class
+  - id: Int
+  - startX: Float
+  - startY: Float
+  - endX: Float
+  - endY: Float
+  - length: Int
+  - duration: Int
+  + getAll(): List
+}
+
+Photo: {
+  shape: class
+  - id: String
+  - filePath: String
+}
+
+BonusPoints: {
+  shape: class
+  - id: String
+  - points: Int
+  + getAll(): List
+}
+
+Renter -> User: "inherits"
+Owner -> User: "inherits"
+Admin -> User: "inherits"
+
+Owner <-> Car: "0..* / 1"
+Car <-> Photo: "1..* / 0..1"
+Car <-> Reservation: "0..* / 1"
+Car <-> Ride: "0..* / 1"
+User <-> Reservation: "0..* / 1"
+User -> BonusPoints: "0..* / 1"
+User -> Photo: "1 / 0..1"
+Reservation -> Ride: "0..* / 1"
+Reservation -> Photo: "0..1 / 0..*"
+Ride -> BonusPoints: "0..* / 1"
+Photo -> Reservation: "0..1 / 0..*"
+
+# Color <-> Car
+# fuelType <-> Car
+# transmissionType <-> Car
+
+# Color: {
+#   shape: class
+#   style: {
+#     stroke-dash: 3
+#   }
+#   label: "<<interface>> Color"
+# }
+
+# fuelType: {
+#   shape: class
+#   style: {
+#     stroke-dash: 3
+#   }
+#   label: "<<interface>> fuelType"
+# }
+
+# transmissionType: {
+#   shape: class
+#   style: {
+#     stroke-dash: 3
+#   }
+#   label: "<<interface>> transmissionType"
+# }

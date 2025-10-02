@@ -1,4 +1,4 @@
-package org.example
+package leafcar.backend
 
 object DatabaseConfig {
     val dbUrl: String = "jdbc:mysql://db:3306/${System.getenv("MYSQL_DATABASE") ?: "local_db"}"
