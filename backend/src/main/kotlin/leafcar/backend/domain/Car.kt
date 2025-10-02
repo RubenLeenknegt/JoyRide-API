@@ -44,4 +44,6 @@ data class Car(
     val parkingSensors: Boolean,
     val locationX: Float,
     val locationY: Float
-)
+) {
+    // methodes
+}

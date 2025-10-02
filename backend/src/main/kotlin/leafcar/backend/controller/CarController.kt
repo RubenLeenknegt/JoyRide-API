@@ -1,5 +1,6 @@
 package leafcar.backend.controller
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
@@ -33,8 +34,15 @@ fun Route.carRouting(carRepository: CarRepository) {
         get {
             // Elke request haalt de huidige lijst met auto’s op via de repository
             val cars = carRepository.getAll()
-            call.respond(cars)
+            call.respond(status = HttpStatusCode.OK, cars)
         }
+    }
+
+    // Get car by ID
+    get("{id") {
+        val id =
+            call.parameters["id"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
     }
 }
 

@@ -3,6 +3,7 @@ package leafcar.backend.dao
 import leafcar.backend.domain.Color
 import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
+import org.jetbrains.exposed.dao.id.IdTable
 
 /**
  * Exposed DAO-tabeldefinitie voor het opslaan van auto’s.
@@ -23,7 +24,7 @@ import leafcar.backend.domain.TransmissionType
  *
  * Tip: Overweeg indexen op vaak gefilterde kolommen (bijv. `brand`, `model`, `buildYear`) en documenteer migraties apart.
  */
-object CarsTable : org.jetbrains.exposed.dao.id.IdTable<String>("Car") {
+object CarsTable : IdTable<String>("Car") {
     /** Primaire sleutel van de auto (UUID als string, max 36 tekens). */
     override val id = varchar("id", 36).entityId()
 
