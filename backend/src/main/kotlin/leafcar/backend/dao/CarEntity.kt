@@ -1,6 +1,9 @@
 package leafcar.backend.dao
 
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
+
 import leafcar.backend.domain.Car
 
 /**
@@ -20,9 +23,9 @@ import leafcar.backend.domain.Car
  * - Gebruik `toDomain()` om databasekennis niet te laten lekken naar het domein; de rest
  *   van de applicatie spreekt bij voorkeur in termen van `Car` (domeinmodel).
  */
-class CarEntity(id: EntityID<String>) : org.jetbrains.exposed.dao.Entity<String>(id) {
+class CarEntity(id: EntityID<String>) : Entity<String>(id) {
     /** Statische helper van Exposed om te kunnen query’en (bijv. `CarEntity.all()`). */
-    companion object : org.jetbrains.exposed.dao.EntityClass<String, CarEntity>(CarsTable)
+    companion object : EntityClass<String, CarEntity>(CarsTable)
 
     /** Merk van de auto (kolom `brand`). */
     val brand by CarsTable.brand
