@@ -19,9 +19,8 @@ jobs:
           fi
 
           if [ "$BASE" = "develop" ]; then
-            if [[ ! "$HEAD" =~ ^Staging\.*$ ]]; then
-              echo "Only 'Staging.<n>-<month>' branches may merge into 'develop'."; exit 1
-            fi
+            if [[ ! "$HEAD" =~ ^Staging.*$ ]]; then
+          echo "Only 'Staging.*' branches may merge into 'develop'."; exit 1
           fi
             fi
 
