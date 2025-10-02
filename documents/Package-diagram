@@ -1,0 +1,41 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam dpi 160
+
+package "leafcar.backend.domain" as domain {
+  class Car
+  enum TransmissionType
+  enum Color
+  enum FuelType
+}
+
+package "leafcar.backend.dao" as dao {
+  class CarsTable
+  class CarEntity
+}
+
+package "leafcar.backend.repository" as repo {
+  class CarRepository
+}
+
+package "leafcar.backend.controller" as ctrl {
+  class CarController <<Route>>
+}
+
+' Pakket-naar-pakket afhankelijkheden
+ctrl ..> repo : gebruikt
+ctrl ..> domain : response types (JSON)
+repo ..> dao : queries (Exposed DAO)
+repo ..> domain : mapt naar domein
+dao ..> domain : enum/typen
+
+' (optioneel) Typeverwijzingen binnen pakketten
+CarEntity --> CarsTable : table binding
+CarRepository --> Car : returns
+CarController --> CarRepository : injectie
+CarEntity --> Car : toDomain()
+CarsTable --> TransmissionType
+CarsTable --> Color
+CarsTable --> FuelType
+
+@enduml
