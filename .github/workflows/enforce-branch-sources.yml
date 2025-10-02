@@ -23,5 +23,6 @@ jobs:
               echo "Only 'Staging.<n>-<month>' branches may merge into 'develop'."; exit 1
             fi
           fi
+            fi
 
           echo "OK"
