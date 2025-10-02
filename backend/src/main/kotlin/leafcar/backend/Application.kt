@@ -10,15 +10,9 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import leafcar.backend.controller.*
 import leafcar.backend.repository.CarRepository
-//import leafcar.backend.repository.DatabaseConnection
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 import kotlinx.serialization.json.Json
-//import leafcar.backend.domain.UUIDSerializer
-import java.util.*
-
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {

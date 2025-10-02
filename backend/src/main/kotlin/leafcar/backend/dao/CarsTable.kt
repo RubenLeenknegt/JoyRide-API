@@ -3,7 +3,6 @@ package leafcar.backend.dao
 import leafcar.backend.domain.Color
 import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
-import org.jetbrains.exposed.dao.id.UUIDTable
 
 object CarsTable : org.jetbrains.exposed.dao.id.IdTable<String>("Car") {
     override val id = varchar("id", 36).entityId()

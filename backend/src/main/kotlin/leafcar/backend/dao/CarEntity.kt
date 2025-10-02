@@ -1,9 +1,6 @@
 package leafcar.backend.dao
 
-import org.jetbrains.exposed.dao.UUIDEntity
-import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import java.util.UUID
 import leafcar.backend.domain.Car
 
 class CarEntity(id: EntityID<String>) : org.jetbrains.exposed.dao.Entity<String>(id) {
