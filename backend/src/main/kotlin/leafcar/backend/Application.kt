@@ -13,6 +13,12 @@ import leafcar.backend.repository.CarRepository
 //import leafcar.backend.repository.DatabaseConnection
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.json.Json
+//import leafcar.backend.domain.UUIDSerializer
+import java.util.*
+
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
@@ -23,7 +29,16 @@ fun main() {
         Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
 
         install(ContentNegotiation) {
-            json()
+            json(
+                Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+//                    serializersModule = SerializersModule {
+//                        contextual(UUID::class, UUIDSerializer)
+//                    }
+                }
+            )
         }
 
         val carRepository = CarRepository()

@@ -1,15 +1,18 @@
 package leafcar.backend.dao
 
+import leafcar.backend.domain.Color
+import leafcar.backend.domain.FuelType
+import leafcar.backend.domain.TransmissionType
 import org.jetbrains.exposed.dao.id.UUIDTable
-import leafcar.backend.domain.*
-object CarsTable : UUIDTable("Car") {
-//    val id = uuid("id").autoGenerate()
+
+object CarsTable : org.jetbrains.exposed.dao.id.IdTable<String>("Car") {
+    override val id = varchar("id", 36).entityId()
     val brand = varchar("brand", 255)
     val model = varchar("model", 255)
     val buildYear = integer("buildYear")
-    val transmissionType = enumeration("transmissionType", TransmissionType::class)
-    val color = enumeration("color", Color::class)
-    val fuelType = enumeration("fuelType", FuelType::class)
+    val transmissionType = enumerationByName("transmissionType",20, TransmissionType::class)
+    val color = enumerationByName("color", 20, Color::class)
+    val fuelType = enumerationByName("fuelType", 20, FuelType::class)
     val length = integer("length")
     val width = integer("width")
     val seats = integer("seats")

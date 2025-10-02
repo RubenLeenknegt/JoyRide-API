@@ -1,18 +1,13 @@
 package leafcar.backend.dao
 
-import leafcar.backend.domain.Color
-import leafcar.backend.domain.FuelType
-import leafcar.backend.domain.TransmissionType
-import leafcar.backend.domain.*
-import org.jetbrains.exposed.dao.id.UUIDTable
-
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
 import java.util.UUID
+import leafcar.backend.domain.Car
 
-class CarEntity(id: EntityID<UUID>) : UUIDEntity(id) {
-companion object : UUIDEntityClass<CarEntity>(CarsTable)
+class CarEntity(id: EntityID<String>) : org.jetbrains.exposed.dao.Entity<String>(id) {
+    companion object : org.jetbrains.exposed.dao.EntityClass<String, CarEntity>(CarsTable)
 
     val brand by CarsTable.brand
     val model by CarsTable.model
@@ -33,7 +28,7 @@ companion object : UUIDEntityClass<CarEntity>(CarsTable)
 
 
 fun CarEntity.toDomain(): Car = Car(
-    id = this.id.value.toString(),   // UUID -> String
+    id = this.id.value,
     brand = this.brand,
     model = this.model,
     buildYear = this.buildYear,
