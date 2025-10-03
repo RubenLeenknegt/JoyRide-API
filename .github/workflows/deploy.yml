@@ -46,7 +46,7 @@ jobs:
         run: |
           rsync --archive --compress --progress --human-readable --rsh 'ssh -oPort=22 -i ~/.ssh/id_rsa' --exclude=".git" ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}:~/fantastic-lamp
           
-      - name: Build fatjar and run docker compose up
+      - name: Run docker compose
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.VPS_IP }}
@@ -54,7 +54,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd ~/fantastic-lamp
-            ./gradlew :backend:build
             if [[ "${{ GITHUB.REF_NAME }}" == "develop" ]]; then
               echo "Stopping and removing acc containers (down)"
               docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc down -v|| echo "down command faalde"
