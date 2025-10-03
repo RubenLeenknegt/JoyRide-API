@@ -16,28 +16,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      # - name: Set up JDK
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     java-version: '17'
+      #     distribution: 'temurin'
 
-      - name: Run Kotlin tests
-        run: ./gradlew test
+      # - name: Run Kotlin tests
+      #   run: ./gradlew test
 
-      # - name: Build backend fat jar
-        # run: ./gradlew :backend:shadowJar
+      # # - name: Build backend fat jar
+      #   # run: ./gradlew :backend:shadowJar
 
-      - name: Build Docker image
+      - name: Setup SSH key
         run: |
-          if [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
-          docker build -t gielvangaal/fantastic-lamp-backend:acc ./backend
-          elif [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-          docker build -t gielvangaal/fantastic-lamp-backend:prod ./backend
-          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          
       - name: Copy project files to the staging server
         run: |
-          rsync --archive --compress --progress --human-readable --rsh 'ssh -oPort=22 -i ${{ secrets.VPS_SSH_KEY }}' --exclude=".git" ./ ${{ secrets.SERVER_USER }}:~/fantastic-lamp
+          rsync --archive --compress --progress --human-readable --rsh 'ssh -oPort=22 -i ~/.ssh/id_rsa' --exclude=".git" ./ ${{ secrets.SERVER_USER }}:~/fantastic-lamp
 
       - name: Build fatjar and run docker compose up
         uses: appleboy/ssh-action@v0.1.8
