@@ -61,6 +61,13 @@ jobs:
               docker compose -f docker-compose.acc.yml build
               echo "Starting containers"
               docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc up --build -d
+            if [[ "${{ GITHUB.REF_NAME }}" == "update-workflow-scp" ]]; then
+              echo "Stopping and removing acc containers (down)"
+              docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc down -v|| echo "down command faalde"
+              echo "Building latest acc images"
+              docker compose -f docker-compose.acc.yml build
+              echo "Starting containers"
+              docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc up --build -d
             elif [[ "${{ GITHUB.REF_NAME }}" == "main" ]]; then
               echo "Stopping and removing containers (down)"
               docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod down -v|| echo "down command faalde"
