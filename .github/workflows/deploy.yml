@@ -33,32 +33,32 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
           
       - name: Copy project files to the staging server
         run: |
-          rsync --archive --compress --progress --human-readable --rsh 'ssh -oPort=22 -i ~/.ssh/id_rsa' --exclude=".git" ./ ${{ secrets.SERVER_USER }}:~/fantastic-lamp
-
-      - name: Build fatjar and run docker compose up
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.VPS_IP }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd ~/fantastic-lamp
-            ./gradlew :backend:build
-            if [[ "${{ GITHUB.REF_NAME }}" == "develop" ]]; then
-              echo "Stopping and removing acc containers (down)"
-              docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc down -v|| echo "down command faalde"
-              echo "Building latest acc images"
-              docker compose -f docker-compose.acc.yml build
-              echo "Starting containers"
-              docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc up --build -d
-            elif [[ "${{ GITHUB.REF_NAME }}" == "main" ]]; then
-              echo "Stopping and removing containers (down)"
-              docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod down -v|| echo "down command faalde"
-              echo "Building latest images"
-              echo "Starting containers"
-              docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod up --build -d
-            fi
+          rsync --archive --compress --progress --human-readable --rsh 'ssh -oPort=22 -i ~/.ssh/id_rsa' --exclude=".git" ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}:~/fantastic-lamp
+          
+      # - name: Build fatjar and run docker compose up
+      #   uses: appleboy/ssh-action@v0.1.8
+      #   with:
+      #     host: ${{ secrets.VPS_IP }}
+      #     username: ${{ secrets.VPS_USER }}
+      #     key: ${{ secrets.VPS_SSH_KEY }}
+      #     script: |
+      #       cd ~/fantastic-lamp
+      #       ./gradlew :backend:build
+      #       if [[ "${{ GITHUB.REF_NAME }}" == "develop" ]]; then
+      #         echo "Stopping and removing acc containers (down)"
+      #         docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc down -v|| echo "down command faalde"
+      #         echo "Building latest acc images"
+      #         docker compose -f docker-compose.acc.yml build
+      #         echo "Starting containers"
+      #         docker compose -f docker-compose.acc.yml -p fantastic-lamp-acc up --build -d
+      #       elif [[ "${{ GITHUB.REF_NAME }}" == "main" ]]; then
+      #         echo "Stopping and removing containers (down)"
+      #         docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod down -v|| echo "down command faalde"
+      #         echo "Building latest images"
+      #         echo "Starting containers"
+      #         docker compose -f docker-compose.prod.yml -p fantastic-lamp-prod up --build -d
+      #       fi
