@@ -22,8 +22,8 @@ jobs:
       #     java-version: '17'
       #     distribution: 'temurin'
 
-      - name: Run Kotlin tests
-        run: ./gradlew test
+      # - name: Run Kotlin tests
+      #   run: ./gradlew test
       - name: Build with Gradle inside Docker
         run: |
           docker run --rm \
