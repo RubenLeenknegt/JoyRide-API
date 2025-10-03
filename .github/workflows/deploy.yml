@@ -24,6 +24,13 @@ jobs:
 
       - name: Run Kotlin tests
         run: ./gradlew test
+      - name: Build with Gradle inside Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            gradle:8.5-jdk17 \
+            ./gradlew :backend:build
 
       # # - name: Build backend fat jar
       #   # run: ./gradlew :backend:shadowJar
