@@ -37,7 +37,7 @@ jobs:
           fi
       - name: Copy project files to the staging server
         run: |
-          rsync -az --delete --checksum --exclude='.git' --exclude='.env' ./ ${{ secrets.SERVER_USER }}@${{ secrets.VPS_IP }}:~/fantastic-lamp
+          rsync --archive --compress --progress --human-readable --rsh 'ssh -oPort=22 -i ${{ secrets.VPS_SSH_KEY }}' --exclude=".git" ./ ${{ secrets.SERVER_USER }}:~/fantastic-lamp
 
       - name: Build fatjar and run docker compose up
         uses: appleboy/ssh-action@v0.1.8
