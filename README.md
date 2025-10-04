@@ -126,6 +126,7 @@ docker-compose -f docker-compose.local.yml up --build
 ---
 
 ## 🗃 Database Init
+- init.sql needs to be manually deployed to VPS! Ask Giel
 - Bootstrap schema/data in `db-init/init.sql`.
 - Avoid invalid statements like `SELECT testdb;` → use `USE testdb;`.
 - For env substitution, use an init `*.sh` wrapper that executes SQL with `mysql`.
