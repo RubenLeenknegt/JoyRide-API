@@ -63,3 +63,19 @@ enum class FuelType {
     /** Hybride (bijv. HEV/PHEV). */
     HYBRID
 }
+/**
+ * Enumeration of possible user roles within the system.
+ *
+ * Marked with `@Serializable` so values can be (de)serialized in API payloads.
+ */
+@Serializable
+enum class UserType {
+    /** Owner of a vehicle or account. */
+    OWNER,
+
+    /** Driver of a vehicle. */
+    DRIVER,
+
+    /** Administrator with elevated privileges. */
+    ADMIN
+}
