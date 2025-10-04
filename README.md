@@ -160,9 +160,11 @@ docker-compose -f docker-compose.local.yml up --build
 - **GitHub Actions:** CI/CD pipeline
 - **Acceptance:** `http://<server-ip>:8081`
 
-SCP example:
+SCP stuff:
 ```bash
 scp <filename> root@<server-ip>:~/fantastic-lamp/
+scp -r ~/Documents/School/fantastic-lamp/db-init/init.sql root@<IP>:~/fantastic-lamp/db-init
+
 ```
 
 ---
