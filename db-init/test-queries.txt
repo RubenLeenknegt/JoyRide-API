@@ -1,0 +1,38 @@
+-- 1. Auto's met hun eigenaar
+-- Toont alle auto's en bijbehorende user (owner). Als alles hier klopt, zijn alle ownerId's geldig.
+SELECT c.id AS carId, c.brand, c.model, u.firstName, u.lastName
+FROM Car c
+JOIN User u ON c.ownerId = u.id;
+
+-- 2. Reserveringen met user en auto
+-- Toont elke reservering en welke user en car erbij horen. Controleert dat de foreign keys geldig zijn.
+SELECT r.id AS reservationId, u.firstName, u.lastName, c.brand, c.model
+FROM Reservation r
+JOIN User u ON r.userId = u.id
+JOIN Car c ON r.carId = c.id;
+
+-- 3. Rides gekoppeld aan reserveringen
+-- Laat alle rides zien met de bijbehorende reservering. Hiermee check je of reservationId klopt.
+SELECT rd.id AS rideId, r.id AS reservationId, r.startDate, r.endDate
+FROM Ride rd
+JOIN Reservation r ON rd.reservationId = r.id;
+
+-- 4. Photos gekoppeld aan cars en reserveringen
+-- Laat zien welke foto's bij welke auto en reservering horen. Checkt beide foreign keys.
+SELECT p.id AS photoId, c.brand AS carBrand, r.id AS reservationId, p.filePath
+FROM Photo p
+JOIN Car c ON p.carId = c.id
+JOIN Reservation r ON p.reservationId = r.id;
+
+-- 5. BonusPoints gekoppeld aan user en ride
+-- Toont alle bonuspunten met bijbehorende user en ride. Checkt of alle foreign keys geldig zijn.
+SELECT b.id AS bonusId, u.firstName, u.lastName, rd.id AS rideId, b.points
+FROM BonusPoints b
+JOIN User u ON b.userId = u.id
+JOIN Ride rd ON b.rideId = rd.id;
+
+-- 6. Availabilities gekoppeld aan cars
+-- Toont de beschikbaarheid van elke auto. Hiermee check je dat carId klopt.
+SELECT a.id AS availabilityId, c.brand AS carBrand, a.availableFrom, a.availableTo
+FROM Availability a
+JOIN Car c ON a.carId = c.id;
