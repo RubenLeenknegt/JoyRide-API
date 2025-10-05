@@ -71,6 +71,8 @@ class CarEntity(id: EntityID<String>) : Entity<String>(id) {
 
     /** Y‑coördinaat (kolom `locationY`). */
     val locationY by CarsTable.locationY
+
+    val licensePlate by CarsTable.licensePlate
 }
 
 /**
@@ -97,7 +99,8 @@ fun CarEntity.toDomain(): Car = Car(
     luggageSpace = this.luggageSpace,
     parkingSensors = this.parkingSensors,
     locationX = this.locationX,
-    locationY = this.locationY
+    locationY = this.locationY,
+    licensePlate = this.licensePlate
 )
 
 //#### Tips en vervolgstappen

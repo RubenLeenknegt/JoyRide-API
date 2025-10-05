@@ -66,7 +66,7 @@ fun Application.module() {
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
         get("/") {
-            val name = "Giel van Gaal"
+            val names : Array<String> = arrayOf("Giel van Gaal", "Ruben Leenkegt", "Ivar Visser")
             call.respondText(
                 """
                 <!DOCTYPE html>
@@ -77,7 +77,7 @@ fun Application.module() {
                 </head>
                 <body>
                     <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
-                    <p>Hello, my name is: $name</p>
+                    <p>Hello, our names are: ${names.joinToString(separator = ", <br/>", prefix = "<br/>", postfix = ".")}</p>
                     <a href="/cars">Bekijk alle auto's (JSON)</a>
                 </body>
                 </html>
