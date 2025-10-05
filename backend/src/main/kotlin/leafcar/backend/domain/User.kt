@@ -23,7 +23,6 @@ import kotlinx.serialization.Serializable
         val lastName: String,
         val birthDate: LocalDate,
         val emailAddress: String,
-        val passwordHash: String,
         val userType: UserType,
     ) {
 
