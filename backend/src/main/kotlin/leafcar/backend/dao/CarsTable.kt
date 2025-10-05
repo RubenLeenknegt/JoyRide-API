@@ -24,7 +24,7 @@ import org.jetbrains.exposed.dao.id.IdTable
  *
  * Tip: Overweeg indexen op vaak gefilterde kolommen (bijv. `brand`, `model`, `buildYear`) en documenteer migraties apart.
  */
-object CarsTable : IdTable<String>("Car") {
+object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meegegeven, hoeft eigenlijk niet maar voor duidelijkheid
     /** Primaire sleutel van de auto (UUID als string, max 36 tekens). */
     override val id = varchar("id", 36).entityId()
 
@@ -75,6 +75,8 @@ object CarsTable : IdTable<String>("Car") {
 
     /** Y-coördinaat (float). */
     val locationY = float("locationY")
+
+    val licensePlate = varchar("licensePlate", 10)
 }
 
 //### Toelichting en vervolgstappen
