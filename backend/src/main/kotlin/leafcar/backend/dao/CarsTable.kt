@@ -37,17 +37,11 @@ object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meeg
     /** Bouwjaar (bijv. 2019). */
     val buildYear = integer("buildYear")
 
-    /**
-     * Transmissietype als string in de database (enum-naam), max 20 tekens.
-     * Gebruik `TransmissionType` in de applicatielaag.
-     */
-    val transmissionType = enumerationByName("transmissionType", 20, TransmissionType::class)
+    val transmissionType = varchar("transmissionType", 20)
 
-    /** Kleur als string (enum-naam), max 20 tekens. */
-    val color = enumerationByName("color", 20, Color::class)
+    val color = varchar("color", 20, )
 
-    /** Brandstoftype als string (enum-naam), max 20 tekens. */
-    val fuelType = enumerationByName("fuelType", 20, FuelType::class)
+    val fuelType = varchar("fuelType", 20, )
 
     /** Lengte in millimeters. */
     val length = integer("length")

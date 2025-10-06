@@ -4,6 +4,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
+import io.ktor.util.toMap
 import leafcar.backend.repository.CarRepository
 
 /**
@@ -29,20 +30,36 @@ import leafcar.backend.repository.CarRepository
  * - Haal data op binnen de handler (niet erbuiten) zodat iedere request actuele data
  *   krijgt en eventuele request-specifieke context (logging, tracing) intact blijft.
  */
+
 fun Route.carRouting(carRepository: CarRepository) {
     route("/cars") {
-        get {
-            // Elke request haalt de huidige lijst met auto’s op via de repository
-            val cars = carRepository.getAll()
-            call.respond(status = HttpStatusCode.OK, cars)
-        }
-    }
 
-    // Get car by ID
-    get("{id") {
-        val id =
-            call.parameters["id"]
+        // GET /cars?brand=BMW
+        get {
+            val params: Map<String, String> = call.request.queryParameters.toMap().mapValues { it.value.first() }
+            val cars = carRepository.findWithFilters(params)
+            call.respond(cars)
+        }
+
+        // GET /cars/id/{id}
+        get("id/{id}") {
+            val id = call.parameters["id"]
                 ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
+
+            val car = carRepository.getById(id)
+            if (car.isEmpty()) call.respond(HttpStatusCode.NotFound, "No car with id $id")
+            else call.respond(HttpStatusCode.OK, car.first())
+        }
+
+        // GET /cars/brand/{brand}
+        get("brand/{brand}") {
+            val brand = call.parameters["brand"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing brand")
+
+            val cars = carRepository.getByBrand(brand)
+            if (cars.isEmpty()) call.respond(HttpStatusCode.NotFound, "No cars with brand $brand")
+            else call.respond(HttpStatusCode.OK, cars)
+        }
     }
 }
 

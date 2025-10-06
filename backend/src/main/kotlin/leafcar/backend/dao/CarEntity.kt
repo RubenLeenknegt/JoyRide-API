@@ -5,6 +5,9 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 
 import leafcar.backend.domain.Car
+import leafcar.backend.domain.Color
+import leafcar.backend.domain.FuelType
+import leafcar.backend.domain.TransmissionType
 
 /**
  * Exposed DAO-entity die één rij in de tabel `Car` (zie `CarsTable`) vertegenwoordigt.
@@ -88,9 +91,9 @@ fun CarEntity.toDomain(): Car = Car(
     brand = this.brand,
     model = this.model,
     buildYear = this.buildYear,
-    transmissionType = this.transmissionType,
-    color = this.color,
-    fuelType = this.fuelType,
+    transmissionType = TransmissionType.valueOf(this.transmissionType), // string → enum
+    color = Color.valueOf(this.color),
+    fuelType = FuelType.valueOf(this.fuelType),
     length = this.length,
     width = this.width,
     seats = this.seats,
