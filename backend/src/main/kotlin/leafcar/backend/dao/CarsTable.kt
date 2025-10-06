@@ -75,6 +75,8 @@ object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meeg
 
     /** Y-coördinaat (float). */
     val locationY = float("locationY")
+
+    val licensePlate = varchar("licensePlate", 10)
 }
 
 //### Toelichting en vervolgstappen

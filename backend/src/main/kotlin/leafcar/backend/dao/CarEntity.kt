@@ -99,7 +99,8 @@ fun CarEntity.toDomain(): Car = Car(
     luggageSpace = this.luggageSpace,
     parkingSensors = this.parkingSensors,
     locationX = this.locationX,
-    locationY = this.locationY
+    locationY = this.locationY,
+    licensePlate = this.licensePlate
 )
 
 //#### Tips en vervolgstappen
