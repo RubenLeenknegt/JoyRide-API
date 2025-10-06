@@ -71,6 +71,8 @@ class CarEntity(id: EntityID<String>) : Entity<String>(id) {
 
     /** Y‑coördinaat (kolom `locationY`). */
     val locationY by CarsTable.locationY
+
+    val licensePlate by CarsTable.licensePlate
 }
 
 /**
