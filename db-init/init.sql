@@ -33,15 +33,15 @@ CREATE TABLE IF NOT EXISTS Reservation (
                                            id CHAR(36) PRIMARY KEY,
     userId CHAR(36),
     carId CHAR(36),
-    startDate DATETIME NOT NULL,
-    endDate DATETIME NOT NULL
+    startDate CHAR(19) NOT NULL,
+    endDate CHAR(19) NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS Availability (
                                         id CHAR(36) PRIMARY KEY,
     carId CHAR(36),
-    availableFrom DATETIME NOT NULL,
-    availableTo DATETIME NULL
+    availableFrom CHAR(19) NOT NULL,
+    availableTo CHAR(19) NULL
     );
 
 CREATE TABLE IF NOT EXISTS Ride (
