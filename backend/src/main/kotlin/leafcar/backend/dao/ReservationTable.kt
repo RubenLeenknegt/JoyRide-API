@@ -3,7 +3,7 @@ package leafcar.backend.dao
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
-object ReservationTable : IdTable<String>("Reservation") {
+object ReservationTable : IdTable<String>("Reservations") {
     override val id = varchar("id", 36).entityId()
 
     // Does not have a foreign key for now, user table does not exist at time of writing
