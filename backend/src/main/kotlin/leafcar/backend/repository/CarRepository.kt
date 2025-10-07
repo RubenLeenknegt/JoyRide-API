@@ -61,13 +61,6 @@ class CarRepository {
         CarEntity.find { CarsTable.brand eq brand }.map { it.toDomain()}
     }
 
-//    import org.jetbrains.exposed.sql.Column
-//    import org.jetbrains.exposed.sql.Op
-
-    fun <E : Enum<E>> Column<E>.eqEnum(value: String, enumClass: Class<E>): Op<Boolean>? =
-        runCatching { this eq java.lang.Enum.valueOf(enumClass, value) }.getOrNull()
-
-
     fun findWithFilters(params: Map<String, String>): List<Car> = transaction {
         val conditions = params.mapNotNull { (key, value) ->
             CarsTable.columns.find { it.name == key }?.let { column ->
@@ -116,6 +109,13 @@ class CarRepository {
                     locationX = row[CarsTable.locationX],
                     locationY = row[CarsTable.locationY],
                     licensePlate = row[CarsTable.licensePlate],
+                    pricePerDay = row[CarsTable.pricePerDay].toDouble(),
+                    purchasePrice = row[CarsTable.purchasePrice].toDouble(),
+                    residualValue = row[CarsTable.residualValue].toDouble(),
+                    usageYears = row[CarsTable.usageYears],
+                    annualKm = row[CarsTable.annualKm],
+                    energyCostPerKm = row[CarsTable.energyCostPerKm].toDouble(),
+                    maintenanceCostPerKm = row[CarsTable.maintenanceCostPerKm].toDouble(),
                 )
             }
 

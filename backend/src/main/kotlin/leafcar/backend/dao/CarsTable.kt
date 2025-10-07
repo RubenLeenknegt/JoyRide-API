@@ -25,52 +25,30 @@ import org.jetbrains.exposed.dao.id.IdTable
  * Tip: Overweeg indexen op vaak gefilterde kolommen (bijv. `brand`, `model`, `buildYear`) en documenteer migraties apart.
  */
 object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meegegeven, hoeft eigenlijk niet maar voor duidelijkheid
-    /** Primaire sleutel van de auto (UUID als string, max 36 tekens). */
     override val id = varchar("id", 36).entityId()
-
-    /** Merk van de auto; vrije tekst tot 255 tekens. */
     val brand = varchar("brand", 255)
-
-    /** Modelnaam; vrije tekst tot 255 tekens. */
     val model = varchar("model", 255)
-
-    /** Bouwjaar (bijv. 2019). */
     val buildYear = integer("buildYear")
-
     val transmissionType = varchar("transmissionType", 20)
-
     val color = varchar("color", 20, )
-
     val fuelType = varchar("fuelType", 20, )
-
-    /** Lengte in millimeters. */
     val length = integer("length")
-
-    /** Breedte in millimeters. */
     val width = integer("width")
-
-    /** Aantal zitplaatsen. */
     val seats = integer("seats")
-
-    /** Of ISOFIX-bevestigingspunten aanwezig zijn. */
     val isofixCompatible = bool("isofixCompatible")
-
-    /** Of er een telefoonhouder aanwezig is. */
     val phoneMount = bool("phoneMount")
-
-    /** Bagageruimte in liters (double-precisie). */
     val luggageSpace = double("luggageSpace")
-
-    /** Of parkeersensoren aanwezig zijn. */
     val parkingSensors = bool("parkingSensors")
-
-    /** X-coördinaat (float). */
     val locationX = float("locationX")
-
-    /** Y-coördinaat (float). */
     val locationY = float("locationY")
-
     val licensePlate = varchar("licensePlate", 10)
+    val pricePerDay = decimal("pricePerDay", 10,2)
+    val purchasePrice = decimal("purchasePrice", 10, 2)
+    val residualValue = decimal("residualValue", 10, 2)
+    val usageYears = integer("usageYears")
+    val annualKm = integer("annualKm")
+    val energyCostPerKm = decimal("energyCostPerKm", 10,2)
+    val maintenanceCostPerKm = decimal("maintenanceCostPerKm", 10,2)
 }
 
 //### Toelichting en vervolgstappen
