@@ -39,7 +39,7 @@ enum class UserType {
     OWNER,
 
     /** Driver of a vehicle. */
-    DRIVER,
+    RENTER,
 
     /** Administrator with elevated privileges. */
     ADMIN
