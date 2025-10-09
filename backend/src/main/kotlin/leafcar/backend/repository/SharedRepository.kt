@@ -29,7 +29,7 @@ abstract class SharedRepository<T> (
     fun findWithFilters(
         params: Map<String, String>): List<T> = transaction {
         val conditions = params.mapNotNull { (key, value) ->
-            table.columns.find { it.name == key }?.let { column ->
+            table.columns.find { it.name.equals(key, ignoreCase = true) }?.let { column ->
                 when (column.columnType) {
                     is VarCharColumnType, is TextColumnType ->
                         (column as Column<String>) like "%$value%"
