@@ -1,12 +1,12 @@
 -- 1. CREATE TABLES
 CREATE TABLE IF NOT EXISTS Users (
                                      id CHAR(36) PRIMARY KEY,
-    firstName VARCHAR(50) NOT NULL,
-    lastName VARCHAR(50) NOT NULL,
-    age INT,
-    emailAddress VARCHAR(100) UNIQUE NOT NULL,
-    passwordHash VARCHAR(255) NOT NULL,
-    userType ENUM('RENTER','OWNER','ADMIN') NOT NULL
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    birth_date DATE,
+    email_address VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    user_type ENUM('RENTER','OWNER','ADMIN') NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS Cars (
@@ -78,17 +78,17 @@ CREATE TABLE IF NOT EXISTS BonusPoints (
     );
 
 -- 2. INSERT USERS
-INSERT INTO Users (id, firstName, lastName, age, emailAddress, passwordHash, userType) VALUES
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a001','Sanne','Jansen',28,'sanne.jansen@gmail.com','hash1','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a002','Mohammed','El Amrani',35,'mohammed.elamrani@protonmail.com','hash2','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a003','Anouk','van Dijk',42,'anouk.vandijk@outlook.com','hash3','ADMIN'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a004','Joris','Bakker',30,'joris.bakker@gmail.com','hash4','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a005','Fatima','Karimi',27,'fatima.karimi@runbox.com','hash5','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a006','Bas','de Vries',33,'bas.devries@gmail.com','hash6','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a007','Lotte','Vermeulen',29,'lotte.vermeulen@protonmail.com','hash7','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a008','Hassan','Bouhaddou',41,'hassan.bouhaddou@gmail.com','hash8','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a009','Frits','Manuhutu',36,'frits.manuhutu@outlook.com','hash9','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a010','Rachid','Mansour',25,'rachid.mansour@gmail.com','hash10','RENTER');
+INSERT INTO Users (id, first_name, last_name, birth_date, email_address, password_hash, user_type) VALUES
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a001','Sanne','Jansen','1997-01-01','sanne.jansen@gmail.com','hash1','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a002','Mohammed','El Amrani','1990-01-01','mohammed.elamrani@protonmail.com','hash2','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a003','Anouk','van Dijk','1983-01-01','anouk.vandijk@outlook.com','hash3','ADMIN'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a004','Joris','Bakker','1995-01-01','joris.bakker@gmail.com','hash4','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a005','Fatima','Karimi','1998-01-01','fatima.karimi@runbox.com','hash5','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a006','Bas','de Vries','1992-01-01','bas.devries@gmail.com','hash6','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a007','Lotte','Vermeulen','1996-01-01','lotte.vermeulen@protonmail.com','hash7','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a008','Hassan','Bouhaddou','1984-01-01','hassan.bouhaddou@gmail.com','hash8','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a009','Frits','Manuhutu','1989-01-01','frits.manuhutu@outlook.com','hash9','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a010','Rachid','Mansour','2000-01-01','rachid.mansour@gmail.com','hash10','RENTER');
 
 -- 3. INSERT NEW CARS
 INSERT INTO Cars (id, ownerId, brand, model, buildYear, transmissionType, color, fuelType, length, width, seats, isofixCompatible, phoneMount, luggageSpace, parkingSensors, locationX, locationY, licensePlate, pricePerDay, purchasePrice, residualValue, usageYears, annualKm, energyCostPerKm, maintenanceCostPerKm) VALUES

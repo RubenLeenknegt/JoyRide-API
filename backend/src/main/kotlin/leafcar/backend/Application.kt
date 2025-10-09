@@ -10,6 +10,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import leafcar.backend.controller.*
 import leafcar.backend.repository.CarRepository
+import leafcar.backend.repository.UserRepository
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.serialization.json.Json
@@ -40,6 +41,7 @@ fun Application.module() {
     }
 
     val carRepository = CarRepository()
+    val userRepository = UserRepository()
 
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
@@ -57,6 +59,7 @@ fun Application.module() {
                     <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
                     <p>Hello, our names are: ${names.joinToString(separator = ", <br/>", prefix = "<br/>", postfix = ".")}</p>
                     <a href="/cars">Bekijk alle auto's (JSON)</a>
+                    <a href="/users">Bekijk alle User's (JSON)>/a>
                 </body>
                 </html>
                 """.trimIndent(),
@@ -66,6 +69,7 @@ fun Application.module() {
 
         // JSON endpoint(s) voor auto’s
         carRouting(carRepository)
+        userRouting(userRepository)
     }
 }
 

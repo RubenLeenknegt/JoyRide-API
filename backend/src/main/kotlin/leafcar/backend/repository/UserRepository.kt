@@ -1,4 +1,4 @@
-package org.example.leafcar.backend.repository
+package leafcar.backend.repository
 
 import leafcar.backend.domain.User
 import org.example.leafcar.backend.dao.UserEntity
