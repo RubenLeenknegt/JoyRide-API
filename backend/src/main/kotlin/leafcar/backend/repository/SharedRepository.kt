@@ -57,4 +57,5 @@ abstract class SharedRepository<T> (
             .select { conditions.reduceOrNull { acc, expr -> acc and expr } ?: Op.TRUE }
             .map(mapper)
     }
+
 }
