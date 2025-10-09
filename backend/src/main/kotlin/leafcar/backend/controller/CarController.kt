@@ -40,26 +40,26 @@ fun Route.carRouting(carRepository: CarRepository) {
             val cars = carRepository.findWithFilters(params)
             call.respond(cars)
         }
-
-        // GET /cars/id/{id}
-        get("id/{id}") {
-            val id = call.parameters["id"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
-
-            val car = carRepository.getById(id)
-            if (car.isEmpty()) call.respond(HttpStatusCode.NotFound, "No car with id $id")
-            else call.respond(HttpStatusCode.OK, car.first())
-        }
-
-        // GET /cars/brand/{brand}
-        get("brand/{brand}") {
-            val brand = call.parameters["brand"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing brand")
-
-            val cars = carRepository.getByBrand(brand)
-            if (cars.isEmpty()) call.respond(HttpStatusCode.NotFound, "No cars with brand $brand")
-            else call.respond(HttpStatusCode.OK, cars)
-        }
+//
+//        // GET /cars/id/{id}
+//        get("id/{id}") {
+//            val id = call.parameters["id"]
+//                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
+//
+//            val car = carRepository.getById(id)
+//            if (car.isEmpty()) call.respond(HttpStatusCode.NotFound, "No car with id $id")
+//            else call.respond(HttpStatusCode.OK, car.first())
+//        }
+//
+//        // GET /cars/brand/{brand}
+//        get("brand/{brand}") {
+//            val brand = call.parameters["brand"]
+//                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing brand")
+//
+//            val cars = carRepository.getByBrand(brand)
+//            if (cars.isEmpty()) call.respond(HttpStatusCode.NotFound, "No cars with brand $brand")
+//            else call.respond(HttpStatusCode.OK, cars)
+//        }
     }
 }
 
