@@ -1,12 +1,12 @@
 -- 1. CREATE TABLES
 CREATE TABLE IF NOT EXISTS Users (
                                      id CHAR(36) PRIMARY KEY,
-    firstName VARCHAR(50) NOT NULL,
-    lastName VARCHAR(50) NOT NULL,
-    age INT,
-    emailAddress VARCHAR(100) UNIQUE NOT NULL,
-    passwordHash VARCHAR(255) NOT NULL,
-    userType ENUM('RENTER','OWNER','ADMIN') NOT NULL
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    birth_date DATE,
+    email_address VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    user_type ENUM('RENTER','OWNER','ADMIN') NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS Cars (
@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS Cars (
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(50) NOT NULL,
     buildYear INT NOT NULL,
-    transmissionType ENUM('MANUAL','AUTOMATIC','SEMI_AUTOMATIC') NOT NULL,
-    color ENUM('GREEN', 'GREY', 'BEIGE', 'RED','BLUE','BLACK','WHITE','OTHER') NOT NULL,
-    fuelType ENUM('PETROL','DIESEL','ELECTRIC','HYBRID') NOT NULL,
+    transmissionType VARCHAR(20) NOT NULL,
+    color VARCHAR(20) NOT NULL,
+    fuelType VARCHAR(20) NOT NULL,
     length INT,
     width INT,
     seats INT,
@@ -27,7 +27,14 @@ CREATE TABLE IF NOT EXISTS Cars (
     parkingSensors BOOLEAN,
     locationX FLOAT,
     locationY FLOAT,
-    licensePlate VARCHAR(10)
+    licensePlate VARCHAR(10) NOT NULL,
+    pricePerDay DECIMAL(10,2) NOT NULL,
+    purchasePrice DECIMAL(10,2) NOT NULL,
+    residualValue DECIMAL(10,2) NOT NULL,
+    usageYears INT NOT NULL,
+    annualKm INT NOT NULL,
+    energyCostPerKm DECIMAL(10,2) NOT NULL,
+    maintenanceCostPerKm DECIMAL(10,2) NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS Reservations (
@@ -71,30 +78,30 @@ CREATE TABLE IF NOT EXISTS BonusPoints (
     );
 
 -- 2. INSERT USERS
-INSERT INTO Users (id, firstName, lastName, age, emailAddress, passwordHash, userType) VALUES
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a001','Sanne','Jansen',28,'sanne.jansen@gmail.com','hash1','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a002','Mohammed','El Amrani',35,'mohammed.elamrani@protonmail.com','hash2','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a003','Anouk','van Dijk',42,'anouk.vandijk@outlook.com','hash3','ADMIN'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a004','Joris','Bakker',30,'joris.bakker@gmail.com','hash4','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a005','Fatima','Karimi',27,'fatima.karimi@runbox.com','hash5','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a006','Bas','de Vries',33,'bas.devries@gmail.com','hash6','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a007','Lotte','Vermeulen',29,'lotte.vermeulen@protonmail.com','hash7','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a008','Hassan','Bouhaddou',41,'hassan.bouhaddou@gmail.com','hash8','RENTER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a009','Frits','Manuhutu',36,'frits.manuhutu@outlook.com','hash9','OWNER'),
-                                                                                           ('3fa85f64-5717-4562-b3fc-2c963f66a010','Rachid','Mansour',25,'rachid.mansour@gmail.com','hash10','RENTER');
+INSERT INTO Users (id, first_name, last_name, birth_date, email_address, password_hash, user_type) VALUES
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a001','Sanne','Jansen','1997-01-01','sanne.jansen@gmail.com','hash1','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a002','Mohammed','El Amrani','1990-01-01','mohammed.elamrani@protonmail.com','hash2','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a003','Anouk','van Dijk','1983-01-01','anouk.vandijk@outlook.com','hash3','ADMIN'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a004','Joris','Bakker','1995-01-01','joris.bakker@gmail.com','hash4','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a005','Fatima','Karimi','1998-01-01','fatima.karimi@runbox.com','hash5','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a006','Bas','de Vries','1992-01-01','bas.devries@gmail.com','hash6','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a007','Lotte','Vermeulen','1996-01-01','lotte.vermeulen@protonmail.com','hash7','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a008','Hassan','Bouhaddou','1984-01-01','hassan.bouhaddou@gmail.com','hash8','RENTER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a009','Frits','Manuhutu','1989-01-01','frits.manuhutu@outlook.com','hash9','OWNER'),
+                                                                       ('3fa85f64-5717-4562-b3fc-2c963f66a010','Rachid','Mansour','2000-01-01','rachid.mansour@gmail.com','hash10','RENTER');
 
 -- 3. INSERT NEW CARS
-INSERT INTO Cars (id, ownerId, brand, model, buildYear, transmissionType, color, fuelType, length, width, seats, isofixCompatible, phoneMount, luggageSpace, parkingSensors, locationX, locationY, licensePlate) VALUES
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b001','3fa85f64-5717-4562-b3fc-2c963f66a002','Land Rover','Series 3',1975,'MANUAL','GREEN','PETROL',3880,1600,2,FALSE,FALSE,200.0,FALSE,51.5652,3.5912,'98-YA-67'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b002','3fa85f64-5717-4562-b3fc-2c963f66a005','Citroen','GSA Pallas',1980,'SEMI_AUTOMATIC','BLUE','PETROL',3800,1650,4,FALSE,FALSE,220.0,FALSE,51.9853,5.9112,'42-NZ-KR'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b003','3fa85f64-5717-4562-b3fc-2c963f66a007','BMW','X5 drive 45e',2021,'AUTOMATIC','GREY','PETROL',5000,2000,5,TRUE,TRUE,650.0,TRUE,52.3702,4.8952,'L-520-HB'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b004','3fa85f64-5717-4562-b3fc-2c963f66a002','Toyota','Yaris 1.3 VVT-i',2015,'MANUAL','BLUE','PETROL',3950,1695,5,TRUE,TRUE,270.0,FALSE,52.6310,4.7560,'G-148-BK'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b005','3fa85f64-5717-4562-b3fc-2c963f66a005','Audi','A6 1.8 TFSI',2016,'AUTOMATIC','GREY','PETROL',4700,1850,5,FALSE,TRUE,500.0,TRUE,52.0705,4.3007,'JR-900-R'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b006','3fa85f64-5717-4562-b3fc-2c963f66a007','Saab','9000 2.3 Turbo CSE',1996,'MANUAL','BLACK','PETROL',4700,1800,5,TRUE,TRUE,450.0,TRUE,51.9470,5.2310,'53-DZ-ZL'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b007','3fa85f64-5717-4562-b3fc-2c963f66a010','Suzuki','Swift 1.3 GLX',1998,'MANUAL','RED','PETROL',3700,1680,5,FALSE,FALSE,300.0,FALSE,52.0920,5.1040,'TP-TN-24'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b008','3fa85f64-5717-4562-b3fc-2c963f66a005','Chevrolet','Corsica 2.2 LT',1992,'MANUAL','GREEN','PETROL',4450,1720,5,FALSE,FALSE,400.0,FALSE,51.9870,5.9100,'FF-XN-82'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b009','3fa85f64-5717-4562-b3fc-2c963f66a007','Volkswagen','Kever 1500',1970,'MANUAL','BLACK','PETROL',4000,1550,2,FALSE,FALSE,150.0,FALSE,52.0910,5.1100,'DR-59-13'),
-                                                                                                                                                                                                                     ('4b285f64-5717-4562-b3fc-2c963f66b010','3fa85f64-5717-4562-b3fc-2c963f66a002','Austin','A30',1955,'MANUAL','BEIGE','PETROL',3500,1500,4,FALSE,FALSE,120.0,FALSE,52.0900,5.1200,'53-DZ-61');
+INSERT INTO Cars (id, ownerId, brand, model, buildYear, transmissionType, color, fuelType, length, width, seats, isofixCompatible, phoneMount, luggageSpace, parkingSensors, locationX, locationY, licensePlate, pricePerDay, purchasePrice, residualValue, usageYears, annualKm, energyCostPerKm, maintenanceCostPerKm) VALUES
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b001','3fa85f64-5717-4562-b3fc-2c963f66a002','Land Rover','Series 3',1975,'MANUAL','GREEN','PETROL',3880,1600,2,FALSE,FALSE,200.0,FALSE,51.5652,3.5912,'98-YA-67',80.00,25000.00,15000.00,5,15000,0.10,0.05),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b002','3fa85f64-5717-4562-b3fc-2c963f66a005','Citroen','GSA Pallas',1980,'SEMI_AUTOMATIC','BLUE','PETROL',3800,1650,4,FALSE,FALSE,220.0,FALSE,51.9853,5.9112,'42-NZ-KR',55.00,18000.00,12000.00,5,16000,0.12,0.06),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b003','3fa85f64-5717-4562-b3fc-2c963f66a007','BMW','X5 drive 45e',2021,'AUTOMATIC','GREY','PETROL',5000,2000,5,TRUE,TRUE,650.0,TRUE,52.3702,4.8952,'L-520-HB',110.00,65000.00,50000.00,5,18000,0.06,0.05),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b004','3fa85f64-5717-4562-b3fc-2c963f66a002','Toyota','Yaris 1.3 VVT-i',2015,'MANUAL','BLUE','PETROL',3950,1695,5,TRUE,TRUE,270.0,FALSE,52.6310,4.7560,'G-148-BK',60.00,20000.00,14000.00,5,17000,0.11,0.05),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b005','3fa85f64-5717-4562-b3fc-2c963f66a005','Audi','A6 1.8 TFSI',2016,'AUTOMATIC','GREY','PETROL',4700,1850,5,FALSE,TRUE,500.0,TRUE,52.0705,4.3007,'JR-900-R',75.00,30000.00,22000.00,5,18000,0.12,0.06),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b006','3fa85f64-5717-4562-b3fc-2c963f66a007','Saab','9000 2.3 Turbo CSE',1996,'MANUAL','BLACK','PETROL',4700,1800,5,TRUE,TRUE,450.0,TRUE,51.9470,5.2310,'53-DZ-ZL',85.00,28000.00,20000.00,5,16000,0.11,0.06),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b007','3fa85f64-5717-4562-b3fc-2c963f66a010','Suzuki','Swift 1.3 GLX',1998,'MANUAL','RED','PETROL',3700,1680,5,FALSE,FALSE,300.0,FALSE,52.0920,5.1040,'TP-TN-24',50.00,15000.00,9000.00,5,14000,0.13,0.05),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b008','3fa85f64-5717-4562-b3fc-2c963f66a005','Chevrolet','Corsica 2.2 LT',1992,'MANUAL','GREEN','PETROL',4450,1720,5,FALSE,FALSE,400.0,FALSE,51.9870,5.9100,'FF-XN-82',65.00,22000.00,15000.00,5,15000,0.12,0.06),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b009','3fa85f64-5717-4562-b3fc-2c963f66a007','Volkswagen','Kever 1500',1970,'MANUAL','BLACK','PETROL',4000,1550,2,FALSE,FALSE,150.0,FALSE,52.0910,5.1100,'DR-59-13',45.00,18000.00,12000.00,5,13000,0.13,0.05),
+                                                                                                                                                                                                                                                                                                                             ('4b285f64-5717-4562-b3fc-2c963f66b010','3fa85f64-5717-4562-b3fc-2c963f66a002','Austin','A30',1955,'MANUAL','BEIGE','PETROL',3500,1500,4,FALSE,FALSE,120.0,FALSE,52.0900,5.1200,'53-DZ-61',40.00,12000.00,7000.00,5,12000,0.14,0.05);
 
 -- 4. INSERT RESERVATIONS
 INSERT INTO Reservations (id, userId, carId, startDate, endDate) VALUES

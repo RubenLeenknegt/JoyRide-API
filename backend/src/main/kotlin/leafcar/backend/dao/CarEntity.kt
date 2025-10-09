@@ -5,6 +5,9 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 
 import leafcar.backend.domain.Car
+import leafcar.backend.domain.Color
+import leafcar.backend.domain.FuelType
+import leafcar.backend.domain.TransmissionType
 
 /**
  * Exposed DAO-entity die één rij in de tabel `Car` (zie `CarsTable`) vertegenwoordigt.
@@ -27,52 +30,29 @@ class CarEntity(id: EntityID<String>) : Entity<String>(id) {
     /** Statische helper van Exposed om te kunnen query’en (bijv. `CarEntity.all()`). */
     companion object : EntityClass<String, CarEntity>(CarsTable)
 
-    /** Merk van de auto (kolom `brand`). */
     val brand by CarsTable.brand
-
-    /** Modelnaam (kolom `model`). */
     val model by CarsTable.model
-
-    /** Bouwjaar (kolom `buildYear`). */
     val buildYear by CarsTable.buildYear
-
-    /** Transmissietype als enum (kolom `transmissionType`). */
     val transmissionType by CarsTable.transmissionType
-
-    /** Kleur als enum (kolom `color`). */
     val color by CarsTable.color
-
-    /** Brandstoftype als enum (kolom `fuelType`). */
     val fuelType by CarsTable.fuelType
-
-    /** Lengte in millimeters (kolom `length`). */
     val length by CarsTable.length
-
-    /** Breedte in millimeters (kolom `width`). */
     val width by CarsTable.width
-
-    /** Aantal zitplaatsen (kolom `seats`). */
     val seats by CarsTable.seats
-
-    /** Of ISOFIX-bevestigingspunten aanwezig zijn (kolom `isofixCompatible`). */
     val isofixCompatible by CarsTable.isofixCompatible
-
-    /** Of er een telefoonhouder aanwezig is (kolom `phoneMount`). */
     val phoneMount by CarsTable.phoneMount
-
-    /** Bagageruimte in liters (kolom `luggageSpace`). */
     val luggageSpace by CarsTable.luggageSpace
-
-    /** Of parkeersensoren aanwezig zijn (kolom `parkingSensors`). */
     val parkingSensors by CarsTable.parkingSensors
-
-    /** X‑coördinaat (kolom `locationX`). */
     val locationX by CarsTable.locationX
-
-    /** Y‑coördinaat (kolom `locationY`). */
     val locationY by CarsTable.locationY
-
     val licensePlate by CarsTable.licensePlate
+    val pricePerDay by CarsTable.pricePerDay
+    val purchasePrice by CarsTable.purchasePrice
+    val residualValue by CarsTable.residualValue
+    val usageYears by CarsTable.usageYears
+    val annualKm by CarsTable.annualKm
+    val energyCostPerKm by CarsTable.energyCostPerKm
+    val maintenanceCostPerKm by CarsTable.maintenanceCostPerKm
 }
 
 /**
@@ -88,9 +68,9 @@ fun CarEntity.toDomain(): Car = Car(
     brand = this.brand,
     model = this.model,
     buildYear = this.buildYear,
-    transmissionType = this.transmissionType,
-    color = this.color,
-    fuelType = this.fuelType,
+    transmissionType = TransmissionType.valueOf(this.transmissionType), // string → enum
+    color = Color.valueOf(this.color),
+    fuelType = FuelType.valueOf(this.fuelType),
     length = this.length,
     width = this.width,
     seats = this.seats,
@@ -100,7 +80,14 @@ fun CarEntity.toDomain(): Car = Car(
     parkingSensors = this.parkingSensors,
     locationX = this.locationX,
     locationY = this.locationY,
-    licensePlate = this.licensePlate
+    licensePlate = this.licensePlate,
+    pricePerDay = this.pricePerDay.toDouble(),
+    purchasePrice = this.purchasePrice.toDouble(),
+    residualValue = this.residualValue.toDouble(),
+    usageYears = this.usageYears,
+    annualKm = this.annualKm,
+    energyCostPerKm = this.energyCostPerKm.toDouble(),
+    maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
 )
 
 //#### Tips en vervolgstappen

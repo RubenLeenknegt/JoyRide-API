@@ -27,10 +27,15 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.44.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.44.1")   // <-- DAO
     implementation("org.jetbrains.exposed:exposed-jdbc:0.44.1")  // <-- nodig voor database connectie
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.44.1")
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
+    // Kotlin Datetime
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+    // Java time
+    implementation("org.jetbrains.exposed:exposed-java-time:0.44.1")
 }
 
 application {
