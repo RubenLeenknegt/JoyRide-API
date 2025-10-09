@@ -33,7 +33,9 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
     // Kotlin Datetime
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+    // Java time
+    implementation("org.jetbrains.exposed:exposed-java-time:0.44.1")
 }
 
 application {
