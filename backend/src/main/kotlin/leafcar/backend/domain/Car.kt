@@ -1,6 +1,7 @@
 package leafcar.backend.domain
 
 import kotlinx.serialization.Serializable
+import java.math.BigDecimal
 
 /**
  * Domeinmodel dat een auto in het systeem voorstelt.
@@ -44,7 +45,14 @@ data class Car(
     val parkingSensors: Boolean,
     val locationX: Float,
     val locationY: Float,
-    val licensePlate: String
+    val licensePlate: String,
+    val pricePerDay: Double,
+    val purchasePrice: Double,
+    val residualValue: Double,
+    val usageYears: Int,
+    val annualKm: Int,
+    val energyCostPerKm: Double,
+    val maintenanceCostPerKm: Double,
 ) {
     // methodes
 }

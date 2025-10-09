@@ -3,5 +3,5 @@ plugins {
 }
 rootProject.name = "fantastic-lamp"
 include("backend")
-include("app")     // optioneel
-include("shared")  // optioneel
+//include("app")     // optioneel
+//include("shared")  // optioneel
