@@ -14,12 +14,6 @@ import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.serialization.json.Json
 
-/**
- * Startpunt van de applicatie: bootstrapt een embedded Ktor-server met de Netty engine.
- *
- * - Luistert op host `0.0.0.0` en poort `8080` (configureerbaar via code of environment).
- * - Roept `module()` aan om de Ktor-`Application` te configureren (plugins, routes, DI, etc.).
- */
 fun main() {
     embeddedServer(
         Netty,
@@ -29,22 +23,6 @@ fun main() {
     ).start(wait = true)
 }
 
-/**
- * Ktor `Application`-module: initialiseert databaseconnectie, installeert JSON-serialisatie
- * en registreert routes.
- *
- * Verantwoordelijkheden:
- * - Database: maakt verbinding via HikariCP (`HikariDataSource`) en Exposed (`Database.connect`).
- *   De daadwerkelijke DataSource-configuratie komt uit `DatabaseConnection.getDataSource()`.
- * - Content negotiation: installeert Kotlinx Serialization voor JSON met een aantal
- *   ontwikkelaarsvriendelijke opties (`prettyPrint`, `isLenient`, `ignoreUnknownKeys`).
- * - Routing: registreert een eenvoudige HTML-root (`GET /`) en het `cars`-endpoint via
- *   `carRouting`, waarbij een `CarRepository` wordt geïnjecteerd.
- *
- * Let op:
- * - In productie kun je `prettyPrint` en `isLenient` overwegen uit te zetten voor performance en strictere validatie.
- * - Overweeg configuratie (poort, host, DB-params) via environment-variabelen of een config-bestand te beheren.
- */
 fun Application.module() {
     // Initialiseert Exposed met een Hikari-connection pool
     Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
@@ -56,7 +34,7 @@ fun Application.module() {
                 prettyPrint = true              // leesbare output tijdens ontwikkeling
                 isLenient = true                // tolereert licht afwijkende JSON
                 ignoreUnknownKeys = true        // negeert extra velden in inkomende JSON
-                // serializersModule = SerializersModule { contextual(UUID::class, UUIDSerializer) }
+
             }
         )
     }
