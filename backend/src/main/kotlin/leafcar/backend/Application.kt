@@ -12,6 +12,7 @@ import leafcar.backend.controller.*
 import leafcar.backend.repository.CarRepository
 import leafcar.backend.repository.ReservationRepository
 import leafcar.backend.repository.AvailabilitiesRepository
+import leafcar.backend.repository.RidesRepository
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.serialization.json.Json
@@ -69,6 +70,8 @@ fun Application.module() {
 
     var AvailabilitiesRepository = AvailabilitiesRepository()
 
+    var RidesRepository = RidesRepository()
+
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
         get("/") {
@@ -87,6 +90,7 @@ fun Application.module() {
                     <a href="/cars">Bekijk alle auto's (JSON)</a>
                     <a href="/reservations">Bekijk alle reservations (JSON)</a>
                     <a href="/availabilities">Bekijk alle availabilities (JSON)</a>
+                    <a href="/rides">Bekijk alle rides (JSON)</a>
                 </body>
                 </html>
                 """.trimIndent(),
@@ -98,6 +102,7 @@ fun Application.module() {
         carRouting(carRepository)
         reservationRouting(reservationRepository)
         AvailabilitiesRouting(AvailabilitiesRepository)
+        RidesRouting(RidesRepository)
 
     }
 }
