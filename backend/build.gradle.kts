@@ -31,6 +31,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
+    // Java time
+    implementation("org.jetbrains.exposed:exposed-java-time:0.44.1")
 }
 
 application {
