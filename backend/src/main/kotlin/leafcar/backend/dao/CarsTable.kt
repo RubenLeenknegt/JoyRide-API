@@ -28,7 +28,7 @@ object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meeg
     override val id = varchar("id", 36).entityId()
     val brand = varchar("brand", 255)
     val model = varchar("model", 255)
-    val buildYear = integer("buildYear")
+    val buildYear = integer("build_year")
     val transmissionType = varchar("transmissionType", 20)
     val color = varchar("color", 20, )
     val fuelType = varchar("fuelType", 20, )
