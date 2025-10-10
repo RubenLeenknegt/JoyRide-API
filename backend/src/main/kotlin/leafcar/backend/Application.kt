@@ -14,6 +14,7 @@ import leafcar.backend.repository.UserRepository
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.serialization.json.Json
+import leafcar.backend.repository.BonusPointsRepository
 
 fun main() {
     embeddedServer(
@@ -42,6 +43,7 @@ fun Application.module() {
 
     val carRepository = CarRepository()
     val userRepository = UserRepository()
+    val bonusPointsRepository = BonusPointsRepository()
 
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
@@ -58,8 +60,9 @@ fun Application.module() {
                 <body>
                     <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
                     <p>Hello, our names are: ${names.joinToString(separator = ", <br/>", prefix = "<br/>", postfix = ".")}</p>
-                    <a href="/cars">Bekijk alle auto's (JSON)</a>
-                    <a href="/users">Bekijk alle User's (JSON)>/a>
+                    <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
+                    <a href="/users">Bekijk alle User's (JSON)</a><br/>
+                    <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
                 </body>
                 </html>
                 """.trimIndent(),
@@ -70,6 +73,7 @@ fun Application.module() {
         // JSON endpoint(s) voor auto’s
         carRouting(carRepository)
         userRouting(userRepository)
+        bonusPointsRouting(bonusPointsRepository)
     }
 }
 
