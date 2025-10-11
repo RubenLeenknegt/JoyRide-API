@@ -3,7 +3,7 @@ package leafcar.backend.dao
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
-object ReservationTable : IdTable<String>("Reservations") {
+object ReservationsTable : IdTable<String>("Reservations") {
     override val id = varchar("id", 36).entityId()
 
     val userId = varchar("userId", 36).references(

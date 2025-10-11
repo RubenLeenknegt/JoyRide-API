@@ -19,7 +19,7 @@ object RidesTable : IdTable<String>("Rides") {
     val duration = integer("duration")
 
     val reservationId = varchar("reservationId", 36).references(
-        ReservationTable.id,
+        ReservationsTable.id,
         onDelete = ReferenceOption.CASCADE
     )
 }

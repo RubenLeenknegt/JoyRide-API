@@ -19,15 +19,15 @@ import leafcar.backend.domain.Reservation
  */
 class ReservationEntity(id: EntityID<String>) : Entity<String>(id) {
 
-    companion object : EntityClass<String, ReservationEntity>(ReservationTable)
+    companion object : EntityClass<String, ReservationEntity>(ReservationsTable)
 
-    val userId by ReservationTable.userId
+    val userId by ReservationsTable.userId
 
-    val carId by ReservationTable.carId
+    val carId by ReservationsTable.carId
 
-    val startDate by ReservationTable.startDate
+    val startDate by ReservationsTable.startDate
 
-    val endDate by ReservationTable.endDate
+    val endDate by ReservationsTable.endDate
 }
 
 /**
