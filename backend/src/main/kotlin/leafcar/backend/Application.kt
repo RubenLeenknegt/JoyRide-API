@@ -72,15 +72,6 @@ fun Application.module() {
                     <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
                     <a href="/users">Bekijk alle User's (JSON)</a><br/>
                     <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
-                    <p>Hello, our names are: ${
-                    names.joinToString(
-                        separator = ", <br/>",
-                        prefix = "<br/>",
-                        postfix = "."
-                    )
-                }</p>
-                    <a href="/cars">Bekijk alle auto's (JSON)</a>
-                    <a href="/users">Bekijk alle User's (JSON)>/a>
                 </body>
                 </html>
                 """.trimIndent(),
@@ -113,7 +104,7 @@ fun Application.module() {
             val password = user[4]
             val userTypeStr = user[5]
             if (userRepository.findByEmail(email) == null) {
-              val passwordHashed =  Authentication(userRepository).createPasswordHash(password)
+                val passwordHashed = Authentication(userRepository).createPasswordHash(password)
                 userRepository.createUser(
                     emailAddress = email,
                     passwordHash = passwordHashed,
