@@ -71,7 +71,7 @@ fun Application.module() {
                     <a href="/reservations">Bekijk alle reservations (JSON)</a>
                     <a href="/availabilities">Bekijk alle availabilities (JSON)</a>
                     <a href="/rides">Bekijk alle rides (JSON)</a>
-                    <a href="/users">Bekijk alle User's (JSON)>/a>
+                    <a href="/users">Bekijk alle User's (JSON)</a>
                 </body>
                 </html>
                 """.trimIndent(),
