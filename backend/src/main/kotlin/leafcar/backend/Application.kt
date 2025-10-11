@@ -64,7 +64,13 @@ fun Application.module() {
                 </head>
                 <body>
                     <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
-                    <p>Hello, our names are: ${names.joinToString(separator = ", <br/>", prefix = "<br/>", postfix = ".")}</p>
+                    <p>Hello, our names are: ${
+                    names.joinToString(
+                        separator = ", <br/>",
+                        prefix = "<br/>",
+                        postfix = "."
+                    )
+                }</p>
                     <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
                     <a href="/users">Bekijk alle User's (JSON)</a><br/>
                     <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
@@ -107,15 +113,16 @@ fun Application.module() {
             val email = user[3]
             val password = user[4]
             val userTypeStr = user[5]
-
-            userRepository.createUser(
-                emailAddress = email,
-                password = password,
-                firstName = firstName,
-                lastName = lastName,
-                birthDate = LocalDate.parse(birthDate),
-                userType = UserType.valueOf(userTypeStr),
-            )
+            if (userRepository.findByEmail(email) == null) {
+                userRepository.createUser(
+                    emailAddress = email,
+                    password = password,
+                    firstName = firstName,
+                    lastName = lastName,
+                    birthDate = LocalDate.parse(birthDate),
+                    userType = UserType.valueOf(userTypeStr),
+                )
+            }
         }
 
         bonusPointsRouting(bonusPointsRepository)

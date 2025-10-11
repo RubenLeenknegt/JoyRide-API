@@ -23,17 +23,5 @@ data class User(
     val lastName: String,
     val birthDate: LocalDate,
     val emailAddress: String,
-    val userType: UserType,
-)
-
-@Serializable
-data class LoginRequest(
-    val email: String,
-    val password: String
-)
-
-@Serializable
-data class LoginResponse(
-    val user: User,
-    val message: String = "Login successful"
+    val userType: UserType
 )

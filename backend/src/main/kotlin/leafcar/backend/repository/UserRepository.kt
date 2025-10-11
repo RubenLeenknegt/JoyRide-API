@@ -37,8 +37,9 @@ class UserRepository {
         user.toDomain()
     }
 
-    fun findByEmail(email: String) =
+    fun findByEmail(email: String) = transaction {
         UserEntity.find { UsersTable.emailAddress eq email }.firstOrNull()?.toDomain()
+    }
 
     fun findCredentialsByEmail(email: String): UserCredentials? = transaction {
         UserEntity.find { UsersTable.emailAddress eq email }
