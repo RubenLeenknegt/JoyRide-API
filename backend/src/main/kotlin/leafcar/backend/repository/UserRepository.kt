@@ -18,14 +18,12 @@ class UserRepository {
 
     fun createUser(
         emailAddress: String,
-        password: String,
+        passwordHash: String,
         firstName: String,
         lastName: String,
         birthDate: LocalDate,
         userType: UserType,
     ): User? = transaction {
-        val encoder = BCryptPasswordEncoder()
-        val passwordHash: String = encoder.encode(password).toString()
         val user = UserEntity.new(UUID.randomUUID().toString()) {
             this.firstName = firstName
             this.lastName = lastName

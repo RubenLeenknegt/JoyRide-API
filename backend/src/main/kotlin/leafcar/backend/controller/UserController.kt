@@ -10,9 +10,11 @@ import leafcar.backend.api.auth.LoginRequest
 import leafcar.backend.api.auth.LoginResponse
 import leafcar.backend.repository.UserRepository
 import leafcar.backend.service.Authentication
+import leafcar.leafcar.backend.api.auth.RegisterRequest
 
 fun Route.userRouting(userRepository: UserRepository) {
     val auth = Authentication(userRepository)
+    val user = UserRepository()
 
     route("/users") {
         get {
@@ -20,16 +22,33 @@ fun Route.userRouting(userRepository: UserRepository) {
             call.respond(status = HttpStatusCode.OK, users)
         }
     }
-    route("/auth/user") {
-        post {
-            val request = call.receive<LoginRequest>()
-            val user = auth.verifyPassword(email = request.email, password = request.password)
-            if (user != null) {
-                call.respond(HttpStatusCode.OK, LoginResponse(user))
+    post("/login") {
+        val request = call.receive<LoginRequest>()
+        val user = auth.verifyPassword(email = request.email, password = request.password)
+        if (user != null) {
+            call.respond(HttpStatusCode.OK, LoginResponse(user))
+        } else {
+            call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid credentials"))
+        }
+    }
+    post("/register") {
+        val request = call.receive<RegisterRequest>()
+        if (user.findByEmail(request.user.emailAddress) == null) {
+            val passwordHashed = auth.createPasswordHash(request.password)
+            val created = user.createUser(
+                emailAddress = request.user.emailAddress,
+                passwordHash = passwordHashed,
+                firstName = request.user.firstName,
+                lastName = request.user.lastName,
+                birthDate = request.user.birthDate,
+                userType = request.user.userType
+            )
+            if (created != null) {
+                call.respond(HttpStatusCode.Created, LoginResponse(created))
             } else {
-                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid credentials"))
+                call.respond(HttpStatusCode.Conflict, mapOf("error" to "Email already registered"))
             }
         }
-        get {  }
+
     }
 }
