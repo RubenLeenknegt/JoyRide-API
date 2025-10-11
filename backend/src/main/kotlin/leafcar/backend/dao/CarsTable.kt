@@ -25,58 +25,30 @@ import org.jetbrains.exposed.dao.id.IdTable
  * Tip: Overweeg indexen op vaak gefilterde kolommen (bijv. `brand`, `model`, `buildYear`) en documenteer migraties apart.
  */
 object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meegegeven, hoeft eigenlijk niet maar voor duidelijkheid
-    /** Primaire sleutel van de auto (UUID als string, max 36 tekens). */
     override val id = varchar("id", 36).entityId()
-
-    /** Merk van de auto; vrije tekst tot 255 tekens. */
     val brand = varchar("brand", 255)
-
-    /** Modelnaam; vrije tekst tot 255 tekens. */
     val model = varchar("model", 255)
-
-    /** Bouwjaar (bijv. 2019). */
     val buildYear = integer("buildYear")
-
-    /**
-     * Transmissietype als string in de database (enum-naam), max 20 tekens.
-     * Gebruik `TransmissionType` in de applicatielaag.
-     */
-    val transmissionType = enumerationByName("transmissionType", 20, TransmissionType::class)
-
-    /** Kleur als string (enum-naam), max 20 tekens. */
-    val color = enumerationByName("color", 20, Color::class)
-
-    /** Brandstoftype als string (enum-naam), max 20 tekens. */
-    val fuelType = enumerationByName("fuelType", 20, FuelType::class)
-
-    /** Lengte in millimeters. */
+    val transmissionType = varchar("transmissionType", 20)
+    val color = varchar("color", 20, )
+    val fuelType = varchar("fuelType", 20, )
     val length = integer("length")
-
-    /** Breedte in millimeters. */
     val width = integer("width")
-
-    /** Aantal zitplaatsen. */
     val seats = integer("seats")
-
-    /** Of ISOFIX-bevestigingspunten aanwezig zijn. */
     val isofixCompatible = bool("isofixCompatible")
-
-    /** Of er een telefoonhouder aanwezig is. */
     val phoneMount = bool("phoneMount")
-
-    /** Bagageruimte in liters (double-precisie). */
     val luggageSpace = double("luggageSpace")
-
-    /** Of parkeersensoren aanwezig zijn. */
     val parkingSensors = bool("parkingSensors")
-
-    /** X-coördinaat (float). */
     val locationX = float("locationX")
-
-    /** Y-coördinaat (float). */
     val locationY = float("locationY")
-
     val licensePlate = varchar("licensePlate", 10)
+    val pricePerDay = decimal("pricePerDay", 10,2)
+    val purchasePrice = decimal("purchasePrice", 10, 2)
+    val residualValue = decimal("residualValue", 10, 2)
+    val usageYears = integer("usageYears")
+    val annualKm = integer("annualKm")
+    val energyCostPerKm = decimal("energyCostPerKm", 10,2)
+    val maintenanceCostPerKm = decimal("maintenanceCostPerKm", 10,2)
 }
 
 //### Toelichting en vervolgstappen
