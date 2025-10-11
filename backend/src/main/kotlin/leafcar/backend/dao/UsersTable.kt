@@ -45,7 +45,7 @@ import org.jetbrains.exposed.sql.kotlin.datetime.date
          * Column for storing the user's password hash.
          * Stored as a binary value with a maximum size of 64 bytes.
          */
-        val passwordHash = binary("password_hash", 64)
+        val passwordHash = varchar("password_hash", 255)
 
         /**
          * Column for storing the user's type.

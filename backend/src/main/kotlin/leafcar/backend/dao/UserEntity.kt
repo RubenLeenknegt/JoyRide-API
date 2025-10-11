@@ -20,23 +20,23 @@ package org.example.leafcar.backend.dao
         companion object : EntityClass<String, UserEntity>(UsersTable)
 
         // Maps to the `first_name` column in the `UsersTable`.
-        val firstName by UsersTable.firstName
+        var firstName by UsersTable.firstName
 
         // Maps to the `last_name` column in the `UsersTable`.
-        val lastName by UsersTable.lastName
+        var lastName by UsersTable.lastName
 
         // Maps to the `birth_date` column in the `UsersTable`.
-        val birthDate by UsersTable.birthDate
+        var birthDate by UsersTable.birthDate
 
         // Maps to the `email_address` column in the `UsersTable`.
-        val emailAdress by UsersTable.emailAdress
+        var emailAdress by UsersTable.emailAdress
 
         // Maps to the `user_type` column in the `UsersTable`.
-        val userType by UsersTable.userType
+        var userType by UsersTable.userType
 
         // Maps to the `password_hash` column in the `UsersTable`.
         // Stores the hashed password for the user.
-        val passwordHash by UsersTable.passwordHash
+        var passwordHash by UsersTable.passwordHash
     }
 
     /**
