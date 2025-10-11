@@ -9,23 +9,6 @@ import leafcar.backend.domain.Color
 import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
 
-/**
- * Exposed DAO-entity die één rij in de tabel `Car` (zie `CarsTable`) vertegenwoordigt.
- *
- * Wat is een Exposed `Entity`?
- * - Een `Entity` is een objectgeoriënteerde representatie van een database-rij. Het is
- *   gekoppeld aan een `Table`/`IdTable` (hier: `CarsTable`) en biedt property-toegang
- *   tot kolommen via Kotlin-delegates.
- * - Voordeel: je werkt tegen eigenschappen i.p.v. handmatig SQL te schrijven, terwijl
- *   Exposed de database-interactie en object-cache afhandelt binnen een transactie.
- *
- * Ontwerpkeuzes in deze `CarEntity`:
- * - De properties zijn als `val` gedeclareerd, waardoor deze entity read‑only is vanuit
- *   de applicatielaag. Wil je updates via de DAO doen, gebruik dan `var` voor de velden
- *   die mutabel moeten zijn.
- * - Gebruik `toDomain()` om databasekennis niet te laten lekken naar het domein; de rest
- *   van de applicatie spreekt bij voorkeur in termen van `Car` (domeinmodel).
- */
 class CarEntity(id: EntityID<String>) : Entity<String>(id) {
     /** Statische helper van Exposed om te kunnen query’en (bijv. `CarEntity.all()`). */
     companion object : EntityClass<String, CarEntity>(CarsTable)
