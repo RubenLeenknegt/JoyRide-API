@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS Cars (
     phone_mount BOOLEAN,
     luggage_space DOUBLE,
     parking_sensors BOOLEAN,
-    location_X FLOAT,
-    location_Y FLOAT,
+    location_x FLOAT,
+    location_y FLOAT,
     license_plate VARCHAR(10) NOT NULL,
     price_per_day DECIMAL(10,2) NOT NULL,
     purchase_price DECIMAL(10,2) NOT NULL,
@@ -54,13 +54,13 @@ CREATE TABLE IF NOT EXISTS Availabilities (
 
 CREATE TABLE IF NOT EXISTS Rides (
                                     id CHAR(36) PRIMARY KEY,
+    reservation_id CHAR(36),
     start_x FLOAT,
     start_y FLOAT,
     end_x FLOAT,
     end_y FLOAT,
     length INT,
-    duration INT,
-    reservation_id CHAR(36)
+    duration INT
     );
 
 CREATE TABLE IF NOT EXISTS Photos (
@@ -130,17 +130,17 @@ INSERT INTO Availabilities (id, car_id, start_date, end_date) VALUES
                                                                     ('9d785f64-5717-4562-b3fc-2c963f66d010','4b285f64-5717-4562-b3fc-2c963f66b010','2025-10-01 08:00', NULL);
 
 -- 6. INSERT RIDES
-INSERT INTO Rides (id, start_x, start_y, end_x, end_y, length, duration, reservation_id) VALUES
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d001',52.3702,4.8952,52.0924,5.1045,35,60,'5c385f64-5717-4562-b3fc-2c963f66c001'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d002',51.9244,4.4777,50.8503,4.3517,80,120,'5c385f64-5717-4562-b3fc-2c963f66c002'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d003',52.0907,5.1214,52.3700,4.8950,60,90,'5c385f64-5717-4562-b3fc-2c963f66c003'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d004',52.0116,4.3571,51.9245,4.4780,30,45,'5c385f64-5717-4562-b3fc-2c963f66c004'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d005',51.4416,5.4697,52.0934,5.1110,70,105,'5c385f64-5717-4562-b3fc-2c963f66c005'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d006',52.3700,4.8950,52.0924,5.1045,40,60,'5c385f64-5717-4562-b3fc-2c963f66c006'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d007',52.3702,4.8952,52.0116,4.3571,55,80,'5c385f64-5717-4562-b3fc-2c963f66c007'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d008',51.9244,4.4777,52.0907,5.1214,65,95,'5c385f64-5717-4562-b3fc-2c963f66c008'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d009',52.0934,5.1110,51.9245,4.4780,75,110,'5c385f64-5717-4562-b3fc-2c963f66c009'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d010',52.0116,4.3571,52.3702,4.8952,50,75,'5c385f64-5717-4562-b3fc-2c963f66c010');
+INSERT INTO Rides (id, reservation_id, start_x, start_y, end_x, end_y, length, duration) VALUES
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d001','5c385f64-5717-4562-b3fc-2c963f66c001',52.3702,4.8952,52.0924,5.1045,35,60),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d002','5c385f64-5717-4562-b3fc-2c963f66c002',51.9244,4.4777,50.8503,4.3517,80,120),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d003','5c385f64-5717-4562-b3fc-2c963f66c003',52.0907,5.1214,52.3700,4.8950,60,90),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d004','5c385f64-5717-4562-b3fc-2c963f66c004',52.0116,4.3571,51.9245,4.4780,30,45),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d005','5c385f64-5717-4562-b3fc-2c963f66c005',51.4416,5.4697,52.0934,5.1110,70,105),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d006','5c385f64-5717-4562-b3fc-2c963f66c006',52.3700,4.8950,52.0924,5.1045,40,60),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d007','5c385f64-5717-4562-b3fc-2c963f66c007',52.3702,4.8952,52.0116,4.3571,55,80),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d008','5c385f64-5717-4562-b3fc-2c963f66c008',51.9244,4.4777,52.0907,5.1214,65,95),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d009','5c385f64-5717-4562-b3fc-2c963f66c009',52.0934,5.1110,51.9245,4.4780,75,110),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d010','5c385f64-5717-4562-b3fc-2c963f66c010',52.0116,4.3571,52.3702,4.8952,50,75);
 
 -- 7. INSERT PHOTOS
 INSERT INTO Photos (id, car_id, reservation_id, file_path) VALUES
