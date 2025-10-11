@@ -4,7 +4,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 
-import leafcar.backend.domain.Available
+import leafcar.backend.domain.Availability
 
 class AvailabilitiesEntity(id: EntityID<String>) : Entity<String>(id) {
 
@@ -25,7 +25,7 @@ class AvailabilitiesEntity(id: EntityID<String>) : Entity<String>(id) {
  *
  * @return a [Reservation] domain object with the same data as this DAO.
  */
-fun AvailabilitiesEntity.toDomain():Available  = Available(
+fun AvailabilitiesEntity.toDomain():Availability  = Availability(
     id = id.value,
     carId = carId,
     availableFrom = availableFrom,

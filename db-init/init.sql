@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Cars (
     );
 
 CREATE TABLE IF NOT EXISTS Reservations (
-                                           id CHAR(36) PRIMARY KEY,
+    id CHAR(36) PRIMARY KEY,
     userId CHAR(36),
     carId CHAR(36),
     startDate CHAR(19) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Reservations (
     );
 
 CREATE TABLE IF NOT EXISTS Availabilities (
-                                        id CHAR(36) PRIMARY KEY,
+    id CHAR(36) PRIMARY KEY,
     carId CHAR(36),
     availableFrom CHAR(19) NOT NULL,
     availableTo CHAR(19) NULL

@@ -2,7 +2,7 @@ package leafcar.backend.repository
 
 import leafcar.backend.dao.AvailabilitiesEntity
 import leafcar.backend.dao.toDomain
-import leafcar.backend.domain.Available
+import leafcar.backend.domain.Availability
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
@@ -18,7 +18,7 @@ class AvailabilitiesRepository {
      *
      * @return List of [Availabilities] objects.
      */
-    fun getAll(): List<Available> = transaction {
+    fun getAll(): List<Availability> = transaction {
         AvailabilitiesEntity.all().map { it.toDomain() }
     }
 }
