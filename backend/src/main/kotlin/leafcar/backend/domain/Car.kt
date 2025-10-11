@@ -8,7 +8,7 @@ import java.math.BigDecimal
  *
  * Deze klasse wordt gemarkeerd met `@Serializable` zodat instanties automatisch
  * (de)serialiseerbaar zijn via Kotlinx Serialization, bijvoorbeeld voor JSON
- * in API-responses of -requests.
+ * in API-responses of -request.
  *
  * @property id Unieke identificatie van de auto (bijv. UUID als `String`).
  * @property brand Merk van de auto (bijv. "Toyota").
