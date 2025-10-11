@@ -60,3 +60,4 @@ DSdocs/
 
 # Temporary files
 *.tmp
+/qodana.yaml
