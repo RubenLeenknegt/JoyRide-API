@@ -51,5 +51,5 @@ import org.jetbrains.exposed.sql.kotlin.datetime.date
          * Column for storing the user's type.
          * Uses an enumeration mapped by name with a maximum length of 50 characters.
          */
-        val userType = enumerationByName("user_type", 50, UserType::class)
+        val userType = varchar("user_type", 10)
     }

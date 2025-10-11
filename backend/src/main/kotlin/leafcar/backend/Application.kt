@@ -19,6 +19,7 @@ import leafcar.backend.dao.UsersTable
 import leafcar.backend.domain.UserType
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import leafcar.backend.repository.BonusPointsRepository
 
 fun main() {
     embeddedServer(
@@ -47,6 +48,7 @@ fun Application.module() {
 
     val carRepository = CarRepository()
     val userRepository = UserRepository()
+    val bonusPointsRepository = BonusPointsRepository()
 
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
@@ -62,6 +64,10 @@ fun Application.module() {
                 </head>
                 <body>
                     <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
+                    <p>Hello, our names are: ${names.joinToString(separator = ", <br/>", prefix = "<br/>", postfix = ".")}</p>
+                    <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
+                    <a href="/users">Bekijk alle User's (JSON)</a><br/>
+                    <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
                     <p>Hello, our names are: ${
                     names.joinToString(
                         separator = ", <br/>",
@@ -112,6 +118,7 @@ fun Application.module() {
             )
         }
 
+        bonusPointsRouting(bonusPointsRepository)
     }
 }
 

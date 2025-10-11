@@ -13,31 +13,51 @@ repositories {
 }
 
 val ktorVersion = "2.3.12"
+val exposedVersion = "0.44.1"
+val hikariVersion = "5.1.0"
+val mysqlConnectorVersion = "9.1.0"
+val logbackVersion = "1.5.12"
+val kotlinxSerializationVersion = "1.7.3"
+val kotlinxDatetimeVersion = "0.6.2"
+val dotenvVersion = "6.4.1"
 
 dependencies {
+    // Ktor
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("ch.qos.logback:logback-classic:1.5.6")
-    implementation("mysql:mysql-connector-java:8.0.33")
-    implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
-    implementation("org.jetbrains.exposed:exposed-core:0.44.1")
-    testImplementation(kotlin("test"))
-    // Exposed dependencies
-    implementation("org.jetbrains.exposed:exposed-core:0.44.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.44.1")   // <-- DAO
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.44.1")  // <-- nodig voor database connectie
-    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.44.1")
-    // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
+    // Logging
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+
+    // Database
+    implementation("com.zaxxer:HikariCP:$hikariVersion")
+    implementation("com.mysql:mysql-connector-j:$mysqlConnectorVersion")
+
+    // Exposed ORM
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+
+    // Serialization / Kotlin libs
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")
+
+    // Env
+    implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
+
+    // Tests
+    testImplementation(kotlin("test"))
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
     // Kotlin Datetime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
     // Java time
     implementation("org.jetbrains.exposed:exposed-java-time:0.44.1")
     // Security
-    implementation ("org.springframework.security:spring-security-core:6.5.5")
+    implementation("org.springframework.security:spring-security-core:6.5.5")
 
 }
 
@@ -46,15 +66,15 @@ application {
 }
 
 tasks.test {
-useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 kotlin {
-jvmToolchain(17)
+    jvmToolchain(17)
 }
 
 // Fat jar task
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-archiveFileName.set("backend-fat.jar")
-mergeServiceFiles()
+    archiveFileName.set("backend-fat.jar")
+    mergeServiceFiles()
 }
