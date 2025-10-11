@@ -1,4 +1,4 @@
-package org.example.leafcar.backend.dao
+package leafcar.backend.dao
 
     import leafcar.backend.dao.UsersTable
     import leafcar.backend.domain.User
@@ -30,7 +30,7 @@ package org.example.leafcar.backend.dao
         var birthDate by UsersTable.birthDate
 
         // Maps to the `email_address` column in the `UsersTable`.
-        var emailAdress by UsersTable.emailAdress
+        var emailAddress by UsersTable.emailAddress
 
         // Maps to the `user_type` column in the `UsersTable`.
         var userType by UsersTable.userType
@@ -51,6 +51,6 @@ package org.example.leafcar.backend.dao
         firstName = this.firstName,
         lastName = this.lastName,
         birthDate = this.birthDate,
-        emailAddress = this.emailAdress,
-        userType = UserType.valueOf(this.userType)
+        emailAddress = this.emailAddress,
+        userType = this.userType
     )

@@ -109,7 +109,7 @@ fun Application.module() {
             val userTypeStr = user[5]
 
             userRepository.createUser(
-                emailAdress = email,
+                emailAddress = email,
                 password = password,
                 firstName = firstName,
                 lastName = lastName,

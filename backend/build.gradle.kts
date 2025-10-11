@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.0"
 }
 
-group = "org.example"
+group = "leafcar.backend"
 version = "1.0-SNAPSHOT"
 
 repositories {

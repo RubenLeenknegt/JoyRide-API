@@ -39,7 +39,7 @@ import org.jetbrains.exposed.sql.kotlin.datetime.date
          * Column for storing the user's email address.
          * Maximum length: 100 characters.
          */
-        val emailAdress = varchar("email_address", 100)
+        val emailAddress = varchar("email_address", 100)
 
         /**
          * Column for storing the user's password hash.
@@ -51,5 +51,5 @@ import org.jetbrains.exposed.sql.kotlin.datetime.date
          * Column for storing the user's type.
          * Uses an enumeration mapped by name with a maximum length of 50 characters.
          */
-        val userType = varchar("user_type", 10)
+        val userType = enumerationByName("user_type", 50, UserType::class)
     }

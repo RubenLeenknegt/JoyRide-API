@@ -4,8 +4,9 @@ import kotlinx.datetime.LocalDate
 import leafcar.backend.dao.UsersTable
 import leafcar.backend.domain.User
 import leafcar.backend.domain.UserType
-import org.example.leafcar.backend.dao.UserEntity
-import org.example.leafcar.backend.dao.toDomain
+import leafcar.backend.dao.UserEntity
+import leafcar.backend.dao.toDomain
+import leafcar.backend.domain.auth.UserCredentials
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.UUID
@@ -16,7 +17,7 @@ class UserRepository {
     }
 
     fun createUser(
-        emailAdress: String,
+        emailAddress: String,
         password: String,
         firstName: String,
         lastName: String,
@@ -29,25 +30,19 @@ class UserRepository {
             this.firstName = firstName
             this.lastName = lastName
             this.birthDate = birthDate
-            this.emailAdress = emailAdress
+            this.emailAddress = emailAddress
             this.userType = userType
             this.passwordHash = passwordHash
         }
         user.toDomain()
     }
 
-    private fun findByEmail(email: String): UserEntity? =
-        UserEntity.find { UsersTable.emailAdress eq email }.firstOrNull()
+    fun findByEmail(email: String) =
+        UserEntity.find { UsersTable.emailAddress eq email }.firstOrNull()?.toDomain()
 
-
-    fun verifyPassword(email: String, password: String): User? = transaction {
-        val userEntity = findByEmail(email) ?: return@transaction null
-        val encoder = BCryptPasswordEncoder()
-
-        if (encoder.matches(password, userEntity.passwordHash)) {
-            userEntity.toDomain()
-        } else {
-            null
-        }
+    fun findCredentialsByEmail(email: String): UserCredentials? = transaction {
+        UserEntity.find { UsersTable.emailAddress eq email }
+            .firstOrNull()
+            ?.let { entity -> UserCredentials(entity.toDomain(), entity.passwordHash) }
     }
 }
