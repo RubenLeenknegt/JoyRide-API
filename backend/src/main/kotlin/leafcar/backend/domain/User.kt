@@ -13,12 +13,11 @@ import kotlinx.serialization.Serializable
  * @property lastName The last name of the user.
  * @property birthDate The birth date of the user, represented as a `LocalDate`.
  * @property emailAddress The email address of the user.
- * @property passwordHash The hashed password of the user for authentication purposes.
  * @property userType The role of the user in the system, represented by the `UserType` enum.
  */
 @Serializable
 data class User(
-    val id: String,
+    val id: String? = null,
     val firstName: String,
     val lastName: String,
     val birthDate: LocalDate,
