@@ -18,18 +18,9 @@ object BonusPointsTable : IdTable<String>("BonusPoints") {
      */
     override val id = varchar("id", 36).entityId()
 
-    /**
-     * User identifier column.
-     */
-    val userId = varchar("userId", 36)
+    val userId = varchar("user_id", 36)
 
-    /**
-     * Ride identifier column.
-     */
-    val rideId = varchar("rideId", 36)
+    val rideId = varchar("ride_id", 36)
 
-    /**
-     * Bonus points amount column.
-     */
     val points = integer("points")
 }
