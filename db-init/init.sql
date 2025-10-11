@@ -6,74 +6,74 @@ CREATE TABLE IF NOT EXISTS Users (
     birth_date DATE,
     email_address VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    user_type ENUM('RENTER','OWNER','ADMIN') NOT NULL
+    user_type VARCHAR(10) NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS Cars (
                                    id CHAR(36) PRIMARY KEY,
-    ownerId CHAR(36),
+    owner_id CHAR(36),
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(50) NOT NULL,
-    buildYear INT NOT NULL,
-    transmissionType VARCHAR(20) NOT NULL,
+    build_year INT NOT NULL,
+    transmission_type VARCHAR(20) NOT NULL,
     color VARCHAR(20) NOT NULL,
-    fuelType VARCHAR(20) NOT NULL,
+    fuel_type VARCHAR(20) NOT NULL,
     length INT,
     width INT,
     seats INT,
-    isofixCompatible BOOLEAN,
-    phoneMount BOOLEAN,
-    luggageSpace DOUBLE,
-    parkingSensors BOOLEAN,
-    locationX FLOAT,
-    locationY FLOAT,
-    licensePlate VARCHAR(10) NOT NULL,
-    pricePerDay DECIMAL(10,2) NOT NULL,
-    purchasePrice DECIMAL(10,2) NOT NULL,
-    residualValue DECIMAL(10,2) NOT NULL,
-    usageYears INT NOT NULL,
-    annualKm INT NOT NULL,
-    energyCostPerKm DECIMAL(10,2) NOT NULL,
-    maintenanceCostPerKm DECIMAL(10,2) NOT NULL
+    isofix_compatible BOOLEAN,
+    phone_mount BOOLEAN,
+    luggage_space DOUBLE,
+    parking_sensors BOOLEAN,
+    location_x FLOAT,
+    location_y FLOAT,
+    license_plate VARCHAR(10) NOT NULL,
+    price_per_day DECIMAL(10,2) NOT NULL,
+    purchase_price DECIMAL(10,2) NOT NULL,
+    residual_value DECIMAL(10,2) NOT NULL,
+    usage_years INT NOT NULL,
+    annual_km INT NOT NULL,
+    energy_cost_per_km DECIMAL(10,2) NOT NULL,
+    maintenance_cost_per_km DECIMAL(10,2) NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS Reservations (
-    id CHAR(36) PRIMARY KEY,
-    userId CHAR(36),
-    carId CHAR(36),
-    startDate CHAR(19) NOT NULL,
-    endDate CHAR(19) NOT NULL
+                                           id CHAR(36) PRIMARY KEY,
+    user_id CHAR(36),
+    car_id CHAR(36),
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS Availabilities (
-    id CHAR(36) PRIMARY KEY,
-    carId CHAR(36),
-    availableFrom CHAR(19) NOT NULL,
-    availableTo CHAR(19) NULL
+                                        id CHAR(36) PRIMARY KEY,
+    car_id CHAR(36),
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NULL
     );
 
 CREATE TABLE IF NOT EXISTS Rides (
                                     id CHAR(36) PRIMARY KEY,
-    startX FLOAT,
-    startY FLOAT,
-    endX FLOAT,
-    endY FLOAT,
+    reservation_id CHAR(36),
+    start_x FLOAT,
+    start_y FLOAT,
+    end_x FLOAT,
+    end_y FLOAT,
     length INT,
-    duration INT,
-    reservationId CHAR(36)
+    duration INT
     );
 
 CREATE TABLE IF NOT EXISTS Photos (
                                      id CHAR(36) PRIMARY KEY,
-    carId CHAR(36),
-    reservationId CHAR(36) NULL,
-    filePath VARCHAR(255) NOT NULL
+    car_id CHAR(36),
+    reservation_id CHAR(36) NULL,
+    file_path VARCHAR(255) NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS BonusPoints (
                                            id CHAR(36) PRIMARY KEY,
-    userId CHAR(36),
-    rideId CHAR(36),
+    user_id CHAR(36),
+    ride_id CHAR(36),
     points INT NOT NULL
     );
 
@@ -91,7 +91,7 @@ INSERT INTO Users (id, first_name, last_name, birth_date, email_address, passwor
                                                                        ('3fa85f64-5717-4562-b3fc-2c963f66a010','Rachid','Mansour','2000-01-01','rachid.mansour@gmail.com','hash10','RENTER');
 
 -- 3. INSERT NEW CARS
-INSERT INTO Cars (id, ownerId, brand, model, buildYear, transmissionType, color, fuelType, length, width, seats, isofixCompatible, phoneMount, luggageSpace, parkingSensors, locationX, locationY, licensePlate, pricePerDay, purchasePrice, residualValue, usageYears, annualKm, energyCostPerKm, maintenanceCostPerKm) VALUES
+INSERT INTO Cars (id, owner_id, brand, model, build_year, transmission_type, color, fuel_type, length, width, seats, isofix_compatible, phone_mount, luggage_space, parking_sensors, location_x, location_y, license_plate, price_per_day, purchase_price, residual_value, usage_years, annual_km, energy_cost_per_km, maintenance_cost_per_km) VALUES
                                                                                                                                                                                                                                                                                                                              ('4b285f64-5717-4562-b3fc-2c963f66b001','3fa85f64-5717-4562-b3fc-2c963f66a002','Land Rover','Series 3',1975,'MANUAL','GREEN','PETROL',3880,1600,2,FALSE,FALSE,200.0,FALSE,51.5652,3.5912,'98-YA-67',80.00,25000.00,15000.00,5,15000,0.10,0.05),
                                                                                                                                                                                                                                                                                                                              ('4b285f64-5717-4562-b3fc-2c963f66b002','3fa85f64-5717-4562-b3fc-2c963f66a005','Citroen','GSA Pallas',1980,'SEMI_AUTOMATIC','BLUE','PETROL',3800,1650,4,FALSE,FALSE,220.0,FALSE,51.9853,5.9112,'42-NZ-KR',55.00,18000.00,12000.00,5,16000,0.12,0.06),
                                                                                                                                                                                                                                                                                                                              ('4b285f64-5717-4562-b3fc-2c963f66b003','3fa85f64-5717-4562-b3fc-2c963f66a007','BMW','X5 drive 45e',2021,'AUTOMATIC','GREY','PETROL',5000,2000,5,TRUE,TRUE,650.0,TRUE,52.3702,4.8952,'L-520-HB',110.00,65000.00,50000.00,5,18000,0.06,0.05),
@@ -104,7 +104,7 @@ INSERT INTO Cars (id, ownerId, brand, model, buildYear, transmissionType, color,
                                                                                                                                                                                                                                                                                                                              ('4b285f64-5717-4562-b3fc-2c963f66b010','3fa85f64-5717-4562-b3fc-2c963f66a002','Austin','A30',1955,'MANUAL','BEIGE','PETROL',3500,1500,4,FALSE,FALSE,120.0,FALSE,52.0900,5.1200,'53-DZ-61',40.00,12000.00,7000.00,5,12000,0.14,0.05);
 
 -- 4. INSERT RESERVATIONS
-INSERT INTO Reservations (id, userId, carId, startDate, endDate) VALUES
+INSERT INTO Reservations (id, user_id, car_id, start_date, end_date) VALUES
                                                                     ('5c385f64-5717-4562-b3fc-2c963f66c001','3fa85f64-5717-4562-b3fc-2c963f66a001','4b285f64-5717-4562-b3fc-2c963f66b001','2025-10-10 09:00','2025-10-10 18:00'),
                                                                     ('5c385f64-5717-4562-b3fc-2c963f66c002','3fa85f64-5717-4562-b3fc-2c963f66a004','4b285f64-5717-4562-b3fc-2c963f66b002','2025-10-11 08:00','2025-10-11 17:00'),
                                                                     ('5c385f64-5717-4562-b3fc-2c963f66c003','3fa85f64-5717-4562-b3fc-2c963f66a006','4b285f64-5717-4562-b3fc-2c963f66b003','2025-10-12 10:00','2025-10-12 16:00'),
@@ -117,7 +117,7 @@ INSERT INTO Reservations (id, userId, carId, startDate, endDate) VALUES
                                                                     ('5c385f64-5717-4562-b3fc-2c963f66c010','3fa85f64-5717-4562-b3fc-2c963f66a001','4b285f64-5717-4562-b3fc-2c963f66b010','2025-10-19 09:00','2025-10-19 18:00');
 
 -- 5. INSERT AVAILABILITIES
-INSERT INTO Availabilities (id, carId, availableFrom, availableTo) VALUES
+INSERT INTO Availabilities (id, car_id, start_date, end_date) VALUES
                                                                     ('9d785f64-5717-4562-b3fc-2c963f66d001','4b285f64-5717-4562-b3fc-2c963f66b001','2025-10-01 08:00','2025-10-31 20:00'),
                                                                     ('9d785f64-5717-4562-b3fc-2c963f66d002','4b285f64-5717-4562-b3fc-2c963f66b002','2025-10-01 08:00','2025-10-31 20:00'),
                                                                     ('9d785f64-5717-4562-b3fc-2c963f66d003','4b285f64-5717-4562-b3fc-2c963f66b003','2025-10-01 08:00','2025-10-31 20:00'),
@@ -130,20 +130,20 @@ INSERT INTO Availabilities (id, carId, availableFrom, availableTo) VALUES
                                                                     ('9d785f64-5717-4562-b3fc-2c963f66d010','4b285f64-5717-4562-b3fc-2c963f66b010','2025-10-01 08:00', NULL);
 
 -- 6. INSERT RIDES
-INSERT INTO Rides (id, startX, startY, endX, endY, length, duration, reservationId) VALUES
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d001',52.3702,4.8952,52.0924,5.1045,35,60,'5c385f64-5717-4562-b3fc-2c963f66c001'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d002',51.9244,4.4777,50.8503,4.3517,80,120,'5c385f64-5717-4562-b3fc-2c963f66c002'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d003',52.0907,5.1214,52.3700,4.8950,60,90,'5c385f64-5717-4562-b3fc-2c963f66c003'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d004',52.0116,4.3571,51.9245,4.4780,30,45,'5c385f64-5717-4562-b3fc-2c963f66c004'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d005',51.4416,5.4697,52.0934,5.1110,70,105,'5c385f64-5717-4562-b3fc-2c963f66c005'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d006',52.3700,4.8950,52.0924,5.1045,40,60,'5c385f64-5717-4562-b3fc-2c963f66c006'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d007',52.3702,4.8952,52.0116,4.3571,55,80,'5c385f64-5717-4562-b3fc-2c963f66c007'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d008',51.9244,4.4777,52.0907,5.1214,65,95,'5c385f64-5717-4562-b3fc-2c963f66c008'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d009',52.0934,5.1110,51.9245,4.4780,75,110,'5c385f64-5717-4562-b3fc-2c963f66c009'),
-                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d010',52.0116,4.3571,52.3702,4.8952,50,75,'5c385f64-5717-4562-b3fc-2c963f66c010');
+INSERT INTO Rides (id, reservation_id, start_x, start_y, end_x, end_y, length, duration) VALUES
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d001','5c385f64-5717-4562-b3fc-2c963f66c001',52.3702,4.8952,52.0924,5.1045,35,60),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d002','5c385f64-5717-4562-b3fc-2c963f66c002',51.9244,4.4777,50.8503,4.3517,80,120),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d003','5c385f64-5717-4562-b3fc-2c963f66c003',52.0907,5.1214,52.3700,4.8950,60,90),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d004','5c385f64-5717-4562-b3fc-2c963f66c004',52.0116,4.3571,51.9245,4.4780,30,45),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d005','5c385f64-5717-4562-b3fc-2c963f66c005',51.4416,5.4697,52.0934,5.1110,70,105),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d006','5c385f64-5717-4562-b3fc-2c963f66c006',52.3700,4.8950,52.0924,5.1045,40,60),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d007','5c385f64-5717-4562-b3fc-2c963f66c007',52.3702,4.8952,52.0116,4.3571,55,80),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d008','5c385f64-5717-4562-b3fc-2c963f66c008',51.9244,4.4777,52.0907,5.1214,65,95),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d009','5c385f64-5717-4562-b3fc-2c963f66c009',52.0934,5.1110,51.9245,4.4780,75,110),
+                                                                                       ('6d485f64-5717-4562-b3fc-2c963f66d010','5c385f64-5717-4562-b3fc-2c963f66c010',52.0116,4.3571,52.3702,4.8952,50,75);
 
 -- 7. INSERT PHOTOS
-INSERT INTO Photos (id, carId, reservationId, filePath) VALUES
+INSERT INTO Photos (id, car_id, reservation_id, file_path) VALUES
                                                            ('7e585f64-5717-4562-b3fc-2c963f66e001','4b285f64-5717-4562-b3fc-2c963f66b001','5c385f64-5717-4562-b3fc-2c963f66c001','/images/cars/fiat_panda.jpg'),
                                                            ('7e585f64-5717-4562-b3fc-2c963f66e002','4b285f64-5717-4562-b3fc-2c963f66b002','5c385f64-5717-4562-b3fc-2c963f66c002','/images/cars/bmw_x5.jpg'),
                                                            ('7e585f64-5717-4562-b3fc-2c963f66e003','4b285f64-5717-4562-b3fc-2c963f66b003','5c385f64-5717-4562-b3fc-2c963f66c003','/images/cars/toyota_yaris.jpg'),
@@ -156,7 +156,7 @@ INSERT INTO Photos (id, carId, reservationId, filePath) VALUES
                                                            ('7e585f64-5717-4562-b3fc-2c963f66e010','4b285f64-5717-4562-b3fc-2c963f66b010','5c385f64-5717-4562-b3fc-2c963f66c010','/images/cars/ford_focus.jpg');
 
 -- 8. INSERT BONUSPOINTS
-INSERT INTO BonusPoints (id, userId, rideId, points) VALUES
+INSERT INTO BonusPoints (id, user_id, ride_id, points) VALUES
                                                          ('8f685f64-5717-4562-b3fc-2c963f66f001','3fa85f64-5717-4562-b3fc-2c963f66a001','6d485f64-5717-4562-b3fc-2c963f66d001',50),
                                                          ('8f685f64-5717-4562-b3fc-2c963f66f002','3fa85f64-5717-4562-b3fc-2c963f66a004','6d485f64-5717-4562-b3fc-2c963f66d002',40),
                                                          ('8f685f64-5717-4562-b3fc-2c963f66f003','3fa85f64-5717-4562-b3fc-2c963f66a006','6d485f64-5717-4562-b3fc-2c963f66d003',30),
@@ -169,12 +169,12 @@ INSERT INTO BonusPoints (id, userId, rideId, points) VALUES
                                                          ('8f685f64-5717-4562-b3fc-2c963f66f010','3fa85f64-5717-4562-b3fc-2c963f66a001','6d485f64-5717-4562-b3fc-2c963f66d010',30);
 
 -- 9. REFERENCES / Foreign Keys
-ALTER TABLE Cars ADD CONSTRAINT fk_owners FOREIGN KEY (ownerId) REFERENCES Users(id);
-ALTER TABLE Reservations ADD CONSTRAINT fk_users FOREIGN KEY (userId) REFERENCES Users(id);
-ALTER TABLE Reservations ADD CONSTRAINT fk_cars FOREIGN KEY (carId) REFERENCES Cars(id);
-ALTER TABLE Rides ADD CONSTRAINT fk_reservations FOREIGN KEY (reservationId) REFERENCES Reservations(id);
-ALTER TABLE Photos ADD CONSTRAINT fk_car_photos FOREIGN KEY (carId) REFERENCES Cars(id);
-ALTER TABLE Photos ADD CONSTRAINT fk_reservations_photos FOREIGN KEY (reservationId) REFERENCES Reservations(id);
-ALTER TABLE BonusPoints ADD CONSTRAINT fk_users_bonus FOREIGN KEY (userId) REFERENCES Users(id);
-ALTER TABLE BonusPoints ADD CONSTRAINT fk_rides_bonus FOREIGN KEY (rideId) REFERENCES Rides(id);
-ALTER TABLE Availabilities ADD CONSTRAINT fk_cars_availabilities FOREIGN KEY (carId) REFERENCES Cars(id);
+ALTER TABLE Cars ADD CONSTRAINT fk_owners FOREIGN KEY (owner_id) REFERENCES Users(id);
+ALTER TABLE Reservations ADD CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES Users(id);
+ALTER TABLE Reservations ADD CONSTRAINT fk_cars FOREIGN KEY (car_id) REFERENCES Cars(id);
+ALTER TABLE Rides ADD CONSTRAINT fk_reservations FOREIGN KEY (reservation_id) REFERENCES Reservations(id);
+ALTER TABLE Photos ADD CONSTRAINT fk_car_photos FOREIGN KEY (car_id) REFERENCES Cars(id);
+ALTER TABLE Photos ADD CONSTRAINT fk_reservations_photos FOREIGN KEY (reservation_id) REFERENCES Reservations(id);
+ALTER TABLE BonusPoints ADD CONSTRAINT fk_users_bonus FOREIGN KEY (user_id) REFERENCES Users(id);
+ALTER TABLE BonusPoints ADD CONSTRAINT fk_rides_bonus FOREIGN KEY (ride_id) REFERENCES Rides(id);
+ALTER TABLE Availabilities ADD CONSTRAINT fk_cars_availabilities FOREIGN KEY (car_id) REFERENCES Cars(id);

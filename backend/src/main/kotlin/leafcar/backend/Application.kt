@@ -17,6 +17,7 @@ import leafcar.backend.repository.UserRepository
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.serialization.json.Json
+import leafcar.backend.repository.BonusPointsRepository
 
 fun main() {
     embeddedServer(
@@ -45,6 +46,7 @@ fun Application.module() {
 
     val carRepository = CarRepository()
     val userRepository = UserRepository()
+    val bonusPointsRepository = BonusPointsRepository()
 
     var reservationRepository = ReservationRepository()
 
@@ -72,6 +74,9 @@ fun Application.module() {
                     <a href="/availabilities">Bekijk alle availabilities (JSON)</a>
                     <a href="/rides">Bekijk alle rides (JSON)</a>
                     <a href="/users">Bekijk alle User's (JSON)</a>
+                    <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
+                    <a href="/users">Bekijk alle User's (JSON)</a><br/>
+                    <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
                 </body>
                 </html>
                 """.trimIndent(),
@@ -86,6 +91,7 @@ fun Application.module() {
         RidesRouting(RidesRepository)
 
         userRouting(userRepository)
+        bonusPointsRouting(bonusPointsRepository)
     }
 }
 

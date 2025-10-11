@@ -2,6 +2,7 @@ package org.example.leafcar.backend.dao
 
     import leafcar.backend.dao.UsersTable
     import leafcar.backend.domain.User
+    import leafcar.backend.domain.UserType
     import org.jetbrains.exposed.dao.Entity
 
     import org.jetbrains.exposed.dao.EntityClass
@@ -51,5 +52,5 @@ package org.example.leafcar.backend.dao
         lastName = this.lastName,
         birthDate = this.birthDate,
         emailAddress = this.emailAdress,
-        userType = this.userType,
+        userType = UserType.valueOf(this.userType)
     )
