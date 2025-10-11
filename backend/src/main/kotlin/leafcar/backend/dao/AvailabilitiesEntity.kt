@@ -5,6 +5,7 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 
 import leafcar.backend.domain.Availability
+import kotlinx.datetime.LocalDateTime
 
 class AvailabilitiesEntity(id: EntityID<String>) : Entity<String>(id) {
 
@@ -12,22 +13,23 @@ class AvailabilitiesEntity(id: EntityID<String>) : Entity<String>(id) {
 
     val carId by AvailabilitiesTable.carId
 
-    val availableFrom by AvailabilitiesTable.availableFrom
+    val startDate by AvailabilitiesTable.startDate
 
-    val availableTo: String? by AvailabilitiesTable.availableTo
+    val endDate: LocalDateTime? by AvailabilitiesTable.endDate
 }
 
 /**
- * Converts this [ReservationEntity] (DAO) into a domain-level [Reservation] object.
+ * Converts this [AvailabilitiesEntity] (DAO) into a domain-level [Availability] object.
  *
  * This allows the application to work with a pure domain model without exposing
  * database-specific details or Exposed internals.
  *
- * @return a [Reservation] domain object with the same data as this DAO.
+ * @return an [Availability] domain object with the same data as this DAO.
  */
+
 fun AvailabilitiesEntity.toDomain():Availability  = Availability(
     id = id.value,
     carId = carId,
-    availableFrom = availableFrom,
-    availableTo = availableTo
+    startDate = startDate,
+    endDate = endDate
 )

@@ -69,12 +69,10 @@ fun Application.module() {
                 <body>
                     <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
                     <p>Hello, our names are: ${names.joinToString(separator = ", <br/>", prefix = "<br/>", postfix = ".")}</p>
-                    <a href="/cars">Bekijk alle auto's (JSON)</a>
-                    <a href="/reservations">Bekijk alle reservations (JSON)</a>
-                    <a href="/availabilities">Bekijk alle availabilities (JSON)</a>
-                    <a href="/rides">Bekijk alle rides (JSON)</a>
-                    <a href="/users">Bekijk alle User's (JSON)</a>
                     <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
+                    <a href="/reservations">Bekijk alle reservations (JSON)</a><br/>
+                    <a href="/availabilities">Bekijk alle availabilities (JSON)</a><br/>
+                    <a href="/rides">Bekijk alle rides (JSON)</a><br/>
                     <a href="/users">Bekijk alle User's (JSON)</a><br/>
                     <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
                 </body>
