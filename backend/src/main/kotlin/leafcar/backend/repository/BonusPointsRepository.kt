@@ -2,9 +2,12 @@ package leafcar.backend.repository
 
 import leafcar.backend.domain.BonusPoints
 import leafcar.backend.dao.BonusPointsEntity
+import leafcar.backend.dao.UsersTable
 import leafcar.backend.dao.toDomain
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
+
 
 class BonusPointsRepository {
     fun getAll(): List<BonusPoints> = transaction {
@@ -13,7 +16,7 @@ class BonusPointsRepository {
 
     fun create(points: Int, userId: String, rideId: String): BonusPoints = transaction {
         val entity = BonusPointsEntity.new(UUID.randomUUID().toString()) {
-            this.userId = userId
+            this.userId = EntityID(userId, UsersTable)
             this.rideId = rideId
             this.points = points
         }
