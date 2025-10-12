@@ -1,17 +1,16 @@
-package leafcar.backend.domain
+package leafcar.backend.dto.request
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Car(
-    val id: String,
-    val ownerId: String,
+data class CarCreateRequest(
+    val ownerId: String? = null,
     val brand: String,
     val model: String,
     val buildYear: Int,
-    val transmissionType: TransmissionType,
-    val color: Color,
-    val fuelType: FuelType,
+    val transmissionType: String,
+    val color: String,
+    val fuelType: String,
     val length: Int,
     val width: Int,
     val seats: Int,
@@ -28,7 +27,5 @@ data class Car(
     val usageYears: Int,
     val annualKm: Int,
     val energyCostPerKm: Double,
-    val maintenanceCostPerKm: Double,
-) {
-    // methodes
-}
+    val maintenanceCostPerKm: Double
+)

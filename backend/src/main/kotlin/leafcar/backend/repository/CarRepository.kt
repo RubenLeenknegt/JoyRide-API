@@ -26,5 +26,33 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         CarEntity.all().map { it.toCarLocationRequest() }
     }
 
+    fun create(car: Car): CarEntity = transaction {
+        CarEntity.new(car.id) {
+            ownerId = car.ownerId
+            brand = car.brand
+            model = car.model
+            buildYear = car.buildYear
+            transmissionType = car.transmissionType.name
+            color = car.color.name
+            fuelType = car.fuelType.name
+            length = car.length
+            width = car.width
+            seats = car.seats
+            isofixCompatible = car.isofixCompatible
+            phoneMount = car.phoneMount
+            luggageSpace = car.luggageSpace
+            parkingSensors = car.parkingSensors
+            locationX = car.locationX
+            locationY = car.locationY
+            licensePlate = car.licensePlate
+            pricePerDay = car.pricePerDay.toBigDecimal()
+            purchasePrice = car.purchasePrice.toBigDecimal()
+            residualValue = car.residualValue.toBigDecimal()
+            usageYears = car.usageYears
+            annualKm = car.annualKm
+            energyCostPerKm = car.energyCostPerKm.toBigDecimal()
+            maintenanceCostPerKm = car.maintenanceCostPerKm.toBigDecimal()
+        }
+    }
 
-            }
+}

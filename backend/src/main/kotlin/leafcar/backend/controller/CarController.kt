@@ -4,32 +4,13 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
+import io.ktor.server.request.receive
 import io.ktor.util.toMap
+import leafcar.backend.dto.request.CarCreateRequest
 import leafcar.backend.repository.CarRepository
+import leafcar.backend.service.CarService
+//import leafcar.backend.service.CarService.createCar
 
-/**
- * Ktor-routing extensie die HTTP-eindpunten rondom auto’s (Cars) registreert.
- *
- * Wat is een “Controller” in Ktor?
- * - In Ktor wordt routing vaak gebruikt als controller-laag: je definieert paden (routes)
- *   en HTTP-methoden (GET/POST/etc.) en koppelt die aan handlers.
- * - Deze functie voegt de `/cars`-routes toe aan een bestaande `Route`-boom. Zo blijft
- *   route-definitie modulair en testbaar.
- *
- * Afhankelijkheden en verantwoordelijkheid:
- * - `carRepository` wordt geïnjecteerd zodat de route handler(s) domeinobjecten kunnen
- *   ophalen zonder database-details te kennen (Repository-patroon).
- * - Serialisatie naar JSON gebeurt automatisch door Ktor i.c.m. Kotlinx Serialization
- *   wanneer je `call.respond(domeinObject)` gebruikt en de juiste ContentNegotiation
- *   plugin is geïnstalleerd.
- *
- * Eindpunten:
- * - GET `/cars` — geeft een lijst van `Car`-domeinobjecten terug (HTTP 200).
- *
- * Opmerkingen:
- * - Haal data op binnen de handler (niet erbuiten) zodat iedere request actuele data
- *   krijgt en eventuele request-specifieke context (logging, tracing) intact blijft.
- */
 
 fun Route.carRouting(carRepository: CarRepository) {
     route("/cars") {
@@ -56,6 +37,18 @@ fun Route.carRouting(carRepository: CarRepository) {
             val cars = carRepository.getLocations()
             call.respond(cars)
         }
+
+//        authenticate("jwt") {
+            post() {
+//                val principal = call.principal<JWTPrincipal>()
+//                val userId = principal!!.payload.getClaim("userId").asString()
+                val ownerId = "3fa85f64-5717-4562-b3fc-2c963f66a002"
+                val request = call.receive<CarCreateRequest>()
+                val carService = CarService(carRepository)
+                val newCar = carService.createCar(request, ownerId)
+                call.respond(HttpStatusCode.Created, newCar)
+            }
+
     }
 }
 
