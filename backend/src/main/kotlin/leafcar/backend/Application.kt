@@ -1,5 +1,7 @@
 package leafcar.backend
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.http.ContentType
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -16,11 +18,15 @@ import leafcar.backend.repository.RidesRepository
 import leafcar.backend.repository.UserRepository
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 import leafcar.backend.domain.UserType
 import leafcar.backend.repository.BonusPointsRepository
-import leafcar.backend.service.Authentication
+import leafcar.backend.service.Auth
+import io.ktor.http.HttpStatusCode
 
 fun main() {
     embeddedServer(
@@ -42,11 +48,38 @@ fun Application.module() {
                 prettyPrint = true              // leesbare output tijdens ontwikkeling
                 isLenient = true                // tolereert licht afwijkende JSON
                 ignoreUnknownKeys = true        // negeert extra velden in inkomende JSON
-
+                encodeDefaults = true           // include properties with default values in the output
             }
         )
     }
-
+    val secret = dotenv["JWT_SECRET"]
+    val issuer = dotenv["JWT_ISSUER"]
+    val audience = dotenv["JWT_AUDIENCE"]
+    val myrealm = dotenv["JWT_REALM"]
+    install(Authentication) {
+        jwt {
+            jwt("auth-jwt") {
+                realm = myrealm
+                verifier(
+                    JWT
+                        .require(Algorithm.HMAC256(secret))
+                        .withAudience(audience)
+                        .withIssuer(issuer)
+                        .build()
+                )
+                validate { credential ->
+                    if (credential.payload.getClaim("email").asString() != "") {
+                        JWTPrincipal(credential.payload)
+                    } else {
+                        null
+                    }
+                }
+                challenge { defaultScheme, realm ->
+                    call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+                }
+            }
+        }
+    }
     val carRepository = CarRepository()
     val userRepository = UserRepository()
     val bonusPointsRepository = BonusPointsRepository()
@@ -102,7 +135,7 @@ fun Application.module() {
         val users: List<List<String>> = listOf(
             listOf("Eva", "de Groot", "1994-03-12", "eva.degroot@gmail.com", "hash11", "RENTER"),
             listOf("Niels", "Verhoeven", "1988-11-07", "niels.verhoeven@outlook.com", "hash12", "OWNER"),
-            listOf("Sofia", "Rahmani", "1992-06-25", "sofia.rahmani@protonmail.com", "hash13", "ADMIN"),
+            listOf("Sofia", "Rahmani", "1992-06-25", "sofia.rahmani@protonmail.com", "hash13", "OWNER"),
             listOf("Daan", "Kuipers", "1997-02-19", "daan.kuipers@gmail.com", "hash14", "RENTER"),
             listOf("Lina", "Bosch", "1999-09-30", "lina.bosch@runbox.com", "hash15", "OWNER"),
             listOf("Tom", "Visser", "1985-05-11", "tom.visser@outlook.com", "hash16", "RENTER"),
@@ -120,7 +153,7 @@ fun Application.module() {
             val password = user[4]
             val userTypeStr = user[5]
             if (userRepository.findByEmail(email) == null) {
-                val passwordHashed = Authentication(userRepository).createPasswordHash(password)
+                val passwordHashed = Auth(userRepository).createPasswordHash(password)
                 userRepository.createUser(
                     emailAddress = email,
                     passwordHash = passwordHashed,

@@ -1,4 +1,4 @@
-package leafcar.leafcar.backend.api.auth
+package leafcar.leafcar.backend.dto.request
 
 import kotlinx.serialization.Serializable
 import leafcar.backend.domain.User

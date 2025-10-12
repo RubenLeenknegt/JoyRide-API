@@ -58,6 +58,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:0.44.1")
     // Security
     implementation("org.springframework.security:spring-security-core:6.5.5")
+    // JWT
+    implementation("io.ktor:ktor-server-auth:${ktorVersion}")
+    implementation("io.ktor:ktor-server-auth-jwt:${ktorVersion}")
+
 
 }
 
