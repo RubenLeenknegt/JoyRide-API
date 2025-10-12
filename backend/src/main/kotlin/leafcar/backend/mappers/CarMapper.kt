@@ -6,8 +6,10 @@ import leafcar.backend.domain.Car
 import leafcar.backend.domain.Color
 import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
+import leafcar.backend.dto.request.CarLocationRequest
 import org.jetbrains.exposed.sql.ResultRow
 
+object CarMapper {
     // Extension function to convert CarEntity to Car object
     fun CarEntity.toDomain(): Car = Car(
         id = this.id.value,
@@ -36,7 +38,7 @@ import org.jetbrains.exposed.sql.ResultRow
         maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
     )
 
-    // Extension function to convert DSL row to Car object
+    // Function to convert DSL row to Car object
     fun toCar(row: ResultRow): Car = Car (
         id = row[CarsTable.id].value,
         brand = row[CarsTable.brand],
@@ -63,3 +65,11 @@ import org.jetbrains.exposed.sql.ResultRow
         energyCostPerKm = row[CarsTable.energyCostPerKm].toDouble(),
         maintenanceCostPerKm = row[CarsTable.maintenanceCostPerKm].toDouble(),
     )
+
+    fun CarEntity.toCarLocationRequest(): CarLocationRequest = CarLocationRequest(
+        id = this.id.value,
+        locationX = this.locationX,
+        locationY = this.locationY
+    )
+
+}
