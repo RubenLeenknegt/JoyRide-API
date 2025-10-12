@@ -10,6 +10,9 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import leafcar.backend.controller.*
 import leafcar.backend.repository.CarRepository
+import leafcar.backend.repository.ReservationRepository
+import leafcar.backend.repository.AvailabilitiesRepository
+import leafcar.backend.repository.RidesRepository
 import leafcar.backend.repository.UserRepository
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
@@ -48,6 +51,12 @@ fun Application.module() {
     val userRepository = UserRepository()
     val bonusPointsRepository = BonusPointsRepository()
 
+    var reservationRepository = ReservationRepository()
+
+    var AvailabilitiesRepository = AvailabilitiesRepository()
+
+    var RidesRepository = RidesRepository()
+
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
         get("/") {
@@ -70,6 +79,9 @@ fun Application.module() {
                     )
                 }</p>
                     <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
+                    <a href="/reservations">Bekijk alle reservations (JSON)</a><br/>
+                    <a href="/availabilities">Bekijk alle availabilities (JSON)</a><br/>
+                    <a href="/rides">Bekijk alle rides (JSON)</a><br/>
                     <a href="/users">Bekijk alle User's (JSON)</a><br/>
                     <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
                 </body>
@@ -81,6 +93,10 @@ fun Application.module() {
 
         // JSON endpoint(s) voor auto’s
         carRouting(carRepository)
+        reservationRouting(reservationRepository)
+        AvailabilitiesRouting(AvailabilitiesRepository)
+        RidesRouting(RidesRepository)
+
         userRouting(userRepository)
 //        Generate a set of test users
         val users: List<List<String>> = listOf(
