@@ -12,15 +12,16 @@ import leafcar.backend.mappers.CarMapper.toCarLocationRequest
 
 class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
 
-    fun getAll(): List<Car> = transaction {
-        CarEntity.all().map { it.toDomain() }
-    }
+    // getAll() is absent because all() is already implemented in SharedRepository
+    // which is called by the controller at /cars
 
+    //
     fun getById(id: String): List<Car> = transaction {
         val car = CarEntity.findById(id)
         if (car != null) listOf(car.toDomain()) else emptyList()
     }
 
+    // APP-UC-11: Route opvragen
     fun getLocations(): List<CarLocationRequest> = transaction {
         CarEntity.all().map { it.toCarLocationRequest() }
     }
