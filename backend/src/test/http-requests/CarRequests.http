@@ -1,6 +1,46 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
+### Get all cars
+GET http://localhost:8081/cars
+Accept: application/json
 
-###
-GET localhost:8081/cars
+### Get car by id
+GET http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+Accept: application/json
+
+### Get car locations
+GET http://localhost:8081/cars/location
+Accept: application/json
+
+### Create a new car
+### For this test to work, you must be logged in, else ownerId is absent
+POST http://localhost:8081/cars
+Content-Type: application/json
+
+{
+  "brand": "Toyota",
+  "model": "Corolla",
+  "buildYear": 2015,
+  "transmissionType": "AUTOMATIC",
+  "color": "WHITE",
+  "fuelType": "ICE",
+  "length": 4500,
+  "width": 1750,
+  "seats": 5,
+  "isofixCompatible": true,
+  "phoneMount": true,
+  "luggageSpace": 350.0,
+  "parkingSensors": true,
+  "locationX": 52.3702,
+  "locationY": 4.8952,
+  "licensePlate": "12-AB-CD",
+  "pricePerDay": 65.0,
+  "purchasePrice": 15000.0,
+  "residualValue": 10000.0,
+  "usageYears": 8,
+  "annualKm": 12000,
+  "energyCostPerKm": 0.08,
+  "maintenanceCostPerKm": 0.04
+}
+
+### Optional: Get filtered cars
+GET http://localhost:8081/cars?brand=BMW&phonemount=false
+Accept: application/json
