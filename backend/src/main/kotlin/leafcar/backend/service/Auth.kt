@@ -10,8 +10,8 @@ class Auth(
     private val userRepository: UserRepository,
     private val encoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 ) {
-    fun verifyPassword(email: String, password: String): User? {
-        val creds = userRepository.findCredentialsByEmail(email) ?: return null
+    fun verifyPassword(emailAddress: String, password: String): User? {
+        val creds = userRepository.findCredentialsByEmail(emailAddress) ?: return null
         return if (encoder.matches(password, creds.passwordHash)) creds.user else null
     }
 

@@ -7,5 +7,5 @@ import leafcar.backend.domain.User
 data class LoginResponse(
     val user: User,
     val message: String = "Login successful",
-    val token: HashMap<String, String>? = null
+    val token: String
 )

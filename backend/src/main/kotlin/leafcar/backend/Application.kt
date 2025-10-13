@@ -11,20 +11,16 @@ import io.ktor.server.routing.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import leafcar.backend.controller.*
-import leafcar.backend.repository.CarRepository
-import leafcar.backend.repository.ReservationRepository
-import leafcar.backend.repository.AvailabilitiesRepository
-import leafcar.backend.repository.RidesRepository
-import leafcar.backend.repository.UserRepository
+import leafcar.backend.repository.*
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
+import io.github.cdimascio.dotenv.dotenv
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 import leafcar.backend.domain.UserType
-import leafcar.backend.repository.BonusPointsRepository
 import leafcar.backend.service.Auth
 import io.ktor.http.HttpStatusCode
 
@@ -52,14 +48,15 @@ fun Application.module() {
             }
         )
     }
+    val dotenv = dotenv()
     val secret = dotenv["JWT_SECRET"]
     val issuer = dotenv["JWT_ISSUER"]
     val audience = dotenv["JWT_AUDIENCE"]
-    val myrealm = dotenv["JWT_REALM"]
+    val backendRealm = dotenv["JWT_BACKEN_REALM"]
     install(Authentication) {
         jwt {
             jwt("auth-jwt") {
-                realm = myrealm
+                realm = backendRealm
                 verifier(
                     JWT
                         .require(Algorithm.HMAC256(secret))
@@ -68,7 +65,7 @@ fun Application.module() {
                         .build()
                 )
                 validate { credential ->
-                    if (credential.payload.getClaim("email").asString() != "") {
+                    if (credential.payload.getClaim("emailAddress").asString() != "") {
                         JWTPrincipal(credential.payload)
                     } else {
                         null
@@ -130,7 +127,10 @@ fun Application.module() {
         AvailabilitiesRouting(AvailabilitiesRepository)
         RidesRouting(RidesRepository)
 
+
         userRouting(userRepository)
+
+        authRouting(userRepository)
 //        Generate a set of test users
         val users: List<List<String>> = listOf(
             listOf("Eva", "de Groot", "1994-03-12", "eva.degroot@gmail.com", "hash11", "RENTER"),
@@ -149,13 +149,13 @@ fun Application.module() {
             val firstName = user[0]
             val lastName = user[1]
             val birthDate = user[2]
-            val email = user[3]
+            val emailAddress = user[3]
             val password = user[4]
             val userTypeStr = user[5]
-            if (userRepository.findByEmail(email) == null) {
+            if (userRepository.findByEmail(emailAddress) == null) {
                 val passwordHashed = Auth(userRepository).createPasswordHash(password)
                 userRepository.createUser(
-                    emailAddress = email,
+                    emailAddress = emailAddress,
                     passwordHash = passwordHashed,
                     firstName = firstName,
                     lastName = lastName,
