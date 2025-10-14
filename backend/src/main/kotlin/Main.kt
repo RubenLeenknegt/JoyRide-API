@@ -1,3 +1,0 @@
-package leafcar
-
-fun main() {}

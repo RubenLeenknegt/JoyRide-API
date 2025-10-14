@@ -13,11 +13,12 @@ import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import leafcar.backend.api.auth.LoginRequest
-import leafcar.leafcar.backend.dto.response.LoginResponse
+import leafcar.backend.dto.response.LoginResponse
 import leafcar.backend.repository.UserRepository
 import leafcar.backend.service.Auth
-import leafcar.leafcar.backend.dto.request.RegisterRequest
-import leafcar.leafcar.backend.service.JwtConfig
+import leafcar.backend.dto.request.RegisterRequest
+import leafcar.backend.mappers.userMapper.toDto
+import leafcar.backend.service.JwtConfig
 
 fun Route.authRouting(userRepository: UserRepository) {
     val auth = Auth(userRepository)
@@ -60,7 +61,8 @@ fun Route.authRouting(userRepository: UserRepository) {
             val refreshToken: String = JwtConfig.generateRefreshToken(request.emailAddress, audience)
 
             call.response.cookies.append("refreshToken", refreshToken, httpOnly = true, path = "/")
-            call.respond(HttpStatusCode.OK, LoginResponse(user = user, token = accessToken)
+            call.respond(
+                HttpStatusCode.OK, LoginResponse(user = user.toDto(), token = accessToken)
             )
         } else {
             call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid credentials"))
@@ -81,7 +83,7 @@ fun Route.authRouting(userRepository: UserRepository) {
             val accessToken = JwtConfig.generateAccessToken(request.user.emailAddress, audience)
             val refreshToken = JwtConfig.generateRefreshToken(request.user.emailAddress, audience)
             call.response.cookies.append("refreshToken", refreshToken, httpOnly = true, path = "/")
-            call.respond(HttpStatusCode.Created, LoginResponse(created, token = accessToken))
+            call.respond(HttpStatusCode.Created, LoginResponse(created.toDto(), token = accessToken))
         } else {
             call.respond(HttpStatusCode.Conflict, mapOf("error" to "Email already registered"))
         }

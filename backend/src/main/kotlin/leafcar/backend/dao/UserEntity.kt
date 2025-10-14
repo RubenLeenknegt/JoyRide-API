@@ -39,18 +39,3 @@ package leafcar.backend.dao
         // Stores the hashed password for the user.
         var passwordHash by UsersTable.passwordHash
     }
-
-    /**
-     * Extension function to convert a `UserEntity` to a `User` domain object.
-     * This function excludes sensitive fields like `passwordHash` from the domain object.
-     *
-     * @return A `User` object representing the domain model.
-     */
-    fun UserEntity.toDomain(): User = User(
-        id = this.id.value, // Converts the EntityID to its raw value (String).
-        firstName = this.firstName,
-        lastName = this.lastName,
-        birthDate = this.birthDate,
-        emailAddress = this.emailAddress,
-        userType = this.userType
-    )

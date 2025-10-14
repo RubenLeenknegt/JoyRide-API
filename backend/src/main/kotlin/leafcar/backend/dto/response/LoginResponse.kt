@@ -1,11 +1,11 @@
-package leafcar.leafcar.backend.dto.response
+package leafcar.backend.dto.response
 
 import kotlinx.serialization.Serializable
-import leafcar.backend.domain.User
+import leafcar.backend.dto.UserDto
 
 @Serializable
 data class LoginResponse(
-    val user: User,
+    val user: UserDto,
     val message: String = "Login successful",
     val token: String
 )

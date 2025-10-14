@@ -5,10 +5,9 @@ import leafcar.backend.dao.UsersTable
 import leafcar.backend.domain.User
 import leafcar.backend.domain.UserType
 import leafcar.backend.dao.UserEntity
-import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.auth.UserCredentials
+import leafcar.backend.mappers.userMapper.toDomain
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.UUID
 
 class UserRepository {
