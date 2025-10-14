@@ -4,6 +4,8 @@ services:
     env_file: .env.local      # Gebruik lokale env
     ports:
       - "8081:8080"
+    volumes:
+      - ./backend/photos:/app/photos
     depends_on:
       db:
         condition: service_healthy

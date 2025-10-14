@@ -8,12 +8,15 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.http.content.*
+import java.io.File
 import leafcar.backend.controller.*
 import leafcar.backend.repository.CarRepository
 import leafcar.backend.repository.ReservationRepository
 import leafcar.backend.repository.AvailabilitiesRepository
 import leafcar.backend.repository.RidesRepository
 import leafcar.backend.repository.UserRepository
+import leafcar.backend.repository.PhotoRepository
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.serialization.json.Json
@@ -54,6 +57,8 @@ fun Application.module() {
 
     var RidesRepository = RidesRepository()
 
+    var PhotosRepository = PhotoRepository()
+
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
         get("/") {
@@ -75,12 +80,17 @@ fun Application.module() {
                     <a href="/rides">Bekijk alle rides (JSON)</a><br/>
                     <a href="/users">Bekijk alle User's (JSON)</a><br/>
                     <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
+                    <br>
+                    <br>
+                    <a href="/photos/cars/4b285f64-5717-4562-b3fc-2c963f66b009">Bekijk fotos van Volkswagen Kever (JSON)</a><br/>
                 </body>
                 </html>
                 """.trimIndent(),
                 contentType = ContentType.Text.Html
             )
         }
+
+        staticFiles("/photos", File("/app/photos"))
 
         // JSON endpoint(s) voor auto’s
         carRouting(carRepository)
@@ -90,6 +100,7 @@ fun Application.module() {
 
         userRouting(userRepository)
         bonusPointsRouting(bonusPointsRepository)
+        photosRouting(PhotosRepository)
     }
 }
 
