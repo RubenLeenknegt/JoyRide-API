@@ -7,20 +7,25 @@ object PhotosTable : IdTable<String>("Photos") {
 
     override val id = varchar("id", 36).entityId()
 
-    val carId = varchar("car_id", 36).references(
-        CarsTable.id,
+    val carId = reference(
+        name = "car_id",
+        foreign = CarsTable,
         onDelete = ReferenceOption.CASCADE
-    )
+    ).nullable()
 
-    val reservationId = varchar("reservation_id", 36).references(
-        ReservationsTable.id,
+    val reservationId = reference(
+        name = "reservation_id",
+        foreign = ReservationsTable,
         onDelete = ReferenceOption.CASCADE
-    )
+    ).nullable()
 
-    val userId = varchar("user_id", 36).references(
-        UsersTable.id,
+    val userId = reference(
+        name = "user_id",
+        foreign = UsersTable,
         onDelete = ReferenceOption.CASCADE
-    )
+    ).nullable()
 
     val filePath = varchar("file_path", 255)
+
+    override val primaryKey = PrimaryKey(id)
 }

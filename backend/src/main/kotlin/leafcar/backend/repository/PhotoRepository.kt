@@ -1,11 +1,34 @@
 package leafcar.backend.repository
 
 import leafcar.backend.dao.PhotosTable
+import leafcar.backend.dao.PhotosEntity
+import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Photo
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.UUID
+import leafcar.backend.dao.CarsTable
+import leafcar.backend.dao.UsersTable
+import leafcar.backend.dao.ReservationsTable
 
 class PhotoRepository {
+
+    /**
+     * Creates a new photo record in the database
+     */
+    fun createPhoto(entityType: String, entityId: String, filePath: String): Photo {
+        return transaction {
+            PhotosEntity.new(UUID.randomUUID().toString()) {
+                when (entityType) {
+                    "cars" -> this.carId = EntityID(entityId, CarsTable)
+                    "users" -> this.userId = EntityID(entityId, UsersTable)
+                    "rentals" -> this.reservationId = EntityID(entityId, ReservationsTable)
+                }
+                this.filePath = filePath
+            }.toDomain()
+        }
+    }
 
     /**
      * Returns all photos for a given entity type and entity ID.
@@ -34,7 +57,6 @@ class PhotoRepository {
                         filePath = if (baseUrl.isNotEmpty()) "$baseUrl/$filePath" else filePath
                     )
                 }
-
         }
     }
 }
