@@ -16,4 +16,10 @@ class CarService(
         val savedEntity = carRepository.create(carEntity)
         return savedEntity.toDomain()
     }
+
+    fun updateCar(request: CarCreateRequest, id: String): Car {
+        val carEntity = CarMapper.toCarUpdateRequest(request, id)
+        val savedEntity = carRepository.update(carEntity)
+        return savedEntity.toDomain()
+    }
 }

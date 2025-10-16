@@ -39,7 +39,7 @@ fun Route.carRouting(carRepository: CarRepository) {
         }
 
 //        authenticate("jwt") {
-            post() {
+            post {
 //                val principal = call.principal<JWTPrincipal>()
 //                val userId = principal!!.payload.getClaim("userId").asString()
                 val ownerId = "3fa85f64-5717-4562-b3fc-2c963f66a002"
@@ -47,6 +47,15 @@ fun Route.carRouting(carRepository: CarRepository) {
                 val carService = CarService(carRepository)
                 val newCar = carService.createCar(request, ownerId)
                 call.respond(HttpStatusCode.Created, newCar)
+            }
+
+            put("id/{id}") {
+                val request = call.receive<CarCreateRequest>()
+                val id = call.parameters["id"]
+                    ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val carService = CarService(carRepository)
+                val updatedCar = carService.updateCar(request, id)
+                call.respond(HttpStatusCode.OK, updatedCar)
             }
 
     }
