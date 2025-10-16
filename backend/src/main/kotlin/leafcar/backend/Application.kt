@@ -21,7 +21,7 @@ import io.ktor.server.auth.jwt.jwt
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 import leafcar.backend.domain.UserType
-import leafcar.backend.service.Auth
+import leafcar.backend.services.Auth
 import io.ktor.http.HttpStatusCode
 
 fun main() {
@@ -55,7 +55,7 @@ fun Application.module() {
     val backendRealm = dotenv["JWT_BACKEN_REALM"]
     install(Authentication) {
         jwt {
-            jwt("auth-jwt") {
+            jwt(dotenv["JWT_BACKEND_AUTH_NAME"]) {
                 realm = backendRealm
                 verifier(
                     JWT
@@ -80,11 +80,8 @@ fun Application.module() {
     val carRepository = CarRepository()
     val userRepository = UserRepository()
     val bonusPointsRepository = BonusPointsRepository()
-
     var reservationRepository = ReservationRepository()
-
     var AvailabilitiesRepository = AvailabilitiesRepository()
-
     var RidesRepository = RidesRepository()
 
     routing {

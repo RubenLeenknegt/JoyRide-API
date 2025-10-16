@@ -1,4 +1,4 @@
-package leafcar.backend.service
+package leafcar.backend.services
 
 import kotlinx.datetime.LocalDate
 import leafcar.backend.domain.User

@@ -1,4 +1,4 @@
-package leafcar.backend.service
+package leafcar.backend.services
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier

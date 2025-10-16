@@ -15,10 +15,10 @@ import io.ktor.server.request.receive
 import leafcar.backend.api.auth.LoginRequest
 import leafcar.backend.dto.response.LoginResponse
 import leafcar.backend.repository.UserRepository
-import leafcar.backend.service.Auth
+import leafcar.backend.services.Auth
 import leafcar.backend.dto.request.RegisterRequest
 import leafcar.backend.mappers.userMapper.toDto
-import leafcar.backend.service.JwtConfig
+import leafcar.backend.services.JwtConfig
 
 fun Route.authRouting(userRepository: UserRepository) {
     val auth = Auth(userRepository)
@@ -26,10 +26,9 @@ fun Route.authRouting(userRepository: UserRepository) {
     val secret = dotenv["JWT_SECRET"]
     val issuer = dotenv["JWT_ISSUER"]
     val audience = dotenv["JWT_AUDIENCE"]
-    val jwtRealm = dotenv["JWT_REALM"]
 
 
-    authenticate("auth-jwt") {
+    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
         get("/hello") {
             val principal = call.principal<JWTPrincipal>()
             val username = principal!!.payload.getClaim("emailAddress").asString()
