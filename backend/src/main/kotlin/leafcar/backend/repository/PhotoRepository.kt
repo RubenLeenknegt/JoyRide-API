@@ -11,6 +11,8 @@ import java.util.UUID
 import leafcar.backend.dao.CarsTable
 import leafcar.backend.dao.UsersTable
 import leafcar.backend.dao.ReservationsTable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 
 class PhotoRepository {
 
@@ -57,6 +59,29 @@ class PhotoRepository {
                         filePath = if (baseUrl.isNotEmpty()) "$baseUrl/$filePath" else filePath
                     )
                 }
+        }
+    }
+
+    /**
+     * Delete all photos for a given entity
+     */
+    fun deletePhotosByEntity(entityType: String, entityId: String): Int {
+        return transaction {
+            val column = when (entityType) {
+                "cars" -> PhotosTable.carId
+                "users" -> PhotosTable.userId
+                "rentals" -> PhotosTable.reservationId
+                else -> throw IllegalArgumentException("Invalid entity type: $entityType")
+            }
+
+            val table = when (entityType) {
+                "cars" -> CarsTable
+                "users" -> UsersTable
+                "rentals" -> ReservationsTable
+                else -> throw IllegalArgumentException("Invalid entity type: $entityType")
+            }
+
+            PhotosTable.deleteWhere { column.eq(EntityID(entityId, table)) }
         }
     }
 }

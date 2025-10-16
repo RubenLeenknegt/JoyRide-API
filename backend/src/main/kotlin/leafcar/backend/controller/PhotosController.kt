@@ -16,6 +16,7 @@ import java.util.UUID
 fun Route.photosRouting(photoRepository: PhotoRepository) {
     route("/photos") {
 
+        // Get all photos for a specific entity
         get("/{entityType}/{entityId}") {
             val entityType = call.parameters["entityType"]
             val entityId = call.parameters["entityId"]
@@ -41,6 +42,7 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
             call.respond(HttpStatusCode.OK, photos)
         }
 
+        // Post new photos to a specific entity
         post("/{entityType}/{entityId}") { _: ApplicationCall ->
             val entityType = call.parameters["entityType"]
             val entityId = call.parameters["entityId"]
@@ -98,5 +100,48 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
                 call.respond(HttpStatusCode.Created, "$uploadedCount file(s) uploaded successfully.")
             }
         }
+
+        // Delete all photos for an entity
+        delete("/{entityType}/{entityId}") {
+            val entityType = call.parameters["entityType"]
+            val entityId = call.parameters["entityId"]
+
+            if (entityType == null || entityId == null) {
+                return@delete call.respond(HttpStatusCode.BadRequest, "Missing required parameters.")
+            }
+
+            val validTypes = listOf("cars", "users", "rentals")
+            if (entityType !in validTypes) {
+                return@delete call.respond(HttpStatusCode.BadRequest, "Invalid photo type")
+            }
+
+            // Get all photos for this entity
+            val photos = photoRepository.getPhotosByEntity(entityType, entityId)
+
+            if (photos.isEmpty()) {
+                return@delete call.respond(HttpStatusCode.NotFound, "No photos found for this entity")
+            }
+
+            // Delete all files from disk
+            photos.forEach { photo ->
+                val file = File(photo.filePath)
+                if (file.exists()) {
+                    file.delete()
+                }
+            }
+
+            // Delete from database
+            photoRepository.deletePhotosByEntity(entityType, entityId)
+
+            // Clean up empty directory
+            val photoDir = File("photos/$entityType/$entityId")
+            if (photoDir.exists() && photoDir.listFiles()?.isEmpty() == true) {
+                photoDir.delete()
+            }
+
+            call.respond(HttpStatusCode.OK, "${photos.size} photo(s) deleted successfully")
+        }
+
+
     }
 }
