@@ -39,4 +39,8 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
     }
 
+    fun delete(id: String) = transaction {
+        CarEntity[id].delete()
+    }
+
 }

@@ -58,6 +58,16 @@ fun Route.carRouting(carRepository: CarRepository) {
                 call.respond(HttpStatusCode.OK, updatedCar)
             }
 
+            delete("id/{id}") {
+                val id = call.parameters["id"]
+                    ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val carService = CarService(carRepository)
+                val deleted = carService.deleteCar(id)
+                if (deleted) call.respond(HttpStatusCode.OK)
+                else call.respond(HttpStatusCode.NotFound, "No car with id $id")
+
+            }
+
     }
 }
 

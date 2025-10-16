@@ -22,4 +22,14 @@ class CarService(
         val savedEntity = carRepository.update(carEntity)
         return savedEntity.toDomain()
     }
+
+    fun deleteCar(id: String): Boolean {
+        return try {
+            carRepository.delete(id)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }
