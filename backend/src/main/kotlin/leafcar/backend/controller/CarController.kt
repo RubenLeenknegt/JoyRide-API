@@ -6,7 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.request.receive
 import io.ktor.util.toMap
-import leafcar.backend.dto.request.CarCreateRequest
+import leafcar.backend.dto.request.CarCreateOrUpdateRequest
 import leafcar.backend.repository.CarRepository
 import leafcar.backend.service.CarService
 //import leafcar.backend.service.CarService.createCar
@@ -43,14 +43,14 @@ fun Route.carRouting(carRepository: CarRepository) {
 //                val principal = call.principal<JWTPrincipal>()
 //                val userId = principal!!.payload.getClaim("userId").asString()
                 val ownerId = "3fa85f64-5717-4562-b3fc-2c963f66a002"
-                val request = call.receive<CarCreateRequest>()
+                val request = call.receive<CarCreateOrUpdateRequest>()
                 val carService = CarService(carRepository)
                 val newCar = carService.createCar(request, ownerId)
                 call.respond(HttpStatusCode.Created, newCar)
             }
 
             put("id/{id}") {
-                val request = call.receive<CarCreateRequest>()
+                val request = call.receive<CarCreateOrUpdateRequest>()
                 val id = call.parameters["id"]
                     ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
                 val carService = CarService(carRepository)

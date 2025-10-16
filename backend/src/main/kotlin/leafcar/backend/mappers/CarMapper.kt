@@ -6,9 +6,8 @@ import leafcar.backend.domain.Car
 import leafcar.backend.domain.Color
 import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
-import leafcar.backend.dto.request.CarCreateRequest
+import leafcar.backend.dto.request.CarCreateOrUpdateRequest
 import leafcar.backend.dto.request.CarLocationRequest
-import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 
@@ -77,7 +76,7 @@ object CarMapper {
         locationY = this.locationY
     )
 
-    fun toCarCreateRequest(request: CarCreateRequest, ownerId: String): Car = Car(
+    fun toCarCreateRequest(request: CarCreateOrUpdateRequest, ownerId: String): Car = Car(
         id = UUID.randomUUID().toString(),
         ownerId = ownerId,
         brand = request.brand,
@@ -106,7 +105,7 @@ object CarMapper {
     )
 
 
-    fun toCarUpdateRequest(request: CarCreateRequest, id: String): Car = Car(
+    fun toCarUpdateRequest(request: CarCreateOrUpdateRequest, id: String): Car = Car(
         id = id,
         ownerId = request.ownerId!!, // waarom moeten deze uitroeptekens?
         brand = request.brand,

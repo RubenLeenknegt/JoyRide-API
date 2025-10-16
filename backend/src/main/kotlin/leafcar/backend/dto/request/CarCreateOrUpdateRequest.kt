@@ -3,7 +3,7 @@ package leafcar.backend.dto.request
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CarCreateRequest(
+data class CarCreateOrUpdateRequest(
     val ownerId: String? = null,
     val brand: String,
     val model: String,
