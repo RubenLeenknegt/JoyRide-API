@@ -1,5 +1,3 @@
-@file:Suppress("INFERRED_TYPE_VARIABLE_INTO_EMPTY_INTERSECTION")
-
 package leafcar.backend.controller
 
 import io.ktor.http.*
