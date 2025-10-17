@@ -76,7 +76,7 @@ object CarMapper {
         locationY = this.locationY
     )
 
-    fun toCarCreateRequest(request: CarCreateOrUpdateRequest, ownerId: String): Car = Car(
+    fun fromCarCreateOrUpdateRequest(request: CarCreateOrUpdateRequest, ownerId: String): Car = Car(
         id = UUID.randomUUID().toString(),
         ownerId = ownerId,
         brand = request.brand,

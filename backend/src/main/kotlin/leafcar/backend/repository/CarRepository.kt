@@ -27,11 +27,19 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         CarEntity.all().map { it.toCarLocationRequest() }
     }
 
-    fun create(car: Car): CarEntity = transaction {
-        CarEntity.new(car.id) {
-            this.fromDomain(car)
+    fun create(car: Car): CarEntity? {
+        return try {
+            transaction {
+                CarEntity.new(car.id) {
+                    this.fromDomain(car)
+                }
+            }
         }
-    }
+            catch(e: Exception) {
+                null
+            }
+        }
+
 
     fun update(car: Car): CarEntity = transaction {
         CarEntity[car.id].apply {
