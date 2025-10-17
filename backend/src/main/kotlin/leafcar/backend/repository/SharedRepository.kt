@@ -1,4 +1,4 @@
-package org.example.leafcar.backend.repository
+package leafcar.backend.repository
 
 import org.jetbrains.exposed.sql.BooleanColumnType
 import org.jetbrains.exposed.sql.Column

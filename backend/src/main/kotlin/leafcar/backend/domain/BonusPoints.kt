@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class BonusPoints(
-    val id: String,
+    val id: String? = null,
     val userId: String,
     val rideId: String,
     val points: Int

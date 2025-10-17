@@ -3,7 +3,7 @@ package leafcar.backend.repository
 import leafcar.backend.dao.CarEntity
 import leafcar.backend.domain.Car
 import leafcar.backend.dao.CarsTable
-import org.example.leafcar.backend.repository.SharedRepository
+import leafcar.backend.repository.SharedRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import leafcar.backend.mappers.CarMapper.toDomain
 import leafcar.backend.dto.request.*
