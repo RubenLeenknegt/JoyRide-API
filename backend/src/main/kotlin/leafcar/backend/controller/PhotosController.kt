@@ -1,3 +1,5 @@
+@file:Suppress("INFERRED_TYPE_VARIABLE_INTO_EMPTY_INTERSECTION")
+
 package leafcar.backend.controller
 
 import io.ktor.http.*
@@ -43,7 +45,7 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
         }
 
         // Post new photos to a specific entity
-        post("/{entityType}/{entityId}") { _: ApplicationCall ->
+        post("/{entityType}/{entityId}") {
             val entityType = call.parameters["entityType"]
             val entityId = call.parameters["entityId"]
 
