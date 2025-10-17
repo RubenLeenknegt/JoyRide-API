@@ -4,7 +4,7 @@ import leafcar.backend.dao.UserEntity
 import leafcar.backend.domain.User
 import leafcar.backend.dto.UserDto
 
-object userMapper {
+object UserMapper {
 
     /**
      * Extension function to convert a `UserEntity` to a `User` domain object.
@@ -18,7 +18,10 @@ object userMapper {
         lastName = this.lastName,
         birthDate = this.birthDate,
         emailAddress = this.emailAddress,
-        userType = this.userType
+        userType = this.userType,
+        bankAccount = this.bankAccount,
+        bankAccountName = this.bankAccountName,
+        vehicleLocation = this.vehicleLocation
     )
 
     fun UserEntity.toUserDto(): UserDto = UserDto(
@@ -27,16 +30,22 @@ object userMapper {
         lastName = this.lastName,
         birthDate = this.birthDate,
         emailAddress = this.emailAddress,
-        userType = this.userType
+        userType = this.userType,
+        bankAccount = this.bankAccount,
+        bankAccountName = this.bankAccountName,
+        vehicleLocation = this.vehicleLocation
     )
 
     fun User.toDto(): UserDto =
         UserDto(
-            id = id,
-            emailAddress = emailAddress,
-            firstName = firstName,
-            lastName = lastName,
-            birthDate = birthDate,
-            userType = userType,
+            id = this.id,
+            emailAddress = this.emailAddress,
+            firstName = this.firstName,
+            lastName = this.lastName,
+            birthDate = this.birthDate,
+            userType = this.userType,
+            bankAccount = this.bankAccount,
+            bankAccountName = this.bankAccountName,
+            vehicleLocation = this.vehicleLocation
         )
 }

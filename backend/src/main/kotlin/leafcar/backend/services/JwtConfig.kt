@@ -17,32 +17,34 @@ object JwtConfig {
 
     private val algorithm = Algorithm.HMAC256(secret)
 
-    fun generateAccessToken(emailAddress: String, audience: String): String {
+    fun generateAccessToken(id: String, audience: String): String {
         return JWT.create()
             .withAudience(audience)
             .withIssuer(issuer)
-            .withClaim("emailAddress", emailAddress)
+            .withClaim("id", id)
+            .withClaim("tokenType", "access")
             .withExpiresAt(Date(System.currentTimeMillis() + ATVALIDITYINMS)) // 15 min
             .sign(Algorithm.HMAC256(secret))
     }
 
-    fun generateRefreshToken(emailAddress: String, audience: String): String {
+    fun generateRefreshToken(id: String, audience: String): String {
         return JWT.create()
             .withAudience(audience)
             .withIssuer(issuer)
-            .withClaim("emailAddress", emailAddress)
+            .withClaim("id", id)
+            .withClaim("tokenType", "refresh")
             .withExpiresAt(Date(System.currentTimeMillis() + RTVALIDITYINMS)) // 7 days
             .sign(Algorithm.HMAC256(secret))
     }
 
-    fun verifyToken(token: String, audience: String): Boolean {
+    fun verifyToken(token: String, audience: String, expectedToken: String): Boolean {
         return try {
             val verifier: JWTVerifier = JWT.require(algorithm)
                 .withIssuer(issuer)
                 .withAudience(audience)
                 .build()
-            verifier.verify(token)
-            true
+            val verified = verifier.verify(token)
+            return (verified.getClaim("tokenType").asString() == expectedToken) && (!verified.getClaim("id").asString().isNullOrBlank())
         } catch (ex: JWTVerificationException) {
             false
         }

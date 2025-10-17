@@ -61,7 +61,7 @@ dependencies {
     // JWT
     implementation("io.ktor:ktor-server-auth:${ktorVersion}")
     implementation("io.ktor:ktor-server-auth-jwt:${ktorVersion}")
-
+    implementation("io.ktor:ktor-server-status-pages:${ktorVersion}")
 
 }
 

@@ -6,7 +6,7 @@ import leafcar.backend.domain.User
 import leafcar.backend.domain.UserType
 import leafcar.backend.dao.UserEntity
 import leafcar.backend.domain.auth.UserCredentials
-import leafcar.backend.mappers.userMapper.toDomain
+import leafcar.backend.mappers.UserMapper.toDomain
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
@@ -22,7 +22,10 @@ class UserRepository {
         lastName: String,
         birthDate: LocalDate,
         userType: UserType,
-    ): User? = transaction {
+        bankAccount: String? = null,
+        bankAccountName: String? = null,
+        vehicleLocation: String? = null
+    ): User = transaction {
         val user = UserEntity.new(UUID.randomUUID().toString()) {
             this.firstName = firstName
             this.lastName = lastName
@@ -30,6 +33,9 @@ class UserRepository {
             this.emailAddress = emailAddress
             this.userType = userType
             this.passwordHash = passwordHash
+            this.bankAccount = bankAccount
+            this.bankAccountName = bankAccountName
+            this.vehicleLocation = vehicleLocation
         }
         user.toDomain()
     }

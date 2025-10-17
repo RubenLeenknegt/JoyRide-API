@@ -11,5 +11,8 @@ data class UserDto(
     val lastName: String,
     val birthDate: LocalDate,
     val emailAddress: String,
-    val userType: UserType
+    val userType: UserType,
+    val bankAccount: String? = null,
+    val bankAccountName: String? = null,
+    val vehicleLocation: String? = null
 )

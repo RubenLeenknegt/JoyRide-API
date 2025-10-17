@@ -25,7 +25,10 @@ class Auth(
         firstName: String,
         lastName: String,
         birthDate: LocalDate,
-        userType: UserType
+        userType: UserType,
+        bankAccount: String?,
+        bankAccountName: String?,
+        vehicleLocation: String?
     ): User? {
         if (userRepository.findByEmail(emailAddress) == null) {
             val passwordHashed = createPasswordHash(password)
@@ -35,7 +38,10 @@ class Auth(
                 firstName = firstName,
                 lastName = lastName,
                 birthDate = birthDate,
-                userType = userType
+                userType = userType,
+                bankAccount = bankAccount,
+                        bankAccountName = bankAccountName,
+                        vehicleLocation = vehicleLocation
             )
             return created
         } else {

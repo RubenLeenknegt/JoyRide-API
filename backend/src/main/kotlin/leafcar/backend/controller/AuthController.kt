@@ -2,7 +2,6 @@ package leafcar.backend.controller
 
 
 import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
@@ -17,27 +16,26 @@ import leafcar.backend.dto.response.LoginResponse
 import leafcar.backend.repository.UserRepository
 import leafcar.backend.services.Auth
 import leafcar.backend.dto.request.RegisterRequest
-import leafcar.backend.mappers.userMapper.toDto
+import leafcar.backend.mappers.UserMapper.toDto
 import leafcar.backend.services.JwtConfig
 
 fun Route.authRouting(userRepository: UserRepository) {
     val auth = Auth(userRepository)
     val dotenv = dotenv()
-    val secret = dotenv["JWT_SECRET"]
-    val issuer = dotenv["JWT_ISSUER"]
     val audience = dotenv["JWT_AUDIENCE"]
-
+//    Check if expected variables are actually present in the tokens claims
+//    change emailaddress to userId
 
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
         get("/hello") {
             val principal = call.principal<JWTPrincipal>()
-            val username = principal!!.payload.getClaim("emailAddress").asString()
-            val expiresAt = principal!!.expiresAt?.time?.minus(System.currentTimeMillis())
+            val id = principal!!.payload.getClaim("id").asString()
+            val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
             if (expiresAt != null) {
                 if (expiresAt < 700000) {
-                    val token = JwtConfig.generateAccessToken(username, audience)
+                    val token = JwtConfig.generateAccessToken(id, audience)
                     call.respondText(
-                        "Hello, $username! Token is expired at $expiresAt ms. Here is your new token ${
+                        "Hello, $id! Token is expired at $expiresAt ms. Here is your new token ${
                             hashMapOf(
                                 "token" to token
                             )
@@ -45,7 +43,7 @@ fun Route.authRouting(userRepository: UserRepository) {
                     )
 
                 } else if (expiresAt > 700000) {
-                    call.respondText("Hello, $username! Token is expired at $expiresAt ms.")
+                    call.respondText("Hello, $id! Token is expired at $expiresAt ms.")
                 }
             }
             call.respond(HttpStatusCode.Unauthorized, "token is expired or does not allow access to this source")
@@ -56,8 +54,8 @@ fun Route.authRouting(userRepository: UserRepository) {
         val request = call.receive<LoginRequest>()
         val user = auth.verifyPassword(emailAddress = request.emailAddress, password = request.password)
         if (user != null) {
-            val accessToken: String = JwtConfig.generateAccessToken(request.emailAddress, audience)
-            val refreshToken: String = JwtConfig.generateRefreshToken(request.emailAddress, audience)
+            val accessToken: String = JwtConfig.generateAccessToken(user.id, audience)
+            val refreshToken: String = JwtConfig.generateRefreshToken(user.id, audience)
 
             call.response.cookies.append("refreshToken", refreshToken, httpOnly = true, path = "/")
             call.respond(
@@ -76,11 +74,14 @@ fun Route.authRouting(userRepository: UserRepository) {
             firstName = request.user.firstName,
             lastName = request.user.lastName,
             birthDate = request.user.birthDate,
-            userType = request.user.userType
+            userType = request.user.userType,
+            bankAccount = request.user.bankAccount,
+            bankAccountName = request.user.bankAccountName,
+            vehicleLocation = request.user.vehicleLocation
         )
         if (created != null) {
-            val accessToken = JwtConfig.generateAccessToken(request.user.emailAddress, audience)
-            val refreshToken = JwtConfig.generateRefreshToken(request.user.emailAddress, audience)
+            val accessToken = JwtConfig.generateAccessToken(created.id, audience)
+            val refreshToken = JwtConfig.generateRefreshToken(created.id, audience)
             call.response.cookies.append("refreshToken", refreshToken, httpOnly = true, path = "/")
             call.respond(HttpStatusCode.Created, LoginResponse(created.toDto(), token = accessToken))
         } else {
@@ -89,28 +90,23 @@ fun Route.authRouting(userRepository: UserRepository) {
     }
 
     post("/refresh") {
+        val expectedToken = "refreshToken"
         val refreshToken = call.request.cookies["refreshToken"]
             ?: return@post call.respond(HttpStatusCode.Unauthorized, "No refresh token provided")
 
-        val verifier = JWT.require(Algorithm.HMAC256(secret))
-            .withIssuer(issuer)
-            .withAudience(audience)
-            .build()
-
-        val decoded = try {
-            verifier.verify(refreshToken)
-        } catch (e: Exception) {
+        val verifier = JwtConfig.verifyToken(refreshToken, audience, expectedToken = expectedToken)
+        if (!verifier) {
             return@post call.respond(HttpStatusCode.Unauthorized, "Invalid refresh token")
         }
 
-        val emailAddress = decoded.getClaim("emailAddress").asString()
+        val id = JWT.decode(refreshToken).getClaim("id").asString()
 
         // Optional: check in DB if this refresh token is valid
         // if (!refreshTokenRepository.isValid(refreshToken)) { ... }
 
         // Generate new tokens
-        val newAccessToken = JwtConfig.generateAccessToken(emailAddress, audience)
-        val newRefreshToken = JwtConfig.generateRefreshToken(emailAddress, audience)
+        val newAccessToken = JwtConfig.generateAccessToken(id, audience)
+        val newRefreshToken = JwtConfig.generateRefreshToken(id, audience)
 
         // Optional: store new refresh token and invalidate the old one
         // refreshTokenRepository.store(newRefreshToken, userId)
