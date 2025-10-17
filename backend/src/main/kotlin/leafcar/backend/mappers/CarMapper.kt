@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 
 object CarMapper {
-    // Extension function to convert CarEntity to Car object
+    // Entity to Car-object
     fun CarEntity.toDomain(): Car = Car(
         id = this.id.value,
         ownerId = this.ownerId,
@@ -41,7 +41,7 @@ object CarMapper {
         maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
     )
 
-    // Function to convert DSL row to Car object
+    // DSL rows to Car-object
     fun toCar(row: ResultRow): Car = Car(
         id = row[CarsTable.id].value,
         ownerId = row[CarsTable.ownerId],
@@ -70,12 +70,14 @@ object CarMapper {
         maintenanceCostPerKm = row[CarsTable.maintenanceCostPerKm].toDouble()
     )
 
+    // Entity to CarLocationRequest-object
     fun CarEntity.toCarLocationRequest(): CarLocationRequest = CarLocationRequest(
         id = this.id.value,
         locationX = this.locationX,
         locationY = this.locationY
     )
 
+    // Car-object from fromCarCreateRequest
     fun fromCarCreateRequest(request: CarCreateOrUpdateRequest, ownerId: String): Car = Car(
         id = UUID.randomUUID().toString(),
         ownerId = ownerId,
@@ -104,7 +106,7 @@ object CarMapper {
         maintenanceCostPerKm = request.maintenanceCostPerKm.toDouble(),
     )
 
-
+    // Car-object from fromCarUpdateRequest
     fun fromCarUpdateRequest(request: CarCreateOrUpdateRequest, id: String): Car = Car(
         id = id,
         ownerId = request.ownerId!!, // waarom moeten deze uitroeptekens?

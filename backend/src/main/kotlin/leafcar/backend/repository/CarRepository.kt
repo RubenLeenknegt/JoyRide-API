@@ -27,6 +27,7 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         CarEntity.all().map { it.toCarLocationRequest() }
     }
 
+    // APP-UC-03: Auto beheren
     fun create(car: Car): CarEntity? {
         return try {
             transaction {
@@ -41,6 +42,7 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
 
 
+    // APP-UC-03: Auto beheren
     fun update(car: Car): CarEntity? {
         return try {
             transaction {
@@ -53,6 +55,7 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         null}
     }
 
+    // APP-UC-03: Auto beheren
     fun delete(id: String) = transaction {
         CarEntity[id].delete()
     }

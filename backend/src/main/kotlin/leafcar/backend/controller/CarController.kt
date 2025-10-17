@@ -13,6 +13,7 @@ import leafcar.backend.service.CarService
 fun Route.carRouting(carRepository: CarRepository) {
     route("/cars") {
 
+        // APP-UC-04: Auto zoeken
         // GET /cars?brand=BMW
         get {
             val params: Map<String, String> = call.request.queryParameters.toMap().mapValues { it.value.first() }
@@ -25,6 +26,7 @@ fun Route.carRouting(carRepository: CarRepository) {
 
         }
 
+        // API-02 Cars endpoint
         // GET /cars/id/{id}
         get("id/{id}") {
             val id = call.parameters["id"]
@@ -37,6 +39,7 @@ fun Route.carRouting(carRepository: CarRepository) {
                 call.respond(HttpStatusCode.OK, car.first())
         }
 
+        // APP-UC-11: Route opvragen
         // GET /cars/location
         get("location") {
             val cars = carRepository.getLocations()
@@ -47,6 +50,7 @@ fun Route.carRouting(carRepository: CarRepository) {
                 call.respond(cars)
         }
 
+        // APP-UC-03: Auto beheren
 //        authenticate("jwt") {
         post {
 //                val principal = call.principal<JWTPrincipal>()
@@ -69,6 +73,7 @@ fun Route.carRouting(carRepository: CarRepository) {
                 call.respond(HttpStatusCode.Created, newCar)
         }
 
+        // APP-UC-03: Auto beheren
         put("id/{id}") {
             val request = try {
                 call.receive<CarCreateOrUpdateRequest>()
@@ -88,6 +93,7 @@ fun Route.carRouting(carRepository: CarRepository) {
                 call.respond(HttpStatusCode.OK, updatedCar)
         }
 
+        // APP-UC-03: Auto beheren
         delete("id/{id}") {
             val id = call.parameters["id"]
                 ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")

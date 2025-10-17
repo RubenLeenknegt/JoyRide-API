@@ -10,6 +10,7 @@ class CarService(
     private val carRepository: CarRepository
 ) {
 
+    // APP-UC-03: Auto beheren
     fun createCar(request: CarCreateOrUpdateRequest, ownerId: String): Car? {
         val car = CarMapper.fromCarCreateRequest(request, ownerId)
         val createdCar = carRepository.create(car)
@@ -20,6 +21,7 @@ class CarService(
             return createdCar.toDomain()
     }
 
+    // APP-UC-03: Auto beheren
     fun updateCar(request: CarCreateOrUpdateRequest, id: String): Car? {
         val car = CarMapper.fromCarUpdateRequest(request, id)
         val updatedCar = carRepository.update(car)
@@ -30,6 +32,7 @@ class CarService(
             return updatedCar.toDomain()
     }
 
+    // APP-UC-03: Auto beheren
     fun deleteCar(id: String): Boolean {
         return try {
             carRepository.delete(id)
