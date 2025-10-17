@@ -7,6 +7,7 @@ import org.jetbrains.exposed.dao.id.IdTable
 
 object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meegegeven, hoeft eigenlijk niet maar voor duidelijkheid
     override val id = varchar("id", 36).entityId()
+    val ownerId = varchar("owner_id", 36)
     val brand = varchar("brand", 255)
     val model = varchar("model", 255)
     val buildYear = integer("build_year")

@@ -169,12 +169,12 @@ INSERT INTO BonusPoints (id, user_id, ride_id, points) VALUES
                                                          ('8f685f64-5717-4562-b3fc-2c963f66f010','3fa85f64-5717-4562-b3fc-2c963f66a001','6d485f64-5717-4562-b3fc-2c963f66d010',30);
 
 -- 9. REFERENCES / Foreign Keys
-ALTER TABLE Cars ADD CONSTRAINT fk_owners FOREIGN KEY (owner_id) REFERENCES Users(id);
-ALTER TABLE Reservations ADD CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES Users(id);
-ALTER TABLE Reservations ADD CONSTRAINT fk_cars FOREIGN KEY (car_id) REFERENCES Cars(id);
-ALTER TABLE Rides ADD CONSTRAINT fk_reservations FOREIGN KEY (reservation_id) REFERENCES Reservations(id);
-ALTER TABLE Photos ADD CONSTRAINT fk_car_photos FOREIGN KEY (car_id) REFERENCES Cars(id);
-ALTER TABLE Photos ADD CONSTRAINT fk_reservations_photos FOREIGN KEY (reservation_id) REFERENCES Reservations(id);
-ALTER TABLE BonusPoints ADD CONSTRAINT fk_users_bonus FOREIGN KEY (user_id) REFERENCES Users(id);
-ALTER TABLE BonusPoints ADD CONSTRAINT fk_rides_bonus FOREIGN KEY (ride_id) REFERENCES Rides(id);
-ALTER TABLE Availabilities ADD CONSTRAINT fk_cars_availabilities FOREIGN KEY (car_id) REFERENCES Cars(id);
+ALTER TABLE Cars ADD CONSTRAINT fk_owners FOREIGN KEY (owner_id) REFERENCES Users(id) ON DELETE CASCADE;
+ALTER TABLE Reservations ADD CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE;
+ALTER TABLE Reservations ADD CONSTRAINT fk_cars FOREIGN KEY (car_id) REFERENCES Cars(id) ON DELETE SET NULL;
+ALTER TABLE Rides ADD CONSTRAINT fk_reservations FOREIGN KEY (reservation_id) REFERENCES Reservations(id) ON DELETE CASCADE;
+ALTER TABLE Photos ADD CONSTRAINT fk_car_photos FOREIGN KEY (car_id) REFERENCES Cars(id) ON DELETE CASCADE;
+ALTER TABLE Photos ADD CONSTRAINT fk_reservations_photos FOREIGN KEY (reservation_id) REFERENCES Reservations(id) ON DELETE CASCADE;
+ALTER TABLE BonusPoints ADD CONSTRAINT fk_users_bonus FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE;
+ALTER TABLE BonusPoints ADD CONSTRAINT fk_rides_bonus FOREIGN KEY (ride_id) REFERENCES Rides(id) ON DELETE SET NULL;
+ALTER TABLE Availabilities ADD CONSTRAINT fk_cars_availabilities FOREIGN KEY (car_id) REFERENCES Cars(id) ON DELETE CASCADE;

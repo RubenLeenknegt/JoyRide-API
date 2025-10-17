@@ -51,6 +51,7 @@ dependencies {
 
     // Tests
     testImplementation(kotlin("test"))
+    testImplementation("com.h2database:h2:2.2.224")
 }
 
 application {

@@ -47,7 +47,6 @@ fun Application.module() {
     val carRepository = CarRepository()
     val userRepository = UserRepository()
     val bonusPointsRepository = BonusPointsRepository()
-
     var reservationRepository = ReservationRepository()
 
     var AvailabilitiesRepository = AvailabilitiesRepository()
