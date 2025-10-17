@@ -41,10 +41,16 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
 
 
-    fun update(car: Car): CarEntity = transaction {
-        CarEntity[car.id].apply {
-            this.fromDomain(car)
+    fun update(car: Car): CarEntity? {
+        return try {
+            transaction {
+                CarEntity[car.id].apply {
+                    this.fromDomain(car)
+                }
+            }
         }
+        catch(e: Exception) {
+        null}
     }
 
     fun delete(id: String) = transaction {

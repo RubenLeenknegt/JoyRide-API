@@ -11,19 +11,23 @@ class CarService(
 ) {
 
     fun createCar(request: CarCreateOrUpdateRequest, ownerId: String): Car? {
-        val carEntity = CarMapper.fromCarCreateOrUpdateRequest(request, ownerId)
-        val savedEntity = carRepository.create(carEntity)
+        val car = CarMapper.fromCarCreateRequest(request, ownerId)
+        val createdCar = carRepository.create(car)
 
-        if (savedEntity == null)
+        if (createdCar == null)
             return null
         else
-        return savedEntity.toDomain()
+            return createdCar.toDomain()
     }
 
-    fun updateCar(request: CarCreateOrUpdateRequest, id: String): Car {
-        val carEntity = CarMapper.fromCarCreateOrUpdateRequest(request, id)
-        val savedEntity = carRepository.update(carEntity)
-        return savedEntity.toDomain()
+    fun updateCar(request: CarCreateOrUpdateRequest, id: String): Car? {
+        val car = CarMapper.fromCarUpdateRequest(request, id)
+        val updatedCar = carRepository.update(car)
+
+        if (updatedCar == null)
+            return null
+        else
+            return updatedCar.toDomain()
     }
 
     fun deleteCar(id: String): Boolean {

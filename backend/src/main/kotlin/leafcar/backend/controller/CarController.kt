@@ -25,7 +25,6 @@ fun Route.carRouting(carRepository: CarRepository) {
 
         }
 
-
         // GET /cars/id/{id}
         get("id/{id}") {
             val id = call.parameters["id"]
@@ -71,12 +70,22 @@ fun Route.carRouting(carRepository: CarRepository) {
         }
 
         put("id/{id}") {
-            val request = call.receive<CarCreateOrUpdateRequest>()
+            val request = try {
+                call.receive<CarCreateOrUpdateRequest>()
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, "Error bij bijwerken van DTO")
+                return@put
+            }
+
             val id = call.parameters["id"]
                 ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
             val carService = CarService(carRepository)
             val updatedCar = carService.updateCar(request, id)
-            call.respond(HttpStatusCode.OK, updatedCar)
+
+            if (updatedCar == null)
+                call.respond(HttpStatusCode.InternalServerError, "Error bij opslaan in DB")
+            else
+                call.respond(HttpStatusCode.OK, updatedCar)
         }
 
         delete("id/{id}") {
@@ -84,8 +93,11 @@ fun Route.carRouting(carRepository: CarRepository) {
                 ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
             val carService = CarService(carRepository)
             val deleted = carService.deleteCar(id)
-            if (deleted) call.respond(HttpStatusCode.OK)
-            else call.respond(HttpStatusCode.NotFound, "No car with id $id")
+
+            if (deleted)
+                call.respond(HttpStatusCode.OK)
+            else
+                call.respond(HttpStatusCode.NotFound, "No car with id $id")
 
         }
 

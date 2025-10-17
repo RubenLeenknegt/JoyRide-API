@@ -76,7 +76,7 @@ object CarMapper {
         locationY = this.locationY
     )
 
-    fun fromCarCreateOrUpdateRequest(request: CarCreateOrUpdateRequest, ownerId: String): Car = Car(
+    fun fromCarCreateRequest(request: CarCreateOrUpdateRequest, ownerId: String): Car = Car(
         id = UUID.randomUUID().toString(),
         ownerId = ownerId,
         brand = request.brand,
@@ -105,7 +105,7 @@ object CarMapper {
     )
 
 
-    fun toCarUpdateRequest(request: CarCreateOrUpdateRequest, id: String): Car = Car(
+    fun fromCarUpdateRequest(request: CarCreateOrUpdateRequest, id: String): Car = Car(
         id = id,
         ownerId = request.ownerId!!, // waarom moeten deze uitroeptekens?
         brand = request.brand,
