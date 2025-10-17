@@ -11,6 +11,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.http.content.*
+import java.io.File
 import leafcar.backend.controller.*
 import leafcar.backend.repository.*
 import org.jetbrains.exposed.sql.Database
@@ -48,60 +50,9 @@ fun Application.module() {
                 prettyPrint = true              // leesbare output tijdens ontwikkeling
                 isLenient = true                // tolereert licht afwijkende JSON
                 ignoreUnknownKeys = true        // negeert extra velden in inkomende JSON
-                encodeDefaults = true           // include properties with default values in the output
+
             }
         )
-    }
-    val dotenv = dotenv()
-    val secret = dotenv["JWT_SECRET"]
-    val issuer = dotenv["JWT_ISSUER"]
-    val audience = dotenv["JWT_AUDIENCE"]
-    val backendRealm = dotenv["JWT_BACKEN_REALM"]
-    install(Authentication) {
-        jwt(dotenv["JWT_BACKEND_AUTH_NAME"]) {
-            realm = backendRealm
-            verifier(
-                JWT
-                    .require(Algorithm.HMAC256(secret))
-                    .withAudience(audience)
-                    .withIssuer(issuer)
-                    .build()
-            )
-            validate { credential ->
-                val payload = credential.payload
-                val id = payload.getClaim("id").asString()
-                val tokenType = payload.getClaim("tokenType").asString() // or "token_type"
-
-                // Require: subject present AND token type is explicitly "access"
-                if (!id.isNullOrBlank() && tokenType == "access") {
-                    JWTPrincipal(payload)
-                } else {
-                    null
-                }
-            }
-            challenge { _, _ ->
-                val authHeader = call.request.parseAuthorizationHeader()
-                if (authHeader is HttpAuthHeader.Single && authHeader.authScheme.equals("Bearer", ignoreCase = true)) {
-                    val token = authHeader.blob
-                    try {
-                        val decoded = JWT.decode(token)
-                        val exp = decoded.expiresAt
-                        if (exp != null && exp.before(Date())) {
-                            call.respond(HttpStatusCode.Unauthorized, "Token has expired")
-                        } else {
-                            // token decoded but verification failed (signature / claims / wrong tokenType)
-                            call.respond(HttpStatusCode.Unauthorized, "Token invalid or missing required claims")
-                        }
-                    } catch (e: JWTDecodeException) {
-                        call.respond(HttpStatusCode.Unauthorized, "Malformed token")
-                    }
-                } else {
-                    call.respond(HttpStatusCode.Unauthorized, "Missing Bearer token")
-                }
-            }
-
-
-        }
     }
 
     val carRepository = CarRepository()
@@ -110,6 +61,8 @@ fun Application.module() {
     val reservationRepository = ReservationRepository()
     val availabilitiesRepository = AvailabilitiesRepository()
     val ridesRepository = RidesRepository()
+
+    val PhotosRepository = PhotoRepository()
 
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
@@ -138,12 +91,17 @@ fun Application.module() {
                     <a href="/rides">Bekijk alle rides (JSON)</a><br/>
                     <a href="/users">Bekijk alle User's (JSON)</a><br/>
                     <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
+                    <br>
+                    <br>
+                    <a href="/photos/cars/4b285f64-5717-4562-b3fc-2c963f66b009">Bekijk fotos van Volkswagen Kever (JSON)</a><br/>
                 </body>
                 </html>
                 """.trimIndent(),
                 contentType = ContentType.Text.Html
             )
         }
+
+        staticFiles("/photos", File("/app/photos"))
 
         // JSON endpoint(s) voor auto’s
         carRouting(carRepository)
@@ -155,6 +113,8 @@ fun Application.module() {
         userRouting(userRepository)
 
         authRouting(userRepository)
+        bonusPointsRouting(bonusPointsRepository)
+        photosRouting(PhotosRepository)
 //        Generate a set of test users
         val users: List<List<String>> = listOf(
             listOf(
@@ -289,7 +249,7 @@ fun Application.module() {
             }
         }
 
-        bonusPointsRouting(bonusPointsRepository)
+
     }
 }
 

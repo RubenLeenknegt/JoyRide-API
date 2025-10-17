@@ -51,6 +51,7 @@ dependencies {
 
     // Tests
     testImplementation(kotlin("test"))
+    testImplementation("com.h2database:h2:2.2.224")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
     // Kotlin Datetime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")

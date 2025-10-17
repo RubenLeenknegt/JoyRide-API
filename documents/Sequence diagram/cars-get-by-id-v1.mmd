@@ -1,0 +1,39 @@
+%% Mermaid sequence diagram for GET /cars/id/{id}
+%% Context: Ktor application -> CarController -> CarRepository (Exposed ORM)
+%% Date: 2025-10-13
+
+sequenceDiagram
+    title GET /cars/id/{id}
+
+    participant C as Client
+    participant K as Ktor
+    participant CC as CarController
+    participant CR as CarRepository
+    participant Ex as Exposed ORM
+    participant DB as Database
+
+    C->>K: HTTP GET /cars/id/{id}
+    K->>CC: Route handler get("id/{id}")
+    CC->>CC: Extract id = call.parameters["id"]
+
+    alt Missing id (null)
+        CC-->>K: call.respond(400, "Missing id")
+        K-->>C: 400 Bad Request (text/plain)
+    else Id present
+        CC->>CR: getById(id: String): List<Car>
+        CR->>Ex: transaction { CarEntity.findById(id) }
+        Ex->>DB: SELECT * FROM cars WHERE id = ?
+        DB-->>Ex: Row | null
+        Ex-->>CR: CarEntity? 
+        CR->>CR: map toDomain(); wrap in List<Car>
+
+        alt Car found
+            CR-->>CC: listOf(Car)
+            CC-->>K: call.respond(200, car)
+            K-->>C: 200 OK (application/json)
+        else Car not found
+            CR-->>CC: emptyList()
+            CC-->>K: call.respond(404, "No car with id {id}")
+            K-->>C: 404 Not Found (text/plain)
+        end
+    end
