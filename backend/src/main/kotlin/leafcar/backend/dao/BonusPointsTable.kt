@@ -1,6 +1,7 @@
 package leafcar.backend.dao
 
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ReferenceOption
 
 /**
  * Database table schema for bonus points awarded to users for rides.
@@ -18,7 +19,7 @@ object BonusPointsTable : IdTable<String>("BonusPoints") {
      */
     override val id = varchar("id", 36).entityId()
 
-    val userId = varchar("user_id", 36)
+    val userId = reference("user_id", UsersTable.id, onDelete = ReferenceOption.CASCADE)
 
     val rideId = varchar("ride_id", 36)
 
