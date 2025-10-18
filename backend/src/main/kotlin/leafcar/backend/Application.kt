@@ -17,14 +17,13 @@ import leafcar.backend.controller.*
 import leafcar.backend.repository.*
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
-import io.github.cdimascio.dotenv.dotenv
 import io.ktor.server.auth.Authentication
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.jwt.jwt
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 import leafcar.backend.domain.UserType
-import leafcar.backend.services.Auth
+import leafcar.backend.services.AuthService
+import io.github.cdimascio.dotenv.dotenv
+import io.ktor.server.auth.jwt.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.server.auth.parseAuthorizationHeader
@@ -53,6 +52,60 @@ fun Application.module() {
 
             }
         )
+    }
+
+
+    val dotenv = dotenv()
+    val secret = dotenv["JWT_SECRET"]
+    val issuer = dotenv["JWT_ISSUER"]
+    val audience = dotenv["JWT_AUDIENCE"]
+    val backendRealm = dotenv["JWT_BACKEN_REALM"]
+
+    install(Authentication) {
+        jwt(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+            realm = backendRealm
+            verifier(
+                JWT
+                    .require(Algorithm.HMAC256(secret))
+                    .withAudience(audience)
+                    .withIssuer(issuer)
+                    .build()
+            )
+            validate { credential ->
+                val payload = credential.payload
+                val id = payload.getClaim("id").asString()
+                val tokenType = payload.getClaim("tokenType").asString() // or "token_type"
+
+                // Require: subject present AND token type is explicitly "access"
+                if (!id.isNullOrBlank() && tokenType == "access") {
+                    JWTPrincipal(payload)
+                } else {
+                    null
+                }
+            }
+            challenge { _, _ ->
+                val authHeader = call.request.parseAuthorizationHeader()
+                if (authHeader is HttpAuthHeader.Single && authHeader.authScheme.equals("Bearer", ignoreCase = true)) {
+                    val token = authHeader.blob
+                    try {
+                        val decoded = JWT.decode(token)
+                        val exp = decoded.expiresAt
+                        if (exp != null && exp.before(Date())) {
+                            call.respond(HttpStatusCode.Unauthorized, "Token has expired")
+                        } else {
+                            // token decoded but verification failed (signature / claims / wrong tokenType)
+                            call.respond(HttpStatusCode.Unauthorized, "Token invalid or missing required claims")
+                        }
+                    } catch (e: JWTDecodeException) {
+                        call.respond(HttpStatusCode.Unauthorized, "Malformed token")
+                    }
+                } else {
+                    call.respond(HttpStatusCode.Unauthorized, "Missing Bearer token")
+                }
+            }
+
+
+        }
     }
 
     val carRepository = CarRepository()
@@ -237,7 +290,7 @@ fun Application.module() {
             val password = user[4]
             val userTypeStr = user[5]
             if (userRepository.findByEmail(emailAddress) == null) {
-                val passwordHashed = Auth(userRepository).createPasswordHash(password)
+                val passwordHashed = AuthService(userRepository).createPasswordHash(password)
                 userRepository.createUser(
                     emailAddress = emailAddress,
                     passwordHash = passwordHashed,
