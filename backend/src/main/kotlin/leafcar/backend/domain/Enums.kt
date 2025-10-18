@@ -23,24 +23,13 @@ enum class Color {
 
 @Serializable
 enum class FuelType {
-    PETROL,
-    DIESEL,
-    ELECTRIC,
-    HYBRID
+    ICE,
+    BEV,
+    FCEV
 }
-/**
- * Enumeration of possible user roles within the system.
- *
- * Marked with `@Serializable` so values can be (de)serialized in API payloads.
- */
+
 @Serializable
 enum class UserType {
-    /** Owner of a vehicle or account. */
     OWNER,
-
-    /** Driver of a vehicle. */
-    RENTER,
-
-    /** Administrator with elevated privileges. */
-    ADMIN
+    RENTER
 }

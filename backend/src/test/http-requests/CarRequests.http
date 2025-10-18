@@ -1,6 +1,82 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
+### Get all cars
+GET http://localhost:8081/cars
+Accept: application/json
 
-###
-GET localhost:8081/cars
+### Get car by id
+GET http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b00
+Accept: application/json
+
+### Get car locations
+GET http://localhost:8081/cars/location
+Accept: application/json
+
+### Create a new car
+### For this test to work, you must be logged in, else ownerId is absent
+POST http://localhost:8081/cars
+Content-Type: application/json
+
+{
+  "brand": "Toyota",
+  "model": "Corolla",
+  "buildYear": 2015,
+  "transmissionType": "AUTOMATIC",
+  "color": "WHITE",
+  "fuelType": "ICE",
+  "length": 1,
+  "width": 1750,
+  "seats": 2,
+  "isofixCompatible": true,
+  "phoneMount": true,
+  "luggageSpace": 350.0,
+  "parkingSensors": true,
+  "locationX": 52.3702,
+  "locationY": 4.8952,
+  "licensePlate": "12-AB-CD",
+  "pricePerDay": 65.0,
+  "purchasePrice": 15000.0,
+  "residualValue": 10000.0,
+  "usageYears": 8,
+  "annualKm": 12000,
+  "energyCostPerKm": 0.08,
+  "maintenanceCostPerKm": 0.04
+}
+
+### Update a car
+### For this test to work, you must be logged in, else ownerId is absent
+PUT http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+Content-Type: application/json
+
+{
+  "ownerId": "3fa85f64-5717-4562-b3fc-2c963f66a002",
+  "brand": "Land Rover",
+  "model": "Series 3",
+  "buildYear": 1975,
+  "transmissionType": "MANUAL",
+  "color": "GREEN",
+  "fuelType": "ICE",
+  "length": 3880,
+  "width": 1600,
+  "seats": 12,
+  "isofixCompatible": false,
+  "phoneMount": false,
+  "luggageSpace": 200.0,
+  "parkingSensors": false,
+  "locationX": 51.5652,
+  "locationY": 3.5912,
+  "licensePlate": "98-YA-67",
+  "pricePerDay": 80.0,
+  "purchasePrice": 25000.0,
+  "residualValue": 15000.0,
+  "usageYears": 5,
+  "annualKm": 15000,
+  "energyCostPerKm": 0.10,
+  "maintenanceCostPerKm": 0.05
+}
+
+### Optional: Get filtered cars
+GET http://localhost:8081/cars?brand=BMW&phonemount=false
+Accept: application/json
+
+### Delete a car
+DELETE http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+Accept: application/json
