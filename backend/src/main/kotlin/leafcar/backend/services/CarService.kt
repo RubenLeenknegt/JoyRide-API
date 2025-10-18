@@ -1,4 +1,4 @@
-package leafcar.backend.service
+package leafcar.backend.services
 
 import leafcar.backend.domain.Car
 import leafcar.backend.dto.request.CarCreateOrUpdateRequest
