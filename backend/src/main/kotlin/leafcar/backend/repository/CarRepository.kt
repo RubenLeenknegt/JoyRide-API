@@ -10,6 +10,7 @@ import leafcar.backend.dto.request.*
 import leafcar.backend.mappers.CarMapper
 import leafcar.backend.mappers.CarMapper.fromDomain
 import leafcar.backend.mappers.CarMapper.toCarLocationRequest
+import leafcar.backend.mappers.CarMapper.toCarTcoDataRequest
 
 class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
 
@@ -27,6 +28,17 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         CarEntity.all().map { it.toCarLocationRequest() }
     }
 
+    fun getTcoData(id: String): CarTcoDataRequest? {
+        return try {
+            transaction {
+                CarEntity.findById(id) ?.toCarTcoDataRequest()
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
     // APP-UC-03: Auto beheren
     fun create(car: Car): CarEntity? {
         return try {
@@ -40,7 +52,6 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
                 null
             }
         }
-
 
     // APP-UC-03: Auto beheren
     fun update(car: Car): CarEntity? {
