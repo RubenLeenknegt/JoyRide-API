@@ -2,6 +2,7 @@ package leafcar.backend.mappers
 
 import leafcar.backend.dao.UserEntity
 import leafcar.backend.domain.User
+import leafcar.backend.domain.UserType
 import leafcar.backend.dto.UserDto
 
 object UserMapper {
@@ -48,4 +49,8 @@ object UserMapper {
             bankAccountName = this.bankAccountName,
             vehicleLocation = this.vehicleLocation
         )
+
+    fun toUserType(input: String): UserType =
+        UserType.values().firstOrNull { it.name.equals(input, ignoreCase = true) }
+            ?: throw IllegalArgumentException("Unknown UserType: $input")
 }
