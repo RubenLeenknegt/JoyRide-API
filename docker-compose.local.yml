@@ -6,6 +6,7 @@ services:
       - "8081:8080"
     volumes:
       - ./backend/photos:/app/photos
+      - ./.env:/app/.env
     depends_on:
       db:
         condition: service_healthy

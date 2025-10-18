@@ -8,7 +8,7 @@ import io.ktor.server.request.receive
 import io.ktor.util.toMap
 import leafcar.backend.dto.request.CarCreateOrUpdateRequest
 import leafcar.backend.repository.CarRepository
-import leafcar.backend.service.CarService
+import leafcar.backend.services.CarService
 
 fun Route.carRouting(carRepository: CarRepository) {
     route("/cars") {
