@@ -14,13 +14,13 @@ import io.ktor.server.request.receive
 import leafcar.backend.api.auth.LoginRequest
 import leafcar.backend.dto.response.LoginResponse
 import leafcar.backend.repository.UserRepository
-import leafcar.backend.services.Auth
+import leafcar.backend.services.AuthService
 import leafcar.backend.dto.request.RegisterRequest
 import leafcar.backend.mappers.UserMapper.toDto
 import leafcar.backend.services.JwtConfig
 
 fun Route.authRouting(userRepository: UserRepository) {
-    val auth = Auth(userRepository)
+    val authService = AuthService(userRepository)
     val dotenv = dotenv()
     val audience = dotenv["JWT_AUDIENCE"]
 //    Check if expected variables are actually present in the tokens claims
@@ -52,7 +52,7 @@ fun Route.authRouting(userRepository: UserRepository) {
     }
     post("/auth/users/login") {
         val request = call.receive<LoginRequest>()
-        val user = auth.verifyPassword(emailAddress = request.emailAddress, password = request.password)
+        val user = authService.verifyPassword(emailAddress = request.emailAddress, password = request.password)
         if (user != null) {
             val accessToken: String = JwtConfig.generateAccessToken(user.id, audience)
             val refreshToken: String = JwtConfig.generateRefreshToken(user.id, audience)
@@ -68,16 +68,16 @@ fun Route.authRouting(userRepository: UserRepository) {
 
     post("/auth/users/register") {
         val request = call.receive<RegisterRequest>()
-        val created = auth.registration(
-            emailAddress = request.user.emailAddress,
+        val created = authService.registration(
+            emailAddress = request.emailAddress,
             password = request.password,
-            firstName = request.user.firstName,
-            lastName = request.user.lastName,
-            birthDate = request.user.birthDate,
-            userType = request.user.userType,
-            bankAccount = request.user.bankAccount,
-            bankAccountName = request.user.bankAccountName,
-            vehicleLocation = request.user.vehicleLocation
+            firstName = request.firstName,
+            lastName = request.lastName,
+            birthDate = request.birthDate,
+            userType = request.userType,
+            bankAccount = request.bankAccount,
+            bankAccountName = request.bankAccountName,
+            vehicleLocation = request.vehicleLocation
         )
         if (created != null) {
             val accessToken = JwtConfig.generateAccessToken(created.id, audience)

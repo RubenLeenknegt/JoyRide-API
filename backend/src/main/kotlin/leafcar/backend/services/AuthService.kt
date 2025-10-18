@@ -6,7 +6,7 @@ import leafcar.backend.domain.UserType
 import leafcar.backend.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
-class Auth(
+class AuthService(
     private val userRepository: UserRepository,
     private val encoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 ) {

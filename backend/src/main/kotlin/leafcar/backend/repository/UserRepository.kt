@@ -46,7 +46,12 @@ class UserRepository {
 
     fun findCredentialsByEmail(emailAddress: String): UserCredentials? = transaction {
         UserEntity.find { UsersTable.emailAddress eq emailAddress }
-            .firstOrNull()
-            ?.let { entity -> UserCredentials(entity.toDomain(), entity.passwordHash) }
+            .firstOrNull()?.let { entity -> UserCredentials(entity.toDomain(), entity.passwordHash) }
     }
+
+    fun findById(id: String): UserEntity? = transaction {
+        UserEntity.findById(id)
+    }
+
+
 }
