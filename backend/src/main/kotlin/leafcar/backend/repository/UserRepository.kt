@@ -7,9 +7,15 @@ import leafcar.backend.domain.UserType
 import leafcar.backend.dao.UserEntity
 import leafcar.backend.domain.auth.UserCredentials
 import leafcar.backend.mappers.UserMapper.toDomain
+import leafcar.backend.mappers.UserMapper.toUserType
+import leafcar.backend.services.AuthService
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
+sealed class UpdateResult {
+    data class Success(val user: User) : UpdateResult()
+    data class Error(val message: String) : UpdateResult()
+}
 class UserRepository {
     fun getAll(): List<User> = transaction {
         UserEntity.all().map { it.toDomain() }
@@ -50,8 +56,33 @@ class UserRepository {
     }
 
     fun findById(id: String): UserEntity? = transaction {
-        UserEntity.findById(id)
+        transaction {UserEntity.findById(id)}
     }
 
+    fun updateVariables(key: String, value: String, id: String): UpdateResult = transaction {
+        val allowedVariables = listOf(
+            "firstName", "lastName", "emailAddress", "password", "userType", "bankAccount", "bankAccountName",
+            "vehicleLocation"
+        )
+
+        if (key !in allowedVariables) {
+            return@transaction UpdateResult.Error("Not allowed to edit attribute")
+        }
+
+        val userEntity = UserEntity.findById(id) ?: return@transaction UpdateResult.Error("The user was not found")
+        when (key) {
+            "firstName" -> userEntity.firstName = value
+            "lastName" -> userEntity.lastName = value
+            "emailAddress" -> userEntity.emailAddress = value
+            "password" -> userEntity.passwordHash = AuthService(this@UserRepository).createPasswordHash(value)
+            "userType" -> userEntity.userType = toUserType(value)
+            "bankAccount" -> userEntity.bankAccount = value
+            "bankAccountName" -> userEntity.bankAccountName = value
+            "vehicleLocation" -> userEntity.vehicleLocation = value
+            else -> return@transaction UpdateResult.Error("Unknown key")
+        }
+
+        UpdateResult.Success(userEntity.toDomain())
+    }
 
 }
