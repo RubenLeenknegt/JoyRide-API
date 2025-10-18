@@ -101,15 +101,9 @@ fun Route.authRouting(userRepository: UserRepository) {
 
         val id = JWT.decode(refreshToken).getClaim("id").asString()
 
-        // Optional: check in DB if this refresh token is valid
-        // if (!refreshTokenRepository.isValid(refreshToken)) { ... }
-
         // Generate new tokens
         val newAccessToken = JwtConfig.generateAccessToken(id, audience)
         val newRefreshToken = JwtConfig.generateRefreshToken(id, audience)
-
-        // Optional: store new refresh token and invalidate the old one
-        // refreshTokenRepository.store(newRefreshToken, userId)
 
         call.response.cookies.append(
             "refreshToken",
@@ -120,6 +114,5 @@ fun Route.authRouting(userRepository: UserRepository) {
 
         call.respond(mapOf("accessToken" to newAccessToken))
     }
-
 
 }

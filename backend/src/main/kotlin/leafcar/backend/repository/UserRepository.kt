@@ -12,10 +12,6 @@ import leafcar.backend.services.AuthService
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
-sealed class UpdateResult {
-    data class Success(val user: User) : UpdateResult()
-    data class Error(val message: String) : UpdateResult()
-}
 class UserRepository {
     fun getAll(): List<User> = transaction {
         UserEntity.all().map { it.toDomain() }
@@ -55,21 +51,18 @@ class UserRepository {
             .firstOrNull()?.let { entity -> UserCredentials(entity.toDomain(), entity.passwordHash) }
     }
 
-    fun findById(id: String): UserEntity? = transaction {
-        transaction {UserEntity.findById(id)}
-    }
 
-    fun updateVariables(key: String, value: String, id: String): UpdateResult = transaction {
+    fun updateVariables(key: String, value: String, id: String): UserUpdateResult = transaction {
         val allowedVariables = listOf(
             "firstName", "lastName", "emailAddress", "password", "userType", "bankAccount", "bankAccountName",
             "vehicleLocation"
         )
 
         if (key !in allowedVariables) {
-            return@transaction UpdateResult.Error("Not allowed to edit attribute")
+            return@transaction UserUpdateResult.Error("Not allowed to edit attribute")
         }
 
-        val userEntity = UserEntity.findById(id) ?: return@transaction UpdateResult.Error("The user was not found")
+        val userEntity = UserEntity.findById(id) ?: return@transaction UserUpdateResult.Error("The user was not found")
         when (key) {
             "firstName" -> userEntity.firstName = value
             "lastName" -> userEntity.lastName = value
@@ -79,10 +72,19 @@ class UserRepository {
             "bankAccount" -> userEntity.bankAccount = value
             "bankAccountName" -> userEntity.bankAccountName = value
             "vehicleLocation" -> userEntity.vehicleLocation = value
-            else -> return@transaction UpdateResult.Error("Unknown key")
+            else -> return@transaction UserUpdateResult.Error("Unknown key")
         }
 
-        UpdateResult.Success(userEntity.toDomain())
+        UserUpdateResult.Success(userEntity.toDomain())
+    }
+
+    fun deleteUser(id: String) {
+        val user = transaction {
+            UserEntity.findById(id)
+        }
+        transaction {
+            user?.delete()
+        }
     }
 
 }
