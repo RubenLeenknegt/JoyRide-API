@@ -1,0 +1,42 @@
+// Sequence diagram for GET /cars/id/{id}
+// Context: Ktor application, CarController, CarRepository (Exposed ORM)
+// Date: 2025-10-13
+// Notes: mirrors logic in backend/src/main/kotlin/leafcar/backend/controller/CarController.kt
+//        and backend/src/main/kotlin/leafcar/backend/repository/CarRepository.kt
+
+sequence: {
+  title: "GET /cars/id/{id}"
+
+  Client: participant
+  Ktor: participant
+  CarController: participant
+  CarRepository: participant
+  Exposed: participant
+  Database: participant
+
+  Client->Ktor: HTTP GET /cars/id/{id}
+  Ktor->CarController: Route handler get("id/{id}")
+  CarController->CarController: Extract id = call.parameters["id"]
+
+  alt "Missing id (null)"
+    CarController->Ktor: call.respond(400, "Missing id")
+    Ktor->Client: 400 Bad Request (text/plain)
+  else "Id present"
+    CarController->CarRepository: getById(id: String): List<Car>
+    CarRepository->Exposed: transaction { CarEntity.findById(id) }
+    Exposed->Database: SELECT * FROM cars WHERE id = ?
+    Database->Exposed: Row | null
+    Exposed->CarRepository: CarEntity? -> List<Car>
+    CarRepository->CarRepository: map toDomain() if not null
+
+    alt "Car found"
+      CarRepository->CarController: listOf(Car)
+      CarController->Ktor: call.respond(200, car)
+      Ktor->Client: 200 OK (application/json)
+    else "Car not found"
+      CarRepository->CarController: emptyList()
+      CarController->Ktor: call.respond(404, "No car with id {id}")
+      Ktor->Client: 404 Not Found (text/plain)
+    end
+  end
+}

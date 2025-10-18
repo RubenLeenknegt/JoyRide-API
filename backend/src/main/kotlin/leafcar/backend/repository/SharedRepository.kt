@@ -1,4 +1,4 @@
-package org.example.leafcar.backend.repository
+package leafcar.backend.repository
 
 import org.jetbrains.exposed.sql.BooleanColumnType
 import org.jetbrains.exposed.sql.Column
@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 
 abstract class SharedRepository<T> (
     private val table: Table,
-    private val mapper: (ResultRow) -> T // wat is dit?
+    private val mapper: (ResultRow) -> T // expects a mapper that accepts ResultRow
 ) {
     fun findWithFilters(
         params: Map<String, String>): List<T> = transaction {

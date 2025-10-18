@@ -1,68 +1,63 @@
 package leafcar.backend.repository
 
 import leafcar.backend.dao.CarEntity
-import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Car
 import leafcar.backend.dao.CarsTable
-import leafcar.backend.dao.CarsTable.brand
-import leafcar.backend.dao.CarsTable.transmissionType
-import leafcar.backend.domain.Color
-import leafcar.backend.domain.FuelType
-import leafcar.backend.domain.TransmissionType
-import org.example.leafcar.backend.repository.SharedRepository
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Op
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.select
+import leafcar.backend.repository.SharedRepository
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.javatime.JavaLocalDateColumnType
-import org.jetbrains.exposed.sql.javatime.JavaLocalDateTimeColumnType
-import java.time.LocalDate
-import java.time.LocalDateTime
+import leafcar.backend.mappers.CarMapper.toDomain
+import leafcar.backend.dto.request.*
+import leafcar.backend.mappers.CarMapper
+import leafcar.backend.mappers.CarMapper.fromDomain
+import leafcar.backend.mappers.CarMapper.toCarLocationRequest
 
-fun toCar(row: ResultRow): Car = Car (
-    id = row[CarsTable.id].value,
-    brand = row[CarsTable.brand],
-    model = row[CarsTable.model],
-    buildYear = row[CarsTable.buildYear],
-    color = Color.valueOf(row[CarsTable.color]),
-    fuelType = FuelType.valueOf(row[CarsTable.fuelType]),
-    length = row[CarsTable.length],
-    width = row[CarsTable.width],
-    seats = row[CarsTable.seats],
-    isofixCompatible = row[CarsTable.isofixCompatible],
-    phoneMount = row[CarsTable.phoneMount],
-    luggageSpace = row[CarsTable.luggageSpace],
-    parkingSensors = row[CarsTable.parkingSensors],
-    transmissionType = TransmissionType.valueOf(row[CarsTable.transmissionType]),
-    locationX = row[CarsTable.locationX],
-    locationY = row[CarsTable.locationY],
-    licensePlate = row[CarsTable.licensePlate],
-    pricePerDay = row[CarsTable.pricePerDay].toDouble(),
-    purchasePrice = row[CarsTable.purchasePrice].toDouble(),
-    residualValue = row[CarsTable.residualValue].toDouble(),
-    usageYears = row[CarsTable.usageYears],
-    annualKm = row[CarsTable.annualKm],
-    energyCostPerKm = row[CarsTable.energyCostPerKm].toDouble(),
-    maintenanceCostPerKm = row[CarsTable.maintenanceCostPerKm].toDouble(),
-)
+class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
 
-class CarRepository : SharedRepository<Car>(CarsTable, ::toCar) {
+    // getAll() is absent because all() is already implemented in SharedRepository
+    // which is called by the controller at /cars
 
-//    fun getAll(): List<Car> = transaction {
-//        CarEntity.all().map { it.toDomain() }
-//    }
-//
-//    fun getById(id: String): List<Car> = transaction {
-//        val car = CarEntity.findById(id)
-//        if (car != null) listOf(car.toDomain()) else emptyList()
-//    }
-//
-//    fun getByBrand(brand: String): List<Car> = transaction {
-//        CarEntity.find { CarsTable.brand eq brand }.map { it.toDomain()}
-//    }
+    //
+    fun getById(id: String): List<Car> = transaction {
+        val car = CarEntity.findById(id)
+        if (car != null) listOf(car.toDomain()) else emptyList()
+    }
 
+    // APP-UC-11: Route opvragen
+    fun getLocations(): List<CarLocationRequest> = transaction {
+        CarEntity.all().map { it.toCarLocationRequest() }
+    }
+
+    // APP-UC-03: Auto beheren
+    fun create(car: Car): CarEntity? {
+        return try {
+            transaction {
+                CarEntity.new(car.id) {
+                    this.fromDomain(car)
+                }
             }
+        }
+            catch(e: Exception) {
+                null
+            }
+        }
+
+
+    // APP-UC-03: Auto beheren
+    fun update(car: Car): CarEntity? {
+        return try {
+            transaction {
+                CarEntity[car.id].apply {
+                    this.fromDomain(car)
+                }
+            }
+        }
+        catch(e: Exception) {
+        null}
+    }
+
+    // APP-UC-03: Auto beheren
+    fun delete(id: String) = transaction {
+        CarEntity[id].delete()
+    }
+
+}
