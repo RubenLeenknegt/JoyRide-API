@@ -104,8 +104,20 @@ fun Route.carRouting(carRepository: CarRepository) {
                 call.respond(HttpStatusCode.OK)
             else
                 call.respond(HttpStatusCode.NotFound, "No car with id $id")
-
         }
 
+        // APP-UC-09: TOC berekenen
+        get("tco/{id}") {
+            val id = call.parameters["id"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
+            val carService = CarService(carRepository)
+            val carTco = carService.getTco(id)
+
+            if (carTco == null)
+                call.respond(HttpStatusCode.NotFound, "Er ging iets mis met de berekening van TCO")
+            else
+                call.respond(HttpStatusCode.OK, carTco)
+        }
     }
+
 }

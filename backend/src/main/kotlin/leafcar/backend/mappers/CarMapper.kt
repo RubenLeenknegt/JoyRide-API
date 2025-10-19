@@ -8,6 +8,8 @@ import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
 import leafcar.backend.dto.request.CarCreateOrUpdateRequest
 import leafcar.backend.dto.request.CarLocationRequest
+import leafcar.backend.dto.request.CarTcoDataRequest
+import leafcar.backend.dto.response.CarTcoDataResponse
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 
@@ -75,6 +77,27 @@ object CarMapper {
         id = this.id.value,
         locationX = this.locationX,
         locationY = this.locationY
+    )
+
+    fun CarEntity.toCarTcoDataRequest(): CarTcoDataRequest = CarTcoDataRequest(
+        id = this.id.value,
+        purchasePrice = this.purchasePrice.toDouble(),
+        residualValue = this.residualValue.toDouble(),
+        usageYears = this.usageYears,
+        annualKm = this.annualKm,
+        energyCostPerKm = this.energyCostPerKm.toDouble(),
+        maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
+    )
+
+    fun toCarTcoDataResponse(request: CarTcoDataRequest, result: Double) : CarTcoDataResponse = CarTcoDataResponse(
+        id = request.id,
+        purchasePrice = request.purchasePrice,
+        residualValue = request.residualValue,
+        usageYears = request.usageYears,
+        annualKm = request.annualKm,
+        energyCostPerKm = request.energyCostPerKm,
+        maintenanceCostPerKm = request.maintenanceCostPerKm,
+        result = result
     )
 
     // Car-object from fromCarCreateRequest
