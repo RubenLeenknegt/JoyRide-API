@@ -1,0 +1,38 @@
+// Sequence diagram for POST /auth/users/login
+// Context: Ktor application, AuthController, Auth service, UserRepository, JwtConfig
+// Date: 2025-10-19
+// Notes: mirrors logic in backend/src/main/kotlin/leafcar/backend/controller/AuthController.kt
+
+sequence: {
+  title: "POST /auth/users/login"
+
+  Client: participant
+  Ktor: participant
+  AuthController: participant
+  AuthService: participant
+  UserRepository: participant
+  JwtConfig: participant
+
+  Client->Ktor: HTTP POST /auth/users/login { emailAddress, password }
+  Ktor->AuthController: Route handler post("/auth/users/login")
+  AuthController->AuthController: request = call.receive<LoginRequest>()
+  AuthController->AuthService: verifyPassword(emailAddress, password)
+  AuthService->UserRepository: findByEmail(emailAddress)
+  UserRepository->AuthService: User? (with hashed password)
+  AuthService->AuthService: verify hash matches password
+
+  alt "Valid credentials"
+    AuthService->AuthController: User
+    AuthController->JwtConfig: generateAccessToken(user.id, audience)
+    JwtConfig->AuthController: accessToken
+    AuthController->JwtConfig: generateRefreshToken(user.id, audience)
+    JwtConfig->AuthController: refreshToken
+    AuthController->Ktor: call.response.cookies.append("refreshToken", refreshToken, httpOnly=true, path="/")
+    AuthController->Ktor: call.respond(200, LoginResponse(userDto, token=accessToken))
+    Ktor->Client: 200 OK (application/json + Set-Cookie)
+  else "Invalid credentials"
+    AuthService->AuthController: null
+    AuthController->Ktor: call.respond(401, { error: "Invalid credentials" })
+    Ktor->Client: 401 Unauthorized (application/json)
+  end
+}

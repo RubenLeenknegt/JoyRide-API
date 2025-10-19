@@ -1,6 +1,5 @@
 package leafcar.backend.controller
 
-
 import com.auth0.jwt.JWT
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.HttpStatusCode
@@ -19,13 +18,20 @@ import leafcar.backend.dto.request.RegisterRequest
 import leafcar.backend.mappers.UserMapper.toDto
 import leafcar.backend.services.JwtConfig
 
+/**
+ * Defines the authentication-related routes for the application.
+ *
+ * @param userRepository The repository used to interact with user data.
+ */
 fun Route.authRouting(userRepository: UserRepository) {
     val authService = AuthService(userRepository)
     val dotenv = dotenv()
     val audience = dotenv["JWT_AUDIENCE"]
-//    Check if expected variables are actually present in the tokens claims
-//    change emailaddress to userId
 
+    /**
+     * Authenticated route to greet the user and handle token expiration.
+     * Generates a new token if the current one is close to expiration.
+     */
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
         get("/hello") {
             val principal = call.principal<JWTPrincipal>()
@@ -41,15 +47,18 @@ fun Route.authRouting(userRepository: UserRepository) {
                             )
                         }"
                     )
-
                 } else if (expiresAt > 700000) {
                     call.respondText("Hello, $id! Token is expired at $expiresAt ms.")
                 }
             }
             call.respond(HttpStatusCode.Unauthorized, "token is expired or does not allow access to this source")
-
         }
     }
+
+    /**
+     * Route to handle user login.
+     * Verifies the user's credentials and generates access and refresh tokens.
+     */
     post("/auth/users/login") {
         val request = call.receive<LoginRequest>()
         val user = authService.verifyPassword(emailAddress = request.emailAddress, password = request.password)
@@ -66,6 +75,10 @@ fun Route.authRouting(userRepository: UserRepository) {
         }
     }
 
+    /**
+     * Route to handle user registration.
+     * Creates a new user and generates access and refresh tokens.
+     */
     post("/auth/users/register") {
         val request = call.receive<RegisterRequest>()
         val created = authService.registration(
@@ -89,6 +102,10 @@ fun Route.authRouting(userRepository: UserRepository) {
         }
     }
 
+    /**
+     * Route to refresh the user's tokens.
+     * Validates the refresh token and generates new access and refresh tokens.
+     */
     post("/refresh") {
         val expectedToken = "refreshToken"
         val refreshToken = call.request.cookies["refreshToken"]
@@ -114,5 +131,4 @@ fun Route.authRouting(userRepository: UserRepository) {
 
         call.respond(mapOf("accessToken" to newAccessToken))
     }
-
 }
