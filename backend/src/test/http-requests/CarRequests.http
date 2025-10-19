@@ -1,5 +1,5 @@
 ### Get all cars
-GET http://localhost:8081/cars
+GET http://localhost:8081/users
 Accept: application/json
 
 ### Get car by id
@@ -45,6 +45,7 @@ Content-Type: application/json
 ### For this test to work, you must be logged in, else ownerId is absent
 PUT http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJsZWFmY2FyLWFwaSIsImlzcyI6ImxlYWZjYXIuY29tIiwiaWQiOiIzZDBmNmExMi05ODA1LTRmOGItODhlOC0wZjI3ZTA1MWYxZTciLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NjA4OTg2ODF9.s2UNB9ri0YGZgb3DHVYq1DCvR6bj8d7qnhuCMw88RNA
 
 {
   "ownerId": "3fa85f64-5717-4562-b3fc-2c963f66a002",

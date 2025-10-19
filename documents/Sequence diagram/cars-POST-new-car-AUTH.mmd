@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant Client
+    participant CarController
+    participant JWTAuth as JWT Authenticator
+    participant CarService
+    participant CarRepository
+    participant Database
+
+    Client->>CarController: POST /cars (met JWT token)
+    CarController->>JWTAuth: authenticate()
+
+    alt Token geldig
+        JWTAuth->>JWTAuth: Valideer JWT token
+        JWTAuth->>CarController: JWTPrincipal
+        CarController->>CarController: Haal ownerId uit JWT claims
+
+        alt Request body valide
+            CarController->>CarController: receive<CarCreateOrUpdateRequest>()
+            CarController->>CarService: createCar(request, ownerId)
+            CarService->>CarRepository: save(car)
+            CarRepository->>Database: INSERT INTO cars
+            Database-->>CarRepository: Success
+            CarRepository-->>CarService: newCar
+            CarService-->>CarController: newCar
+            CarController-->>Client: 201 Created + newCar
+        else Request body invalide
+            CarController-->>Client: 400 Bad Request
+        end
+
+    else Token ongeldig
+        JWTAuth-->>Client: 401 Unauthorized
+    end
+
+    alt Database error
+        CarRepository-->>CarService: null
+        CarService-->>CarController: null
+        CarController-->>Client: 500 Internal Server Error
+    end
