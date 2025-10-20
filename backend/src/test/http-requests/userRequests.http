@@ -1,17 +1,17 @@
-
+@baseUrl = http://localhost:8081
 
 ### Register new user
-POST http://localhost:8080/auth/users/register
+POST {{baseUrl}}/auth/users/register
 Content-Type: application/json
 
 {
-  "emailAddress": "ivarvisser@hotmail.com",
-  "firstName": "Ivar",
-  "lastName": "Visser",
-  "birthDate": "1998-12-05",
+  "emailAddress": "PeterJackson@hotmail.com",
+  "firstName": "Peter",
+  "lastName": "Jackson",
+  "birthDate": "1998-01-05",
   "userType": "OWNER",
   "bankAccount": "ojghbjsk234820348",
-  "bankAccountName": "HR I Visser",
+  "bankAccountName": "HR P Jackson",
   "vehicleLocation": "0342309480",
   "password": "Ditismijnwachtwoord"
 }
@@ -22,11 +22,11 @@ Content-Type: application/json
 %}
 
 ### Log in to api and key jwt
-POST http://localhost:8080/auth/users/login
+POST {{baseUrl}}/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "ivarvisser@hotmail.com",
+  "emailAddress": "PeterJackson@hotmail.com",
   "password": "Ditismijnwachtwoord"
 }
 > {%
@@ -36,7 +36,7 @@ Content-Type: application/json
 %}
 
 ### Refresh cookcie
-POST http://localhost:8080/refresh
+POST {{baseUrl}}/refresh
 #Save the access token in a variable
 
 > {%
@@ -44,11 +44,11 @@ POST http://localhost:8080/refresh
 %}
 
 ### Get all users
-GET http://localhost:8080/users
+GET {{baseUrl}}/users
 Authorization: Bearer {{access_token}}
 
 ### Update acount item like name or password
-PUT http://localhost:8080/users/account/{{user_id}}/firstName
+PUT {{baseUrl}}/users/account/{{user_id}}/firstName
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
@@ -57,6 +57,6 @@ Content-Type: application/json
 }
 
 ### Delete user account with its id
-DELETE http://localhost:8080/users/account/{{user_id}}
+DELETE {{baseUrl}}/users/account/{{user_id}}
 Authorization: Bearer {{access_token}}
 
