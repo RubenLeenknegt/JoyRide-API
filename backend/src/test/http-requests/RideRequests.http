@@ -1,0 +1,25 @@
+### Get all rides
+GET http://localhost:8081/rides
+Accept: application/json
+
+### Get ride by id
+GET http://localhost:8081/rides/6d485f64-5717-4562-b3fc-2c963f66d010
+Accept: application/json
+
+### Create a new ride
+POST http://localhost:8081/rides
+Content-Type: application/json
+
+{
+  "startX": 52.3702,
+  "startY": 4.8952,
+  "endX": 52.3710,
+  "endY": 4.8965,
+  "length": 1500,
+  "duration": 600,
+  "reservationId": "5c385f64-5717-4562-b3fc-2c963f66c010"
+}
+
+### Delete a ride
+DELETE http://localhost:8081/rides/6d485f64-5717-4562-b3fc-2c963f66d010
+Accept: application/json

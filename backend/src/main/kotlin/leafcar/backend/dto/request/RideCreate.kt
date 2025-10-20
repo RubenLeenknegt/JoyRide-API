@@ -1,9 +1,9 @@
-package leafcar.backend.dto
+package leafcar.backend.dto.request
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RideCreateRequest(
+data class RideCreate(
     val startX: Float,
     val startY: Float,
     val endX: Float,
