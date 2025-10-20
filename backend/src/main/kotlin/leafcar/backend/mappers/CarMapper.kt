@@ -6,9 +6,11 @@ import leafcar.backend.domain.Car
 import leafcar.backend.domain.Color
 import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
+import leafcar.backend.dto.request.CarCpkDataRequest
 import leafcar.backend.dto.request.CarCreateOrUpdateRequest
 import leafcar.backend.dto.request.CarLocationRequest
 import leafcar.backend.dto.request.CarTcoDataRequest
+import leafcar.backend.dto.response.CarCpkDataResponse
 import leafcar.backend.dto.response.CarTcoDataResponse
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
@@ -40,7 +42,8 @@ object CarMapper {
         usageYears = this.usageYears,
         annualKm = this.annualKm,
         energyCostPerKm = this.energyCostPerKm.toDouble(),
-        maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
+        maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble(),
+        averageConsumption = this.averageConsumption.toDouble()
     )
 
     // DSL rows to Car-object
@@ -69,7 +72,8 @@ object CarMapper {
         usageYears = row[CarsTable.usageYears],
         annualKm = row[CarsTable.annualKm],
         energyCostPerKm = row[CarsTable.energyCostPerKm].toDouble(),
-        maintenanceCostPerKm = row[CarsTable.maintenanceCostPerKm].toDouble()
+        maintenanceCostPerKm = row[CarsTable.maintenanceCostPerKm].toDouble(),
+        averageConsumption = row[CarsTable.averageConsumption].toDouble()
     )
 
     // Entity to CarLocationRequest-object
@@ -77,27 +81,6 @@ object CarMapper {
         id = this.id.value,
         locationX = this.locationX,
         locationY = this.locationY
-    )
-
-    fun CarEntity.toCarTcoDataRequest(): CarTcoDataRequest = CarTcoDataRequest(
-        id = this.id.value,
-        purchasePrice = this.purchasePrice.toDouble(),
-        residualValue = this.residualValue.toDouble(),
-        usageYears = this.usageYears,
-        annualKm = this.annualKm,
-        energyCostPerKm = this.energyCostPerKm.toDouble(),
-        maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
-    )
-
-    fun toCarTcoDataResponse(request: CarTcoDataRequest, result: Double) : CarTcoDataResponse = CarTcoDataResponse(
-        id = request.id,
-        purchasePrice = request.purchasePrice,
-        residualValue = request.residualValue,
-        usageYears = request.usageYears,
-        annualKm = request.annualKm,
-        energyCostPerKm = request.energyCostPerKm,
-        maintenanceCostPerKm = request.maintenanceCostPerKm,
-        result = result
     )
 
     // Car-object from fromCarCreateRequest
@@ -127,6 +110,7 @@ object CarMapper {
         annualKm = request.annualKm,
         energyCostPerKm = request.energyCostPerKm.toDouble(),
         maintenanceCostPerKm = request.maintenanceCostPerKm.toDouble(),
+        averageConsumption = request.averageConsumption.toDouble()
     )
 
     // Car-object from fromCarUpdateRequest
@@ -156,6 +140,7 @@ object CarMapper {
         annualKm = request.annualKm,
         energyCostPerKm = request.energyCostPerKm.toDouble(),
         maintenanceCostPerKm = request.maintenanceCostPerKm.toDouble(),
+        averageConsumption = request.averageConsumption.toDouble()
     )
 
     fun CarEntity.fromDomain(car: Car) {
@@ -183,5 +168,43 @@ object CarMapper {
         annualKm = car.annualKm
         energyCostPerKm = car.energyCostPerKm.toBigDecimal()
         maintenanceCostPerKm = car.maintenanceCostPerKm.toBigDecimal()
+        averageConsumption = car.averageConsumption.toBigDecimal()
     }
+
+    fun CarEntity.toCarTcoDataRequest(): CarTcoDataRequest = CarTcoDataRequest(
+        id = this.id.value,
+        purchasePrice = this.purchasePrice.toDouble(),
+        residualValue = this.residualValue.toDouble(),
+        usageYears = this.usageYears,
+        annualKm = this.annualKm,
+        energyCostPerKm = this.energyCostPerKm.toDouble(),
+        maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
+    )
+
+    fun toCarTcoDataResponse(request: CarTcoDataRequest, result: Double) : CarTcoDataResponse = CarTcoDataResponse(
+        id = request.id,
+        purchasePrice = request.purchasePrice,
+        residualValue = request.residualValue,
+        usageYears = request.usageYears,
+        annualKm = request.annualKm,
+        energyCostPerKm = request.energyCostPerKm,
+        maintenanceCostPerKm = request.maintenanceCostPerKm,
+        result = result
+    )
+
+    fun CarEntity.toCarCpkDataRequest(): CarCpkDataRequest = CarCpkDataRequest(
+        id = this.id.value,
+        ownerId = this.ownerId,
+        averageConsumption = this.averageConsumption.toDouble(),
+        fuelType = this.fuelType
+    )
+
+    fun toCarCpkDataResponse(request: CarCpkDataRequest, fuelPrice: Double, result: Double) : CarCpkDataResponse = CarCpkDataResponse(
+        id = request.id,
+        ownerId = request.ownerId,
+        averageConsumption = request.averageConsumption,
+        fuelType = request.fuelType,
+        fuelPrice = fuelPrice,
+        cpk = result
+    )
 }

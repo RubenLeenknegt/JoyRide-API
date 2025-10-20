@@ -29,6 +29,7 @@ data class Car(
     val annualKm: Int,
     val energyCostPerKm: Double,
     val maintenanceCostPerKm: Double,
+    val averageConsumption: Double,
 ) {
     // methodes
 }
