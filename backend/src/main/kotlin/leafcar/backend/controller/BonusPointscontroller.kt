@@ -1,33 +1,61 @@
 package leafcar.backend.controller
 
+import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.HttpStatusCode
 import leafcar.backend.repository.BonusPointsRepository
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.authenticate
 import io.ktor.server.plugins.ContentTransformationException
 import io.ktor.server.request.receive
 import leafcar.backend.dao.BonusPointsEntity
 import leafcar.backend.domain.BonusPoints
+import leafcar.backend.dto.request.BonusPointsCreate
 
+// Load environment variables using dotenv
+val dotenv = dotenv()
+
+/**
+ * Defines the routes for managing bonus points in the application.
+ *
+ * @param bonusPointsRepository The repository used to interact with bonus points data.
+ */
 fun Route.bonusPointsRouting(bonusPointsRepository: BonusPointsRepository) {
-    route("/bonuspoints"){
-        get {
-            val bonuspoints = bonusPointsRepository.getAll()
-            call.respond(status = HttpStatusCode.OK, bonuspoints)
-        }
-        post {
-            try {
-                val req = call.receive<BonusPoints>()
-                // Adjust to your repository API as needed
-                val created = bonusPointsRepository.create(
-                    userId = req.userId,
-                    rideId = req.rideId,
-                    points = req.points
-                )
-                call.respond(HttpStatusCode.Created, created)
-            } catch (e: ContentTransformationException) {
-                call.respond(HttpStatusCode.BadRequest, "Invalid or missing JSON body.")
+    // Define the base route for bonus points
+    route("/bonuspoints") {
+        // Authenticate routes using the JWT backend authentication name from environment variables
+        authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+
+            /**
+             * GET endpoint to retrieve all bonus points.
+             * Responds with a list of all bonus points in the system.
+             */
+            get {
+                val bonuspoints = bonusPointsRepository.getAll()
+                call.respond(status = HttpStatusCode.OK, bonuspoints)
+            }
+
+            /**
+             * POST endpoint to create new bonus points.
+             * Accepts a JSON body containing the bonus points data and creates a new record.
+             *
+             * Responds with the created bonus points object or an error if the request body is invalid.
+             */
+            post {
+                try {
+                    val req = call.receive<BonusPointsCreate>()
+                    // Create a new bonus points record using the repository
+                    val created = bonusPointsRepository.create(
+                        userId = req.userId,
+                        rideId = req.rideId,
+                        points = req.points
+                    )
+                    call.respond(HttpStatusCode.Created, created)
+                } catch (e: ContentTransformationException) {
+                    // Handle invalid or missing JSON body
+                    call.respond(HttpStatusCode.BadRequest, "Invalid or missing JSON body.")
+                }
             }
         }
     }

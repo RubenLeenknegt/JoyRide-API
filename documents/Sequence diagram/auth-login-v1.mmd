@@ -1,0 +1,36 @@
+%% Mermaid sequence diagram for POST /auth/users/login
+%% Context: Ktor application -> AuthController -> Auth service -> UserRepository -> JwtConfig
+%% Date: 2025-10-19
+
+sequenceDiagram
+    title POST /auth/users/login
+
+    participant C as Client
+    participant K as Ktor
+    participant AC as AuthController
+    participant AS as Auth Service
+    participant UR as UserRepository
+    participant JC as JwtConfig
+
+    C->>K: HTTP POST /auth/users/login { emailAddress, password }
+    K->>AC: Route handler post("/auth/users/login")
+    AC->>AC: request = call.receive<LoginRequest>()
+    AC->>AS: verifyPassword(emailAddress, password)
+    AS->>UR: findByEmail(emailAddress)
+    UR-->>AS: User? (with hashed password)
+    AS->>AS: verify hash matches password
+
+    alt Valid credentials
+        AS-->>AC: User
+        AC->>JC: generateAccessToken(user.id, audience)
+        JC-->>AC: accessToken
+        AC->>JC: generateRefreshToken(user.id, audience)
+        JC-->>AC: refreshToken
+        AC->>K: call.response.cookies.append("refreshToken", refreshToken, httpOnly=true, path="/")
+        AC-->>K: call.respond(200, LoginResponse(userDto, token=accessToken))
+        K-->>C: 200 OK (application/json + Set-Cookie)
+    else Invalid credentials
+        AS-->>AC: null
+        AC-->>K: call.respond(401, { error: "Invalid credentials" })
+        K-->>C: 401 Unauthorized (application/json)
+    end

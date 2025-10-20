@@ -1,0 +1,42 @@
+// Sequence diagram for POST /refresh
+// Context: Ktor application, AuthController, JwtConfig, JWT
+// Date: 2025-10-19
+// Notes: mirrors logic in backend/src/main/kotlin/leafcar/backend/controller/AuthController.kt
+
+sequence: {
+  title: "POST /refresh"
+
+  Client: participant
+  Ktor: participant
+  AuthController: participant
+  JwtConfig: participant
+  JWT: participant
+
+  Client->Ktor: HTTP POST /refresh (Cookie: refreshToken)
+  Ktor->AuthController: Route handler post("/refresh")
+  AuthController->AuthController: refreshToken = call.request.cookies["refreshToken"]
+
+  alt "No refresh token provided"
+    AuthController->Ktor: call.respond(401, "No refresh token provided")
+    Ktor->Client: 401 Unauthorized (text/plain)
+  else "Refresh token present"
+    AuthController->JwtConfig: verifyToken(refreshToken, audience, expectedToken="refreshToken")
+
+    alt "Invalid token"
+      JwtConfig->AuthController: false
+      AuthController->Ktor: call.respond(401, "Invalid refresh token")
+      Ktor->Client: 401 Unauthorized (text/plain)
+    else "Valid token"
+      JwtConfig->AuthController: true
+      AuthController->JWT: decode(refreshToken)
+      JWT->AuthController: claim id
+      AuthController->JwtConfig: generateAccessToken(id, audience)
+      JwtConfig->AuthController: newAccessToken
+      AuthController->JwtConfig: generateRefreshToken(id, audience)
+      JwtConfig->AuthController: newRefreshToken
+      AuthController->Ktor: call.response.cookies.append("refreshToken", newRefreshToken, httpOnly=true, path="/")
+      AuthController->Ktor: call.respond({ accessToken: newAccessToken })
+      Ktor->Client: 200 OK (application/json + Set-Cookie)
+    end
+  end
+}

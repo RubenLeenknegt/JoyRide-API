@@ -1,0 +1,32 @@
+%% Mermaid sequence diagram for GET /hello (JWT-protected)
+%% Context: Ktor application with JWT auth -> AuthController -> JwtConfig
+%% Date: 2025-10-19
+
+sequenceDiagram
+    title GET /hello (protected)
+
+    participant C as Client
+    participant K as Ktor
+    participant AC as AuthController
+    participant JA as JWT Auth
+    participant JC as JwtConfig
+
+    C->>K: HTTP GET /hello (Authorization: Bearer <accessToken>)
+    K->>JA: authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) middleware
+    JA-->>K: principal = JWTPrincipal | null
+    K->>AC: Route handler get("/hello") with principal
+    AC->>AC: id = principal.payload.getClaim("id").asString()
+    AC->>AC: expiresAt = principal.expiresAt?.time - now
+
+    alt expiresAt != null and < 700000
+        AC->>JC: generateAccessToken(id, audience)
+        JC-->>AC: token
+        AC-->>K: call.respondText("Hello, {id}! Token is expired at {expiresAt} ms. Here is your new token {token}")
+        K-->>C: 200 OK (text/plain)
+    else expiresAt != null and > 700000
+        AC-->>K: call.respondText("Hello, {id}! Token is expired at {expiresAt} ms.")
+        K-->>C: 200 OK (text/plain)
+    else principal null or other
+        AC-->>K: call.respond(401, "token is expired or does not allow access to this source")
+        K-->>C: 401 Unauthorized (text/plain)
+    end

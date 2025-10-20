@@ -1,0 +1,37 @@
+%% Mermaid sequence diagram for POST /auth/users/register
+%% Context: Ktor application -> AuthController -> Auth service -> UserRepository -> JwtConfig
+%% Date: 2025-10-19
+
+sequenceDiagram
+    title POST /auth/users/register
+
+    participant C as Client
+    participant K as Ktor
+    participant AC as AuthController
+    participant AS as Auth Service
+    participant UR as UserRepository
+    participant JC as JwtConfig
+
+    C->>K: HTTP POST /auth/users/register { user, password }
+    K->>AC: Route handler post("/auth/users/register")
+    AC->>AC: request = call.receive<RegisterRequest>()
+    AC->>AS: registration(emailAddress, password, firstName, lastName, birthDate, userType, bankAccount, bankAccountName, vehicleLocation)
+    AS->>UR: existsByEmail(emailAddress)
+    UR-->>AS: true | false
+
+    alt Email already registered
+        AS-->>AC: null
+        AC-->>K: call.respond(409, { error: "Email already registered" })
+        K-->>C: 409 Conflict (application/json)
+    else Registration ok
+        AS->>UR: save(newUser with hashed password)
+        UR-->>AS: createdUser
+        AS-->>AC: createdUser
+        AC->>JC: generateAccessToken(createdUser.id, audience)
+        JC-->>AC: accessToken
+        AC->>JC: generateRefreshToken(createdUser.id, audience)
+        JC-->>AC: refreshToken
+        AC->>K: call.response.cookies.append("refreshToken", refreshToken, httpOnly=true, path="/")
+        AC-->>K: call.respond(201, LoginResponse(createdUserDto, token=accessToken))
+        K-->>C: 201 Created (application/json + Set-Cookie)
+    end
