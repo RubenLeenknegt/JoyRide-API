@@ -28,6 +28,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.server.auth.parseAuthorizationHeader
 import java.util.Date
+import leafcar.backend.services.generateUsersMock
+import leafcar.backend.services.generateReservationsMock
 
 fun main() {
     embeddedServer(
@@ -117,6 +119,10 @@ fun Application.module() {
 
     val PhotosRepository = PhotoRepository()
 
+    // Seed mock data (idempotent)
+    generateUsersMock()
+    generateReservationsMock()
+
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
         get("/") {
@@ -169,141 +175,10 @@ fun Application.module() {
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
 //        Generate a set of test users
-        val users: List<List<String>> = listOf(
-            listOf(
-                "Eva",
-                "de Groot",
-                "1994-03-12",
-                "eva.degroot@gmail.com",
-                "hash11",
-                "RENTER",
-                "NL01BANK000000001",
-                "Eva de Groot",
-                "51.5878,4.7745"
-            ),
-            listOf(
-                "Niels",
-                "Verhoeven",
-                "1988-11-07",
-                "niels.verhoeven@outlook.com",
-                "hash12",
-                "OWNER",
-                "NL02BANK000000002",
-                "Niels Verhoeven",
-                "51.4416,5.4697"
-            ),
-            listOf(
-                "Sofia",
-                "Rahmani",
-                "1992-06-25",
-                "sofia.rahmani@protonmail.com",
-                "hash13",
-                "OWNER",
-                "NL03BANK000000003",
-                "Sofia Rahmani",
-                "52.3540,4.8922"
-            ),
-            listOf(
-                "Daan",
-                "Kuipers",
-                "1997-02-19",
-                "daan.kuipers@gmail.com",
-                "hash14",
-                "RENTER",
-                "NL04BANK000000004",
-                "Daan Kuipers",
-                "51.5558,5.0913"
-            ),
-            listOf(
-                "Lina",
-                "Bosch",
-                "1999-09-30",
-                "lina.bosch@runbox.com",
-                "hash15",
-                "OWNER",
-                "NL05BANK000000005",
-                "Lina Bosch",
-                "52.0790,4.3130"
-            ),
-            listOf(
-                "Tom",
-                "Visser",
-                "1985-05-11",
-                "tom.visser@outlook.com",
-                "hash16",
-                "RENTER",
-                "NL06BANK000000006",
-                "Tom Visser",
-                "52.0905,5.1214"
-            ),
-            listOf(
-                "Mila",
-                "Peeters",
-                "1993-07-08",
-                "mila.peeters@protonmail.com",
-                "hash17",
-                "OWNER",
-                "NL07BANK000000007",
-                "Mila Peeters",
-                "53.2194,6.5665"
-            ),
-            listOf(
-                "Youssef",
-                "Abidi",
-                "1990-10-03",
-                "youssef.abidi@gmail.com",
-                "hash18",
-                "RENTER",
-                "NL08BANK000000008",
-                "Youssef Abidi",
-                "50.8514,5.6910"
-            ),
-            listOf(
-                "Laura",
-                "Willems",
-                "1986-12-22",
-                "laura.willems@outlook.com",
-                "hash19",
-                "OWNER",
-                "NL09BANK000000009",
-                "Laura Willems",
-                "51.8426,5.8528"
-            ),
-            listOf(
-                "Timo",
-                "Smits",
-                "2001-01-14",
-                "timo.smits@gmail.com",
-                "hash20",
-                "RENTER",
-                "NL10BANK000000010",
-                "Timo Smits",
-                "52.3840,4.6383"
-            )
-        )
-
-        users.forEach { user ->
-            val firstName = user[0]
-            val lastName = user[1]
-            val birthDate = user[2]
-            val emailAddress = user[3]
-            val password = user[4]
-            val userTypeStr = user[5]
-            if (userRepository.findByEmail(emailAddress) == null) {
-                val passwordHashed = AuthService(userRepository).createPasswordHash(password)
-                userRepository.createUser(
-                    emailAddress = emailAddress,
-                    passwordHash = passwordHashed,
-                    firstName = firstName,
-                    lastName = lastName,
-                    birthDate = LocalDate.parse(birthDate),
-                    userType = UserType.valueOf(userTypeStr),
-                )
-            }
-        }
-
+      
 
     }
+
 }
 
 //#### Tips en vervolgstappen
