@@ -8,6 +8,8 @@ Content-Type: application/json
 }
 > {%
     client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+
 %}
 
 ### Register new user
@@ -22,13 +24,15 @@ Content-Type: application/json
 "userType": "OWNER",
 "bankAccount": "ojghbjsk234820348",
 "bankAccountName": "HR I Visser",
-"vehicleLocation": "0342309480"
+"vehicleLocation": "0342309480",
 "password": "Ditismijnwachtwoord"
 }
 
 > {%
     client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
 %}
+
 
 ### Refresh cookcie
 POST http://localhost:8080/refresh
@@ -41,3 +45,17 @@ POST http://localhost:8080/refresh
 ### Get all users
 GET http://localhost:8080/users
 Authorization: Bearer {{access_token}}
+
+### Update acount item like name or password
+PUT http://localhost:8080/users/account/{{user_id}}/firstName
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "value": "Halloooo"
+}
+
+### Delete user account with its id
+DELETE http://localhost:8080/users/account/{{user_id}}
+Authorization: Bearer {{access_token}}
+
