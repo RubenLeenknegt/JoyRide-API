@@ -126,6 +126,19 @@ fun Route.carRouting(carRepository: CarRepository) {
                 else
                     call.respond(HttpStatusCode.OK, carTco)
             }
+
+            get("cpk/{id}") {
+                val id = call.parameters["id"]
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val carService = CarService(carRepository)
+                val carCpk = carService.getCpk(id)
+
+                if (carCpk == null)
+                    call.respond(HttpStatusCode.NotFound, "Er ging iets mis met de berekening van Cost per KM")
+                else {
+                    call.respond(HttpStatusCode.OK, carCpk)
+                }
+            }
         }
     }
 }

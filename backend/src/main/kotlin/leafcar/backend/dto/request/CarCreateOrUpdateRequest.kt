@@ -27,5 +27,6 @@ data class CarCreateOrUpdateRequest(
     val usageYears: Int,
     val annualKm: Int,
     val energyCostPerKm: Double,
-    val maintenanceCostPerKm: Double
+    val maintenanceCostPerKm: Double,
+    val averageConsumption: Double
 )

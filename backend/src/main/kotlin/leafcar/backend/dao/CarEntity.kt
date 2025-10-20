@@ -31,4 +31,5 @@ class CarEntity(id: EntityID<String>) : Entity<String>(id) {
     var annualKm by CarsTable.annualKm
     var energyCostPerKm by CarsTable.energyCostPerKm
     var maintenanceCostPerKm by CarsTable.maintenanceCostPerKm
+    var averageConsumption by CarsTable.averageConsumption
 }

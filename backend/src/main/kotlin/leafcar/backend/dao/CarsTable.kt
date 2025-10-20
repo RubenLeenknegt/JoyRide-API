@@ -31,4 +31,5 @@ object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meeg
     val annualKm = integer("annual_km")
     val energyCostPerKm = decimal("energy_cost_per_km", 10,2)
     val maintenanceCostPerKm = decimal("maintenance_cost_per_km", 10,2)
+    val averageConsumption = decimal("average_consumption", 10,2)
 }

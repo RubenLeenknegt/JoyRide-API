@@ -85,3 +85,7 @@ Accept: application/json
 ### Get TCO
 GET http://localhost:8081/cars/tco/4b285f64-5717-4562-b3fc-2c963f66b009
 Accept: application/json
+
+### Get CPK
+GET http://localhost:8081/cars/cpk/4b285f64-5717-4562-b3fc-2c963f66b002
+Accept: application/json

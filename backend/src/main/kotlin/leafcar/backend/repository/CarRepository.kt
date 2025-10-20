@@ -9,6 +9,7 @@ import leafcar.backend.mappers.CarMapper.toDomain
 import leafcar.backend.dto.request.*
 import leafcar.backend.mappers.CarMapper
 import leafcar.backend.mappers.CarMapper.fromDomain
+import leafcar.backend.mappers.CarMapper.toCarCpkDataRequest
 import leafcar.backend.mappers.CarMapper.toCarLocationRequest
 import leafcar.backend.mappers.CarMapper.toCarTcoDataRequest
 
@@ -26,17 +27,6 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
     // APP-UC-11: Route opvragen
     fun getLocations(): List<CarLocationRequest> = transaction {
         CarEntity.all().map { it.toCarLocationRequest() }
-    }
-
-    fun getTcoData(id: String): CarTcoDataRequest? {
-        return try {
-            transaction {
-                CarEntity.findById(id) ?.toCarTcoDataRequest()
-            }
-        } catch (e: Exception) {
-            null
-        }
-
     }
 
     // APP-UC-03: Auto beheren
@@ -70,5 +60,26 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
     fun delete(id: String) = transaction {
         CarEntity[id].delete()
     }
+
+    fun getTcoData(id: String): CarTcoDataRequest? {
+        return try {
+            transaction {
+                CarEntity.findById(id) ?.toCarTcoDataRequest()
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun getCpkData(id: String): CarCpkDataRequest? {
+        return try {
+            transaction {
+                CarEntity.findById(id) ?.toCarCpkDataRequest()
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 
 }
