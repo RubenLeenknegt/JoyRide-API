@@ -8,6 +8,7 @@ object TestDatabaseConnection {
         jdbcUrl = TestDatabaseConfig.dbUrl
         username = TestDatabaseConfig.dbUser
         password = TestDatabaseConfig.dbPass
+        driverClassName = TestDatabaseConfig.dbDriver
         maximumPoolSize = 5
         isAutoCommit = true
     }
