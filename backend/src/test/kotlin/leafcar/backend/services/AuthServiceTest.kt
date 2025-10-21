@@ -1,26 +1,28 @@
 package leafcar.backend.services
 
-import com.zaxxer.hikari.HikariDataSource
 import kotlinx.datetime.LocalDate
 import leafcar.backend.EnvironmentSetup
-import leafcar.backend.TestDatabaseConnection
+import leafcar.backend.domain.User
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import leafcar.backend.domain.UserType
 import leafcar.backend.repository.UserRepository
-import org.jetbrains.exposed.sql.Database
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 
 class AuthServiceTest {
-    private val testdb = Database.connect(HikariDataSource(TestDatabaseConnection.getDataSource()))
     private val authService = AuthService(UserRepository())
-    val plainPassword = "ditiseenwachtwoord"
-    val setup = EnvironmentSetup.setup(testdb)
+    @BeforeEach
+    fun setUp() {
+        EnvironmentSetup.setup()
+    }
 
     @Test
     fun verifyPassword() {
-        setup
+        val invalidEmail = "thisemaildoesnotexist@gotmail.yes"
+        val plainPassword = "ditiseenwachtwoord"
+        val wrongPassword = "ditIseenFoutWacthwoord"
         val user = authService.registration(
             emailAddress = "test123@hotlook.com",
             password = plainPassword,
@@ -32,12 +34,17 @@ class AuthServiceTest {
             bankAccountName = null,
             vehicleLocation = null
         )
+        assertInstanceOf(User::class.java, user)
         assertNotNull(authService.verifyPassword(user!!.emailAddress, plainPassword))
+        assertNull(authService.verifyPassword(invalidEmail, plainPassword))
+        assertNull(authService.verifyPassword(user.emailAddress, wrongPassword))
+
+
     }
 
     @Test
     fun createPasswordHash() {
-        setup
+        val plainPassword = "ditiseenwachtwoord"
         val hash = authService.createPasswordHash(plainPassword)
         assertNotEquals(plainPassword, hash)
         assertTrue(BCryptPasswordEncoder().matches(plainPassword, hash))
@@ -45,7 +52,7 @@ class AuthServiceTest {
 
     @Test
     fun registration() {
-        setup
+        val plainPassword = "ditiseenwachtwoord"
         val emailAddress = "test123@hotlook.com"
         val password = plainPassword
         val firstName = "Peter"
@@ -78,6 +85,18 @@ class AuthServiceTest {
             assertEquals(bankAccountName, user.bankAccountName)
             assertEquals(vehicleLocation, user.vehicleLocation)
         }
+        val user2 = authService.registration(
+            emailAddress = emailAddress,
+            password = password,
+            firstName = firstName,
+            lastName = lastName,
+            birthDate = birthDate,
+            userType = userType,
+            bankAccount = bankAccount,
+            bankAccountName = bankAccountName,
+            vehicleLocation = vehicleLocation
+        )
+        assertNull(user2)
     }
 
 }

@@ -1,16 +1,16 @@
 package leafcar.backend
 
-import org.jetbrains.exposed.dao.id.EntityID
+import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
 
 object EnvironmentSetup {
 
+    fun setup() {
 
-    fun setup(database: Database) {
+        val database = Database.connect(HikariDataSource(TestDatabaseConnection.getDataSource()))
         transaction(database) {
             SchemaUtils.drop(
                 Users,
