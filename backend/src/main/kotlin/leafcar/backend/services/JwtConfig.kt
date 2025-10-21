@@ -51,7 +51,7 @@ object JwtConfig {
             .withAudience(audience)
             .withIssuer(issuer)
             .withClaim("id", id)
-            .withClaim("tokenType", "refresh")
+            .withClaim("tokenType", "refreshToken")
             .withExpiresAt(Date(System.currentTimeMillis() + RTVALIDITYINMS)) // 7 days
             .sign(Algorithm.HMAC256(secret))
     }

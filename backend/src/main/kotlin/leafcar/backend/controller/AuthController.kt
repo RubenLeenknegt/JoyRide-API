@@ -63,12 +63,12 @@ fun Route.authRouting(userRepository: UserRepository) {
         val request = call.receive<LoginRequest>()
         val user = authService.verifyPassword(emailAddress = request.emailAddress, password = request.password)
         if (user != null) {
-            val accessToken: String = JwtConfig.generateAccessToken(user.id, audience)
-            val refreshToken: String = JwtConfig.generateRefreshToken(user.id, audience)
+            val accesstoken: String = JwtConfig.generateAccessToken(user.id, audience)
+            val refreshtoken: String = JwtConfig.generateRefreshToken(user.id, audience)
 
-            call.response.cookies.append("refreshToken", refreshToken, httpOnly = true, path = "/")
+            call.response.cookies.append("refreshToken", refreshtoken, httpOnly = true, path = "/")
             call.respond(
-                HttpStatusCode.OK, LoginResponse(user = user.toDto(), token = accessToken)
+                HttpStatusCode.OK, LoginResponse(user = user.toDto(), accessToken = accesstoken)
             )
         } else {
             call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid credentials"))
@@ -96,7 +96,7 @@ fun Route.authRouting(userRepository: UserRepository) {
             val accessToken = JwtConfig.generateAccessToken(created.id, audience)
             val refreshToken = JwtConfig.generateRefreshToken(created.id, audience)
             call.response.cookies.append("refreshToken", refreshToken, httpOnly = true, path = "/")
-            call.respond(HttpStatusCode.Created, LoginResponse(created.toDto(), token = accessToken))
+            call.respond(HttpStatusCode.Created, LoginResponse(created.toDto(), accessToken = accessToken))
         } else {
             call.respond(HttpStatusCode.Conflict, mapOf("error" to "Email already registered"))
         }
