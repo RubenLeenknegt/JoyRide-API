@@ -128,12 +128,14 @@ class UserRepository {
      *
      * @param id The ID of the user to delete.
      */
-    fun deleteUser(id: String) {
-        val user = transaction {
-            UserEntity.findById(id)
-        }
-        transaction {
-            user?.delete()
+// File: `backend/src/main/kotlin/leafcar/backend/repository/UserRepository.kt`
+    fun deleteUser(id: String): Boolean = transaction {
+        val user = UserEntity.findById(id)
+        if (user == null) {
+            false
+        } else {
+            user.delete()
+            true
         }
     }
 }
