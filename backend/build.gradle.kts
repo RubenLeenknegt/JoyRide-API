@@ -3,6 +3,8 @@ plugins {
     application
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "2.2.0"
+    id("org.jetbrains.kotlinx.kover") version "0.9.3"
+
 }
 
 group = "leafcar.backend"
@@ -54,6 +56,7 @@ dependencies {
     testImplementation("com.h2database:h2:2.2.224")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
     testImplementation("com.h2database:h2:2.2.224")
+
     // Kotlin Datetime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
     // Java time
@@ -77,6 +80,15 @@ tasks.test {
 
 kotlin {
     jvmToolchain(17)
+}
+kover {
+    reports {
+        filters {
+            excludes {
+                packages("leafcar.backend.controller")
+            }
+        }
+    }
 }
 
 // Fat jar task
