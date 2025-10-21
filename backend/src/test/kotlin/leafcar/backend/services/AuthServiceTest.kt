@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariDataSource
 import kotlinx.datetime.LocalDate
 import leafcar.backend.EnvironmentSetup
 import leafcar.backend.TestDatabaseConnection
-import leafcar.backend.domain.User
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import leafcar.backend.domain.UserType
@@ -12,16 +11,16 @@ import leafcar.backend.repository.UserRepository
 import org.jetbrains.exposed.sql.Database
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
-val testdb = Database.connect(HikariDataSource(TestDatabaseConnection.getDataSource()))
 
 class AuthServiceTest {
+    private val testdb = Database.connect(HikariDataSource(TestDatabaseConnection.getDataSource()))
     private val authService = AuthService(UserRepository())
     val plainPassword = "ditiseenwachtwoord"
-    val hashedPlainPassword = "\$2a\$10\$7d9jI7lDFq7ZSPKpjzRT4uWuyDaHXmL0Yp8lggUpTQGl15QGnKIPq"
     val setup = EnvironmentSetup.setup(testdb)
 
     @Test
     fun verifyPassword() {
+        setup
         val user = authService.registration(
             emailAddress = "test123@hotlook.com",
             password = plainPassword,
@@ -38,7 +37,7 @@ class AuthServiceTest {
 
     @Test
     fun createPasswordHash() {
-        val setup = EnvironmentSetup.setup(testdb)
+        setup
         val hash = authService.createPasswordHash(plainPassword)
         assertNotEquals(plainPassword, hash)
         assertTrue(BCryptPasswordEncoder().matches(plainPassword, hash))
@@ -46,7 +45,7 @@ class AuthServiceTest {
 
     @Test
     fun registration() {
-        val setup = EnvironmentSetup.setup(testdb)
+        setup
         val emailAddress = "test123@hotlook.com"
         val password = plainPassword
         val firstName = "Peter"

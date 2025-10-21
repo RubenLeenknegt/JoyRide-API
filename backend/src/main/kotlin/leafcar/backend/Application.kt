@@ -61,7 +61,7 @@ fun Application.module() {
     val secret = dotenv["JWT_SECRET"]
     val issuer = dotenv["JWT_ISSUER"]
     val audience = dotenv["JWT_AUDIENCE"]
-    val backendRealm = dotenv["JWT_BACKEN_REALM"]
+    val backendRealm = dotenv["JWT_BACKEND_REALM"]
 
     install(Authentication) {
         jwt(dotenv["JWT_BACKEND_AUTH_NAME"]) {
