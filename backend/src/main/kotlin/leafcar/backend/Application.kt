@@ -21,7 +21,7 @@ import io.ktor.server.auth.Authentication
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 import leafcar.backend.domain.UserType
-import leafcar.backend.services.Auth
+import leafcar.backend.services.AuthService
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.server.auth.jwt.*
 import io.ktor.http.HttpStatusCode
@@ -290,7 +290,7 @@ fun Application.module() {
             val password = user[4]
             val userTypeStr = user[5]
             if (userRepository.findByEmail(emailAddress) == null) {
-                val passwordHashed = Auth(userRepository).createPasswordHash(password)
+                val passwordHashed = AuthService(userRepository).createPasswordHash(password)
                 userRepository.createUser(
                     emailAddress = emailAddress,
                     passwordHash = passwordHashed,

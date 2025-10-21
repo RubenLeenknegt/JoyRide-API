@@ -14,10 +14,13 @@ import kotlinx.serialization.Serializable
  * @property birthDate The birth date of the user, represented as a `LocalDate`.
  * @property emailAddress The email address of the user.
  * @property userType The role of the user in the system, represented by the `UserType` enum.
+ * @property bankAccount The bank account number of the user (optional).
+ * @property bankAccountName The name associated with the user's bank account (optional).
+ * @property vehicleLocation The location of the user's vehicle (optional).
  */
 @Serializable
 data class User(
-    val id: String ,
+    val id: String,
     val firstName: String,
     val lastName: String,
     val birthDate: LocalDate,

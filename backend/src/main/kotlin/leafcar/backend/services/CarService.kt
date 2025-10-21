@@ -2,6 +2,9 @@ package leafcar.backend.services
 
 import leafcar.backend.domain.Car
 import leafcar.backend.dto.request.CarCreateOrUpdateRequest
+import leafcar.backend.dto.request.CarTcoDataRequest
+import leafcar.backend.dto.response.CarCpkDataResponse
+import leafcar.backend.dto.response.CarTcoDataResponse
 import leafcar.backend.mappers.CarMapper
 import leafcar.backend.mappers.CarMapper.toDomain
 import leafcar.backend.repository.CarRepository
@@ -42,4 +45,38 @@ class CarService(
         }
     }
 
+    fun getTco(id: String): CarTcoDataResponse? {
+        val tcoData = carRepository.getTcoData(id) ?: return null
+
+        return try {
+            val depreciation = tcoData.purchasePrice.toBigDecimal() - tcoData.residualValue.toBigDecimal()
+            val runningCosts = tcoData.annualKm.toBigDecimal() * tcoData.usageYears.toBigDecimal() *
+                    (tcoData.energyCostPerKm.toBigDecimal() + tcoData.maintenanceCostPerKm.toBigDecimal())
+            val result = depreciation + runningCosts
+            return CarMapper.toCarTcoDataResponse(tcoData, result.toDouble())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun getCpk(id: String): CarCpkDataResponse? {
+        val cpkData = carRepository.getCpkData(id) ?: return null
+
+        return try {
+            val fuelPrice = when (cpkData.fuelType) {
+                "ICE" -> 2.0
+                "BEV" -> 1.5
+                "FCEV" -> 1.25
+                else -> return null
+            }
+            val result = (cpkData.averageConsumption / 100) * fuelPrice
+            return CarMapper.toCarCpkDataResponse(cpkData, fuelPrice, result)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 }
+
+
