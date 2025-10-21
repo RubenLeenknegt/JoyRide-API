@@ -31,7 +31,8 @@ If you are new to the project, start with Quick Start.
 
 ## Quick start (local)
 
-Create a .env in the project root:
+Create a .env in the project root: \
+If you are running tests, then also create a .env file in src/.env otherwise tests that use a .env will not work.
 
 ```env
 # JWT (required by the app). Choose your own secrets/values
@@ -51,6 +52,8 @@ MYSQL_DATABASE=testdb
 MYSQL_USER=local_user
 MYSQL_PASSWORD=local_pass
 ```
+
+
 
 Build the backend fat JAR and start the stack:
 
