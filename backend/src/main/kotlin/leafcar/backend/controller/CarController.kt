@@ -49,12 +49,27 @@ fun Route.carRouting(carRepository: CarRepository) {
             }
 
             // APP-UC-11: Route opvragen
-            // GET /cars/location
-            get("/location/{id}") {
+            // GET /cars/location/
+            get("location") {
+                val cars = carRepository.getLocations()
+
+                if (cars.isEmpty())
+                    call.respond(HttpStatusCode.NotFound, "No cars found")
+                else
+                    call.respond(cars)
+            }
+
+            // APP-UC-11: Route opvragen
+            // GET /cars/location/{id}
+            get("location/{id}") {
                 val carId = call.parameters["id"].toString()
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal!!.payload.getClaim("id").asString()
-                val car = carRepository.getLocations(carId) ?: call.respond(HttpStatusCode.NotFound, "No cars found")
+                val cars = carRepository.getLocations()
+                val car = cars.find { it.id == carId } ?: return@get call.respond(
+                    HttpStatusCode.NotFound,
+                    "No car with id $carId found"
+                )
                 val reservations = ReservationRepository().getReservationByCarId(carId)
                 val now = LocalDateTime.now()
 
@@ -62,94 +77,99 @@ fun Route.carRouting(carRepository: CarRepository) {
                     reservations.forEach {
                         if (it.userId == userId &&
                             it.carId == carId &&
-                            it.startDate.toJavaLocalDateTime().isAfter(now.minusDays(5))) {call.respond(HttpStatusCode.OK, car)}
+                            it.startDate.toJavaLocalDateTime().isAfter(now.minusDays(5))
+                        ) {
+                            call.respond(HttpStatusCode.OK, car)
+                        }
                     }
-                } else call.respond(HttpStatusCode.NotFound, "The combination userId and carId is not found or location was requested too early")
+                } else call.respond(
+                    HttpStatusCode.NotFound,
+                    "The combination userId and carId is not found or location was requested too early"
+                )
 
             }
-        }
 
-        // APP-UC-03: Auto beheren
-        post {
-            val principal = call.principal<JWTPrincipal>()
-            val ownerId = principal!!.payload.getClaim("id").asString()
-//            val ownerId = "3fa85f64-5717-4562-b3fc-2c963f66a002"
 
-            val request = try {
-                call.receive<CarCreateOrUpdateRequest>()
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, "Error bij aanmaken van DTO")
-                return@post
-            }
+            // APP-UC-03: Auto beheren
+            post {
+                val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal!!.payload.getClaim("id").asString()
 
-            val carService = CarService(carRepository)
-            val newCar = carService.createCar(request, ownerId)
-
-            if (newCar == null)
-                call.respond(HttpStatusCode.InternalServerError, "Error bij opslaan in DB")
-            else
-                call.respond(HttpStatusCode.Created, newCar)
-        }
-
-        // APP-UC-03: Auto beheren
-        put("id/{id}") {
-            try {
-                val request = call.receive<CarCreateOrUpdateRequest>()
-
-                val id = call.parameters["id"]
-                    ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val request = try {
+                    call.receive<CarCreateOrUpdateRequest>()
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.BadRequest, "Error bij aanmaken van DTO")
+                    return@post
+                }
 
                 val carService = CarService(carRepository)
-                val updatedCar = carService.updateCar(request, id)
+                val newCar = carService.createCar(request, ownerId)
 
-                if (updatedCar == null) {
+                if (newCar == null)
                     call.respond(HttpStatusCode.InternalServerError, "Error bij opslaan in DB")
-                } else {
-                    call.respond(HttpStatusCode.OK, updatedCar)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to (e.message ?: "Unknown error")))
+                else
+                    call.respond(HttpStatusCode.Created, newCar)
             }
-        }
 
+            // APP-UC-03: Auto beheren
+            put("id/{id}") {
+                try {
+                    val request = call.receive<CarCreateOrUpdateRequest>()
 
-        // APP-UC-03: Auto beheren
-        delete("id/{id}") {
-            val id = call.parameters["id"]
-                ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
-            val carService = CarService(carRepository)
-            val deleted = carService.deleteCar(id)
+                    val id = call.parameters["id"]
+                        ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
 
-            if (deleted)
-                call.respond(HttpStatusCode.OK)
-            else
-                call.respond(HttpStatusCode.NotFound, "No car with id $id")
-        }
+                    val carService = CarService(carRepository)
+                    val updatedCar = carService.updateCar(request, id)
 
-        // APP-UC-09: TOC berekenen
-        get("tco/{id}") {
-            val id = call.parameters["id"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
-            val carService = CarService(carRepository)
-            val carTco = carService.getTco(id)
+                    if (updatedCar == null) {
+                        call.respond(HttpStatusCode.InternalServerError, "Error bij opslaan in DB")
+                    } else {
+                        call.respond(HttpStatusCode.OK, updatedCar)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to (e.message ?: "Unknown error")))
+                }
+            }
 
-            if (carTco == null)
-                call.respond(HttpStatusCode.NotFound, "Er ging iets mis met de berekening van TCO")
-            else
-                call.respond(HttpStatusCode.OK, carTco)
-        }
+            // APP-UC-03: Auto beheren
+            delete("id/{id}") {
+                val id = call.parameters["id"]
+                    ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val carService = CarService(carRepository)
+                val deleted = carService.deleteCar(id)
 
-        get("cpk/{id}") {
-            val id = call.parameters["id"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
-            val carService = CarService(carRepository)
-            val carCpk = carService.getCpk(id)
+                if (deleted)
+                    call.respond(HttpStatusCode.OK)
+                else
+                    call.respond(HttpStatusCode.NotFound, "No car with id $id")
+            }
 
-            if (carCpk == null)
-                call.respond(HttpStatusCode.NotFound, "Er ging iets mis met de berekening van Cost per KM")
-            else {
-                call.respond(HttpStatusCode.OK, carCpk)
+            // APP-UC-09: TOC berekenen
+            get("tco/{id}") {
+                val id = call.parameters["id"]
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val carService = CarService(carRepository)
+                val carTco = carService.getTco(id)
+
+                if (carTco == null)
+                    call.respond(HttpStatusCode.NotFound, "Er ging iets mis met de berekening van TCO")
+                else
+                    call.respond(HttpStatusCode.OK, carTco)
+            }
+
+            get("cpk/{id}") {
+                val id = call.parameters["id"]
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val carService = CarService(carRepository)
+                val carCpk = carService.getCpk(id)
+
+                if (carCpk == null)
+                    call.respond(HttpStatusCode.NotFound, "Er ging iets mis met de berekening van Cost per KM")
+                else {
+                    call.respond(HttpStatusCode.OK, carCpk)
+                }
             }
         }
     }
