@@ -76,6 +76,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
     testImplementation("org.mockito:mockito-core:5.20.0")
+    testImplementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
 
 }
 
@@ -90,15 +91,15 @@ tasks.test {
 kotlin {
     jvmToolchain(17)
 }
-kover {
-    reports {
-        filters{
-            excludes {
-                packages("leafcar.backend.controller")
-            }
-        }
-    }
-}
+//kover {
+//    reports {
+//        filters{
+//            excludes {
+//                packages("leafcar.backend.controller")
+//            }
+//        }
+//    }
+//}
 // Fat jar task
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
     archiveFileName.set("backend-fat.jar")
