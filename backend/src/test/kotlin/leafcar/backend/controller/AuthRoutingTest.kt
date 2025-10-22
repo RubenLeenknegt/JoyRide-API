@@ -1,28 +1,20 @@
 package leafcar.backend.controller
 
-import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.testing.*
 import kotlinx.datetime.LocalDate
-import kotlinx.serialization.json.Json
 import leafcar.backend.EnvironmentSetup
 import leafcar.backend.Testmodule
 import leafcar.backend.api.auth.LoginRequest
 import leafcar.backend.domain.UserType
-import leafcar.backend.dto.response.LoginResponse
-import leafcar.backend.module
 import leafcar.backend.repository.UserRepository
 import leafcar.backend.services.AuthService
-import leafcar.backend.services.userRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertIs
 
 
 class AuthRoutingTest {
