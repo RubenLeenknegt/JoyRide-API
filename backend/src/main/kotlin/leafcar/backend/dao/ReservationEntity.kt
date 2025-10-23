@@ -21,13 +21,13 @@ class ReservationEntity(id: EntityID<String>) : Entity<String>(id) {
 
     companion object : EntityClass<String, ReservationEntity>(ReservationsTable)
 
-    val userId by ReservationsTable.userId
+    var userId by ReservationsTable.userId
 
-    val carId by ReservationsTable.carId
+    var carId by ReservationsTable.carId
 
-    val startDate by ReservationsTable.startDate
+    var startDate by ReservationsTable.startDate
 
-    val endDate by ReservationsTable.endDate
+    var endDate by ReservationsTable.endDate
 }
 
 /**

@@ -7,6 +7,8 @@ import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Availability
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
+import org.jetbrains.exposed.sql.and
+
 
 
 /**
@@ -59,11 +61,7 @@ class AvailabilitiesRepository {
      * @param endDate The optional end date and time of the car's availability.
      * @return The created [Availability] domain object.
      */
-    fun create(
-        carId: String,
-        startDate: LocalDateTime,
-        endDate: LocalDateTime?
-    ): Availability = transaction {
+    fun create( carId: String, startDate: LocalDateTime, endDate: LocalDateTime? ): Availability = transaction {
         val entity = AvailabilitiesEntity.new(UUID.randomUUID().toString()) {
             this.carId = carId
             this.startDate = startDate
@@ -84,12 +82,7 @@ class AvailabilitiesRepository {
      * @param endDate The updated optional end date and time of the car's availability.
      * @return The updated [Availability] domain object, or `null` if no availability exists with the given ID.
      */
-    fun update(
-        id: String,
-        carId: String,
-        startDate: LocalDateTime,
-        endDate: LocalDateTime?
-    ): Availability? = transaction {
+    fun update( id: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime? ): Availability? = transaction {
         val entity = AvailabilitiesEntity.findById(id)
 
         if (entity != null) {
@@ -120,5 +113,13 @@ class AvailabilitiesRepository {
         } else {
             false
         }
+    }
+
+    fun withinAvailability( carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Boolean = transaction {
+        AvailabilitiesEntity.find {
+            (AvailabilitiesTable.carId eq carId) and
+                    (AvailabilitiesTable.startDate lessEq startDate) and
+                    (AvailabilitiesTable.endDate greaterEq endDate)
+        }.count() > 0
     }
 }

@@ -42,6 +42,8 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
             call.respond(HttpStatusCode.OK, photos)
         }
 
+        // TODO: Rentals -> reservations
+
         // Post new photos to a specific entity
         post("/{entityType}/{entityId}") {
             val entityType = call.parameters["entityType"]
