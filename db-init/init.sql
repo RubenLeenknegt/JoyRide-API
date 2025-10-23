@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS Users (
     password_hash VARCHAR(255) NOT NULL,
     user_type VARCHAR(10) NOT NULL,
     bank_account VARCHAR(20),
-    bank_account_name VARCHAR(20),
+    bank_account_name VARCHAR(20)
     );
 
 CREATE TABLE IF NOT EXISTS Cars (
