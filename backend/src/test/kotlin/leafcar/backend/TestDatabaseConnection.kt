@@ -27,6 +27,5 @@ object TestDatabaseConnection {
         throw RuntimeException("Kan geen connectie maken met DB na 5 pogingen")
     }
 
-//    fun getConnection(): Connection = ds.connection
     fun getDataSource(): HikariDataSource = ds
 }
