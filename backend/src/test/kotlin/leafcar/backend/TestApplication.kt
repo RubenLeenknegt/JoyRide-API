@@ -113,7 +113,6 @@ fun Application.Testmodule() {
 
 
     routing {
-        // Eenvoudige homepage met een link naar de JSON-output van /cars
         staticFiles("/photos", File("/app/photos"))
 
         // JSON endpoint(s) voor auto’s
