@@ -2,6 +2,7 @@ package leafcar.backend.repository
 
 import kotlinx.datetime.LocalDateTime
 import leafcar.backend.dao.AvailabilitiesEntity
+import leafcar.backend.dao.AvailabilitiesTable
 import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Availability
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,6 +36,19 @@ class AvailabilitiesRepository {
      */
     fun getById(id: String): Availability? = transaction {
         AvailabilitiesEntity.findById(id)?.toDomain()
+    }
+
+    /**
+     * Returns all availability records that belong to a specific car.
+     *
+     * Executes the query inside an Exposed [transaction] and filters by the given car ID.
+     *
+     * @param carId The ID of the car whose availabilities you want to retrieve.
+     * @return A list of [Availability] objects for the specified car.
+     */
+    fun getByCarId(carId: String): List<Availability> = transaction {
+        AvailabilitiesEntity.find { AvailabilitiesTable.carId eq carId }
+            .map { it.toDomain() }
     }
 
     /**
@@ -107,7 +121,4 @@ class AvailabilitiesRepository {
             false
         }
     }
-
-
-
 }

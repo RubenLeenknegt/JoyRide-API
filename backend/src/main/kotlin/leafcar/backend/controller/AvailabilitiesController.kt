@@ -6,9 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.request.ContentTransformationException
 import io.ktor.server.request.receive
-import leafcar.backend.domain.Availability
 import leafcar.backend.dto.request.AvailibilityCreateOrUpdate
-import leafcar.backend.dto.request.RideCreate
 import leafcar.backend.repository.AvailabilitiesRepository
 
 fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesRepository) {
@@ -28,6 +26,18 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                 call.respond(HttpStatusCode.NotFound, "No availability with id $id")
             else
                 call.respond(HttpStatusCode.OK, Availability)
+        }
+
+        get("/car/{carId}") {
+            val carId = call.parameters["carId"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing carId")
+
+            val availabilities = AvailabilitiesRepository.getByCarId(carId)
+
+            if (availabilities.isEmpty())
+                call.respond(HttpStatusCode.NotFound, "No availabilities found for carId $carId")
+            else
+                call.respond(HttpStatusCode.OK, availabilities)
         }
 
         post {
