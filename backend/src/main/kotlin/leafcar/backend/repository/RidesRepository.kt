@@ -1,6 +1,7 @@
 package leafcar.backend.repository
 
 import leafcar.backend.dao.RideEntity
+import leafcar.backend.dao.RidesTable
 import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Ride
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -33,6 +34,20 @@ class RidesRepository {
      */
     fun getById(id: String): Ride? = transaction {
         RideEntity.findById(id)?.toDomain()
+    }
+
+    /**
+     * Retrieves all rides associated with a specific reservation.
+     *
+     * Executes the query inside an Exposed [transaction] and filters rides
+     * based on the given reservation ID.
+     *
+     * @param reservationId The unique identifier of the reservation.
+     * @return A list of [Ride] domain objects associated with the reservation.
+     */
+    fun getByReservationId(reservationId: String): List<Ride> = transaction {
+        RideEntity.find { RidesTable.reservationId eq reservationId }
+            .map { it.toDomain() }
     }
 
     /**

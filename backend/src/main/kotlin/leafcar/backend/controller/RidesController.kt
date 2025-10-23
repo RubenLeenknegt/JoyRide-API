@@ -28,6 +28,18 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                 call.respond(HttpStatusCode.OK, ride)
         }
 
+        get("/reservation/{reservationId}") {
+            val reservationId = call.parameters["reservationId"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing reservationId")
+
+            val rides = ridesRepository.getByReservationId(reservationId)
+
+            if (rides.isEmpty())
+                call.respond(HttpStatusCode.NotFound, "No rides found for reservationId $reservationId")
+            else
+                call.respond(HttpStatusCode.OK, rides)
+        }
+
         post {
             try {
                 val req = call.receive<RideCreate>()

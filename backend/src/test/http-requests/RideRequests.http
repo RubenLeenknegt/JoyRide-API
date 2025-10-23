@@ -6,6 +6,10 @@ Accept: application/json
 GET http://localhost:8081/rides/6d485f64-5717-4562-b3fc-2c963f66d010
 Accept: application/json
 
+### Get rides by reservationId
+GET http://localhost:8081/rides/reservation/5c385f64-5717-4562-b3fc-2c963f66c001
+Accept: application/json
+
 ### Create a new ride
 POST http://localhost:8081/rides
 Content-Type: application/json
