@@ -2,20 +2,17 @@ package leafcar.backend.controller
 
 import com.auth0.jwt.JWT
 import io.github.cdimascio.dotenv.dotenv
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.routing.*
-import io.ktor.server.response.*
+import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
-import io.ktor.server.request.receive
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import leafcar.backend.api.auth.LoginRequest
+import leafcar.backend.dto.request.RegisterRequest
 import leafcar.backend.dto.response.LoginResponse
+import leafcar.backend.mappers.UserMapper.toDto
 import leafcar.backend.repository.UserRepository
 import leafcar.backend.services.AuthService
-import leafcar.backend.dto.request.RegisterRequest
-import leafcar.backend.mappers.UserMapper.toDto
 import leafcar.backend.services.JwtConfig
 
 /**
@@ -27,33 +24,6 @@ fun Route.authRouting(userRepository: UserRepository) {
     val authService = AuthService(userRepository)
     val dotenv = dotenv()
     val audience = dotenv["JWT_AUDIENCE"]
-
-    /**
-     * Authenticated route to greet the user and handle token expiration.
-     * Generates a new token if the current one is close to expiration.
-     */
-    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
-        get("/hello") {
-            val principal = call.principal<JWTPrincipal>()
-            val id = principal!!.payload.getClaim("id").asString()
-            val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
-            if (expiresAt != null) {
-                if (expiresAt < 700000) {
-                    val token = JwtConfig.generateAccessToken(id, audience)
-                    call.respondText(
-                        "Hello, $id! Token is expired at $expiresAt ms. Here is your new token ${
-                            hashMapOf(
-                                "token" to token
-                            )
-                        }"
-                    )
-                } else if (expiresAt > 700000) {
-                    call.respondText("Hello, $id! Token is expired at $expiresAt ms.")
-                }
-            }
-            call.respond(HttpStatusCode.Unauthorized, "token is expired or does not allow access to this source")
-        }
-    }
 
     /**
      * Route to handle user login.
@@ -90,7 +60,6 @@ fun Route.authRouting(userRepository: UserRepository) {
             userType = request.userType,
             bankAccount = request.bankAccount,
             bankAccountName = request.bankAccountName,
-            vehicleLocation = request.vehicleLocation
         )
         if (created != null) {
             val accessToken = JwtConfig.generateAccessToken(created.id, audience)

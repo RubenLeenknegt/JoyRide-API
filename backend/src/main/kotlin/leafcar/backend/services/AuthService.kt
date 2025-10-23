@@ -50,7 +50,6 @@ class AuthService(
      * @param userType The type of user (e.g., admin, customer).
      * @param bankAccount The bank account number of the user (optional).
      * @param bankAccountName The name associated with the bank account (optional).
-     * @param vehicleLocation The location of the user's vehicle (optional).
      * @return The created `User` object if registration is successful, or `null` if the email is already in use.
      */
     fun registration(
@@ -62,7 +61,6 @@ class AuthService(
         userType: UserType,
         bankAccount: String?,
         bankAccountName: String?,
-        vehicleLocation: String?
     ): User? {
         if (userRepository.findByEmail(emailAddress) == null) {
             val passwordHashed = createPasswordHash(password)
@@ -75,7 +73,6 @@ class AuthService(
                 userType = userType,
                 bankAccount = bankAccount,
                 bankAccountName = bankAccountName,
-                vehicleLocation = vehicleLocation
             )
             return created
         } else {

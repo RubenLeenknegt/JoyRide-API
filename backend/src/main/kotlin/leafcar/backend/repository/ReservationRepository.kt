@@ -37,7 +37,6 @@ class ReservationRepository {
             ReservationsTable.select { ReservationsTable.carId like "%$carId%" }
                 .map { ReservationEntity.wrapRow(it).toDomain() }
         }
-
     }
 
     fun exists(userId: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Boolean = transaction {

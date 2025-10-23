@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:8081
+@baseUrl = http://localhost:8080
 
 ### Register new user
 POST {{baseUrl}}/auth/users/register
@@ -12,7 +12,6 @@ Content-Type: application/json
   "userType": "OWNER",
   "bankAccount": "ojghbjsk234820348",
   "bankAccountName": "HR P Jackson",
-  "vehicleLocation": "0342309480",
   "password": "Ditismijnwachtwoord"
 }
 

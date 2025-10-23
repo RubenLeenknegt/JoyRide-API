@@ -3,46 +3,39 @@ package leafcar.backend
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTDecodeException
-import io.ktor.http.ContentType
+import com.zaxxer.hikari.HikariDataSource
+import io.github.cdimascio.dotenv.dotenv
+import io.ktor.http.*
+import io.ktor.http.auth.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.http.content.*
-import java.io.File
+import kotlinx.serialization.json.Json
 import leafcar.backend.controller.*
 import leafcar.backend.repository.*
 import org.jetbrains.exposed.sql.Database
-import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.auth.Authentication
-import kotlinx.datetime.LocalDate
-import kotlinx.serialization.json.Json
-import leafcar.backend.domain.UserType
-import leafcar.backend.services.AuthService
-import io.github.cdimascio.dotenv.dotenv
-import io.ktor.server.auth.jwt.*
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.auth.HttpAuthHeader
-import io.ktor.server.auth.parseAuthorizationHeader
-import java.util.Date
-import leafcar.backend.services.generateUsersMock
-import leafcar.backend.services.generateReservationsMock
+import java.io.File
+import java.util.*
 
 fun main() {
     embeddedServer(
         Netty,
         port = 8080,
         host = "0.0.0.0",
-        module = Application::module
+        module = Application::Testmodule
     ).start(wait = true)
 }
 
-fun Application.module() {
+fun Application.Testmodule() {
     // Initialiseert Exposed met een Hikari-connection pool
-    Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
+    Database.connect(HikariDataSource(TestDatabaseConnection.getDataSource()))
 
     // JSON-serialisatie voor request/response-bodies met Kotlinx Serialization
     install(ContentNegotiation) {
@@ -116,50 +109,10 @@ fun Application.module() {
     val reservationRepository = ReservationRepository()
     val availabilitiesRepository = AvailabilitiesRepository()
     val ridesRepository = RidesRepository()
-
     val PhotosRepository = PhotoRepository()
 
-    // Seed mock data (idempotent)
-    generateUsersMock()
-    generateReservationsMock()
 
     routing {
-        // Eenvoudige homepage met een link naar de JSON-output van /cars
-        get("/") {
-            val names: Array<String> = arrayOf("Giel van Gaal", "Ruben Leenkegt", "Ivar Visser")
-            call.respondText(
-                """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>P1 Avans CICD Kotlin/Ktor</title>
-                </head>
-                <body>
-                    <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
-                    <p>Hello, our names are: ${
-                    names.joinToString(
-                        separator = ", <br/>",
-                        prefix = "<br/>",
-                        postfix = "."
-                    )
-                }</p>
-                    <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
-                    <a href="/reservations">Bekijk alle reservations (JSON)</a><br/>
-                    <a href="/availabilities">Bekijk alle availabilities (JSON)</a><br/>
-                    <a href="/rides">Bekijk alle rides (JSON)</a><br/>
-                    <a href="/users">Bekijk alle User's (JSON)</a><br/>
-                    <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
-                    <br>
-                    <br>
-                    <a href="/photos/cars/4b285f64-5717-4562-b3fc-2c963f66b009">Bekijk fotos van Volkswagen Kever (JSON)</a><br/>
-                </body>
-                </html>
-                """.trimIndent(),
-                contentType = ContentType.Text.Html
-            )
-        }
-
         staticFiles("/photos", File("/app/photos"))
 
         // JSON endpoint(s) voor auto’s
@@ -167,23 +120,11 @@ fun Application.module() {
         reservationRouting(reservationRepository)
         AvailabilitiesRouting(availabilitiesRepository)
         RidesRouting(ridesRepository)
-
-
         userRouting(userRepository)
-
         authRouting(userRepository)
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
-//        Generate a set of test users
-      
 
     }
 
 }
-
-//#### Tips en vervolgstappen
-//- Configuratie scheiden: gebruik `application.conf`/HOCON of environment-variabelen (bijv. via `System.getenv`) voor host/poort en DB‑instellingen.
-//- Health endpoints: voeg `GET /health` of `GET /ready` toe om readiness/liveness checks te ondersteunen in CI/CD en container‑omgevingen.
-//- Error handling: installeer `StatusPages` om consistente foutresponses (JSON) te retourneren, inclusief logging/tracing.
-//- OpenAPI: overweeg integratie met een OpenAPI/Swagger plugin of handmatige schema’s zodat clients jouw API eenvoudig kunnen verbruiken.
-//- Security: voeg CORS, rate limiting en authenticatie toe zodra je endpoints publiek worden blootgesteld.

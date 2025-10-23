@@ -40,7 +40,6 @@ class UserRepository {
      * @param userType The type of the user (e.g., admin, customer).
      * @param bankAccount The bank account number of the user (optional).
      * @param bankAccountName The name associated with the bank account (optional).
-     * @param vehicleLocation The location of the user's vehicle (optional).
      * @return The created `User` domain object.
      */
     fun createUser(
@@ -52,7 +51,6 @@ class UserRepository {
         userType: UserType,
         bankAccount: String? = null,
         bankAccountName: String? = null,
-        vehicleLocation: String? = null
     ): User = transaction {
         val user = UserEntity.new(UUID.randomUUID().toString()) {
             this.firstName = firstName
@@ -63,7 +61,6 @@ class UserRepository {
             this.passwordHash = passwordHash
             this.bankAccount = bankAccount
             this.bankAccountName = bankAccountName
-            this.vehicleLocation = vehicleLocation
         }
         user.toDomain()
     }
@@ -99,8 +96,7 @@ class UserRepository {
      */
     fun updateVariables(key: String, value: String, id: String): UserUpdateResult = transaction {
         val allowedVariables = listOf(
-            "firstName", "lastName", "emailAddress", "password", "userType", "bankAccount", "bankAccountName",
-            "vehicleLocation"
+            "firstName", "lastName", "emailAddress", "password", "userType", "bankAccount", "bankAccountName"
         )
 
         if (key !in allowedVariables) {
@@ -116,7 +112,6 @@ class UserRepository {
             "userType" -> userEntity.userType = toUserType(value)
             "bankAccount" -> userEntity.bankAccount = value
             "bankAccountName" -> userEntity.bankAccountName = value
-            "vehicleLocation" -> userEntity.vehicleLocation = value
             else -> return@transaction UserUpdateResult.Error("Unknown key")
         }
 
@@ -128,12 +123,14 @@ class UserRepository {
      *
      * @param id The ID of the user to delete.
      */
-    fun deleteUser(id: String) {
-        val user = transaction {
-            UserEntity.findById(id)
-        }
-        transaction {
-            user?.delete()
+// File: `backend/src/main/kotlin/leafcar/backend/repository/UserRepository.kt`
+    fun deleteUser(id: String): Boolean = transaction {
+        val user = UserEntity.findById(id)
+        if (user == null) {
+            false
+        } else {
+            user.delete()
+            true
         }
     }
 }

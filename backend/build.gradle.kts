@@ -1,6 +1,3 @@
-import kotlinx.kover.gradle.plugin.dsl.tasks.KoverReport
-import org.gradle.api.internal.artifacts.ivyservice.resolveengine.excludes.specs.ExcludeAllOf
-
 plugins {
     kotlin("jvm") version "2.2.0"
     application
@@ -60,6 +57,8 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("com.h2database:h2:2.2.224")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
+    testImplementation("com.h2database:h2:2.2.224")
+
     // Kotlin Datetime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
     // Java time
@@ -77,6 +76,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
     testImplementation("org.mockito:mockito-core:5.20.0")
+    testImplementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
 
 }
 
@@ -91,15 +91,7 @@ tasks.test {
 kotlin {
     jvmToolchain(17)
 }
-kover {
-    reports {
-        filters{
-            excludes {
-                packages("leafcar.backend.controller")
-            }
-        }
-    }
-}
+
 // Fat jar task
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
     archiveFileName.set("backend-fat.jar")

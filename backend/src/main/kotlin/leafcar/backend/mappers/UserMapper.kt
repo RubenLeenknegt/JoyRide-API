@@ -29,7 +29,6 @@ object UserMapper {
         userType = this.userType,
         bankAccount = this.bankAccount,
         bankAccountName = this.bankAccountName,
-        vehicleLocation = this.vehicleLocation
     )
 
     /**
@@ -47,7 +46,6 @@ object UserMapper {
         userType = this.userType,
         bankAccount = this.bankAccount,
         bankAccountName = this.bankAccountName,
-        vehicleLocation = this.vehicleLocation
     )
 
     /**
@@ -66,7 +64,6 @@ object UserMapper {
             userType = this.userType,
             bankAccount = this.bankAccount,
             bankAccountName = this.bankAccountName,
-            vehicleLocation = this.vehicleLocation
         )
 
     /**

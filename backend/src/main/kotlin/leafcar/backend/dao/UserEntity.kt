@@ -19,7 +19,6 @@ import org.jetbrains.exposed.dao.id.EntityID
  * @property passwordHash The hashed password of the user, mapped to the `password_hash` column in the `UsersTable`.
  * @property bankAccount The bank account number of the user, mapped to the `bank_account` column in the `UsersTable`.
  * @property bankAccountName The name associated with the user's bank account, mapped to the `bank_account_name` column in the `UsersTable`.
- * @property vehicleLocation The location of the user's vehicle, mapped to the `vehicle_location` column in the `UsersTable`.
  */
 class UserEntity(id: EntityID<String>) : Entity<String>(id) {
     /**
@@ -53,6 +52,4 @@ class UserEntity(id: EntityID<String>) : Entity<String>(id) {
     // Maps to the `bank_account_name` column in the `UsersTable`.
     var bankAccountName by UsersTable.bankAccountName
 
-    // Maps to the `vehicle_location` column in the `UsersTable`.
-    var vehicleLocation by UsersTable.vehicleLocation
 }
