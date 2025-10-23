@@ -32,7 +32,6 @@ class AuthServiceTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         assertInstanceOf(User::class.java, user)
         assertNotNull(authService.verifyPassword(user!!.emailAddress, plainPassword))
@@ -61,7 +60,6 @@ class AuthServiceTest {
         val userType = UserType.RENTER
         val bankAccount = null
         val bankAccountName = null
-        val vehicleLocation = null
 
         val user = authService.registration(
             emailAddress = emailAddress,
@@ -72,7 +70,6 @@ class AuthServiceTest {
             userType = userType,
             bankAccount = bankAccount,
             bankAccountName = bankAccountName,
-            vehicleLocation = vehicleLocation
         )
         assertNotNull(user)
         if (user != null) {
@@ -83,7 +80,6 @@ class AuthServiceTest {
             assertEquals(userType, user.userType)
             assertEquals(bankAccount, user.bankAccount)
             assertEquals(bankAccountName, user.bankAccountName)
-            assertEquals(vehicleLocation, user.vehicleLocation)
         }
         val user2 = authService.registration(
             emailAddress = emailAddress,
@@ -94,7 +90,6 @@ class AuthServiceTest {
             userType = userType,
             bankAccount = bankAccount,
             bankAccountName = bankAccountName,
-            vehicleLocation = vehicleLocation
         )
         assertNull(user2)
     }

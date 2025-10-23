@@ -30,7 +30,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val user2 = userRepository.createUser(
             emailAddress = "test123456@hotlook.com",
@@ -57,7 +56,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         assertEquals(user1, userRepository.findByEmail(user1.emailAddress))
     }
@@ -81,7 +79,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val key = "emailAddress"
         val newValue = "someemail@someprovider.nl"
@@ -102,7 +99,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val newFirstName = "Voornaam"
         val updatedUser = userRepository.updateVariables("firstName", newFirstName, user1.id)
@@ -121,7 +117,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val newLastName = "achternaam"
         val updatedUser = userRepository.updateVariables("lastName", newLastName, user1.id)
@@ -141,7 +136,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val key = "userType"
         val newValue = UserType.OWNER
@@ -161,7 +155,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val key = "bankAccount"
         val newValue = "NLBA238405739"
@@ -181,7 +174,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val key = "bankAccountName"
         val newValue = "DHR P Janssen"
@@ -190,25 +182,6 @@ class UserRepositoryTest {
         assertEquals(newValue, updatedUser.user.bankAccountName)
     }
 
-    @Test
-    fun updateVariablesVehucleLocationEqualsSuccess() {
-        val user1 = userRepository.createUser(
-            emailAddress = "test123@hotlook.com",
-            passwordHash = authService.createPasswordHash("ditiseenwachtwoord"),
-            firstName = "Peter",
-            lastName = "Janssen",
-            birthDate = LocalDate.parse("1998-05-29"),
-            userType = UserType.RENTER,
-            bankAccount = null,
-            bankAccountName = null,
-            vehicleLocation = null
-        )
-        val key = "vehicleLocation"
-        val newValue = "52.0116,4.3571"
-        val updatedUser = userRepository.updateVariables(key, newValue, user1.id)
-        assertIs<UserUpdateResult.Success>(updatedUser)
-        assertEquals(newValue, updatedUser.user.vehicleLocation)
-    }
 
     @Test
     fun updateVariablesPasswordEqualsSuccess() {
@@ -221,7 +194,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
 
         val key = "password"
@@ -242,7 +214,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
 
         val key = "birthDate"
@@ -262,7 +233,6 @@ class UserRepositoryTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         assertNotNull(userRepository.findByEmail(user1.emailAddress))
         assertTrue { userRepository.deleteUser(user1.id) }

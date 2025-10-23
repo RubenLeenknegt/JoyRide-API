@@ -2,7 +2,6 @@ package leafcar.backend.dto.request
 
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
-import leafcar.backend.domain.User
 import leafcar.backend.domain.UserType
 
 /**
@@ -17,7 +16,6 @@ import leafcar.backend.domain.UserType
  * @property userType The type of the user (e.g., admin, customer).
  * @property bankAccount The bank account number of the user (optional).
  * @property bankAccountName The name associated with the bank account (optional).
- * @property vehicleLocation The location of the user's vehicle (optional).
  * @property password The password chosen by the user for their account.
  */
 @Serializable
@@ -29,6 +27,5 @@ data class RegisterRequest(
     val userType: UserType,
     val bankAccount: String? = null,
     val bankAccountName: String? = null,
-    val vehicleLocation: String? = null,
     val password: String
 )

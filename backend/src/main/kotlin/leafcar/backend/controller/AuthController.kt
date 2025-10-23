@@ -60,7 +60,6 @@ fun Route.authRouting(userRepository: UserRepository) {
             userType = request.userType,
             bankAccount = request.bankAccount,
             bankAccountName = request.bankAccountName,
-            vehicleLocation = request.vehicleLocation
         )
         if (created != null) {
             val accessToken = JwtConfig.generateAccessToken(created.id, audience)

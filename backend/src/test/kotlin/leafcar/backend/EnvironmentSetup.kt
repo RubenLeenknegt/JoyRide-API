@@ -45,8 +45,6 @@ object EnvironmentSetup {
         val userType = varchar("user_type", 10)
         val bankAccount = varchar("bank_account", 20).nullable()
         val bankAccountName = varchar("bank_account_name", 20).nullable()
-        val vehicleLocation = varchar("vehicle_location", 100).nullable()
-
         override val primaryKey = PrimaryKey(id)
     }
 

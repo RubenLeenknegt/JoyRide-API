@@ -4,7 +4,6 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.request.*
-import io.ktor.client.statement.request
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
@@ -18,7 +17,6 @@ import leafcar.backend.dto.request.RegisterRequest
 import leafcar.backend.dto.response.LoginResponse
 import leafcar.backend.repository.UserRepository
 import leafcar.backend.services.AuthService
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -55,7 +53,6 @@ class AuthRoutingTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )!!
         val response = jsonClient.post("/auth/users/login") {
             contentType(ContentType.Application.Json)
@@ -89,7 +86,6 @@ class AuthRoutingTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )!!
         val response = jsonClient.post("/auth/users/login") {
             contentType(ContentType.Application.Json)
@@ -121,7 +117,6 @@ class AuthRoutingTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val response = jsonClient.post("/auth/users/register") {
             contentType(ContentType.Application.Json)
@@ -134,7 +129,6 @@ class AuthRoutingTest {
                     user.userType,
                     user.bankAccount,
                     user.bankAccountName,
-                    user.vehicleLocation,
                     plainPassword
                 )
             )
@@ -151,7 +145,6 @@ class AuthRoutingTest {
         assertEquals(user.userType, userOnDb.user.userType)
         assertEquals(user.bankAccount, userOnDb.user.bankAccount)
         assertEquals(user.bankAccountName, userOnDb.user.bankAccountName)
-        assertEquals(user.vehicleLocation, userOnDb.user.vehicleLocation)
     }
 
     @Test
@@ -174,7 +167,6 @@ class AuthRoutingTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val response = jsonClient.post("/auth/users/register") {
             contentType(ContentType.Application.Json)
@@ -187,7 +179,6 @@ class AuthRoutingTest {
                     user.userType,
                     user.bankAccount,
                     user.bankAccountName,
-                    user.vehicleLocation,
                     plainPassword
                 )
             )
@@ -204,7 +195,6 @@ class AuthRoutingTest {
         assertEquals(user.userType, userOnDb.user.userType)
         assertEquals(user.bankAccount, userOnDb.user.bankAccount)
         assertEquals(user.bankAccountName, userOnDb.user.bankAccountName)
-        assertEquals(user.vehicleLocation, userOnDb.user.vehicleLocation)
 
         val response2 = jsonClient.post("/auth/users/register") {
             contentType(ContentType.Application.Json)
@@ -217,7 +207,6 @@ class AuthRoutingTest {
                     user.userType,
                     user.bankAccount,
                     user.bankAccountName,
-                    user.vehicleLocation,
                     plainPassword
                 )
             )
@@ -249,7 +238,6 @@ class AuthRoutingTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val response = jsonClient.post("/auth/users/register") {
             contentType(ContentType.Application.Json)
@@ -262,7 +250,6 @@ class AuthRoutingTest {
                     user.userType,
                     user.bankAccount,
                     user.bankAccountName,
-                    user.vehicleLocation,
                     plainPassword
                 )
             )
@@ -291,7 +278,6 @@ class AuthRoutingTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
         val response = jsonClient.post("/auth/users/register") {
             contentType(ContentType.Application.Json)
@@ -304,7 +290,6 @@ class AuthRoutingTest {
                     user.userType,
                     user.bankAccount,
                     user.bankAccountName,
-                    user.vehicleLocation,
                     plainPassword
                 )
             )

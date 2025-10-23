@@ -37,7 +37,6 @@ class UserMapperTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
 
         val entity = transaction { UserEntity.findById(user!!.id) }
@@ -57,7 +56,6 @@ class UserMapperTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
 
         val entity = transaction { UserEntity.findById(user!!.id) }
@@ -70,7 +68,6 @@ class UserMapperTest {
         assertEquals(user.userType, entity.toUserDto().userType)
         assertEquals(user.bankAccount, entity.toUserDto().bankAccount)
         assertEquals(user.bankAccountName, entity.toUserDto().bankAccountName)
-        assertEquals(user.vehicleLocation, entity.toUserDto().vehicleLocation)
     }
 
     @Test
@@ -85,7 +82,6 @@ class UserMapperTest {
             userType = UserType.RENTER,
             bankAccount = null,
             bankAccountName = null,
-            vehicleLocation = null
         )
 
         assertIs<UserDto>(user!!.toDto())
@@ -98,6 +94,5 @@ class UserMapperTest {
         assertEquals(user.userType, userDto.userType)
         assertEquals(user.bankAccount, userDto.bankAccount)
         assertEquals(user.bankAccountName, userDto.bankAccountName)
-        assertEquals(user.vehicleLocation, userDto.vehicleLocation)
     }
 }

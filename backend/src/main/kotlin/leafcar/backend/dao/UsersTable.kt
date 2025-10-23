@@ -67,10 +67,4 @@ object UsersTable : IdTable<String>("Users") {
      */
     val bankAccountName = varchar("bank_account_name", 20).nullable()
 
-    /**
-     * Column for storing the location of the user's vehicle.
-     * This column is optional and can be null.
-     * Maximum length: 100 characters.
-     */
-    val vehicleLocation = varchar("vehicle_location", 100).nullable()
 }
