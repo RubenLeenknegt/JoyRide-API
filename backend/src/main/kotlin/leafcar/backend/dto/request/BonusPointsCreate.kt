@@ -1,5 +1,7 @@
 package leafcar.backend.dto.request
 
+import kotlinx.serialization.Serializable
+
 /**
  * Data Transfer Object (DTO) for creating bonus points.
  *
@@ -10,6 +12,7 @@ package leafcar.backend.dto.request
  * @property rideId The unique identifier of the ride associated with the bonus points.
  * @property points The number of bonus points to be created.
  */
+@Serializable
 data class BonusPointsCreate(
     val userId: String,
     val rideId: String,
