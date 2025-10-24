@@ -70,7 +70,7 @@ fun Route.carRouting(carRepository: CarRepository) {
                     HttpStatusCode.NotFound,
                     "No car with id $carId found"
                 )
-                val reservations = ReservationRepository().getReservationByCarId(carId)
+                val reservations = ReservationRepository().getByCarId(carId)
                 val now = LocalDateTime.now()
 
                 if (reservations.isNotEmpty()) {

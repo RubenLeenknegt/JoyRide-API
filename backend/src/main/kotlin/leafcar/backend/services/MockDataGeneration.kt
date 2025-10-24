@@ -178,7 +178,7 @@ fun generateReservationsMock() {
     val today: LocalDate = now.date
 
     fun createIfNotExists(userId: String, carId: String, start: LocalDateTime, end: LocalDateTime) {
-        reservationRepo.create(userId, carId, start, end)
+        reservationRepo.createReservation(userId, carId, start, end)
     }
 
     // Helper to choose user/car deterministically
