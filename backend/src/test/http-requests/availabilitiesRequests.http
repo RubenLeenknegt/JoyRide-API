@@ -1,7 +1,40 @@
+### Register new user
+POST http://localhost:8081/auth/users/register
+Content-Type: application/json
+
+{
+  "emailAddress": "PeterJackson@hotmail.com",
+  "firstName": "Peter",
+  "lastName": "Jackson",
+  "birthDate": "1998-01-05",
+  "userType": "OWNER",
+  "bankAccount": "ojghbjsk234820348",
+  "bankAccountName": "HR P Jackson",
+  "password": "Ditismijnwachtwoord"
+}
+
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+%}
+
+### Log in to api and key jwt
+POST http://localhost:8081/auth/users/login
+Content-Type: application/json
+
+{
+  "emailAddress": "PeterJackson@hotmail.com",
+  "password": "Ditismijnwachtwoord"
+}
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+
+%}
+
 ### Get all availabilities
 GET http://localhost:8081/availabilities
 Accept: application/json
-
 
 ### Get availability by ID
 GET http://localhost:8081/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
@@ -45,7 +78,6 @@ Accept: application/json
   "startDate": "2025-10-23T09:00:00",
   "endDate": "2025-10-23T15:00:00"
 }
-
 
 ### Delete an availability
 DELETE http://localhost:8081/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
