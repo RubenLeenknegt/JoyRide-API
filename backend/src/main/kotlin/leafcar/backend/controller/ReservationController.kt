@@ -155,8 +155,6 @@ fun Route.reservationRouting(reservationRepository: ReservationRepository, avail
     }
 
         // TODO: Auth for my endpoints
-        // TODO: availibile availibilities
-        // TODO: get availibilties in timeslot filter
         // TODO: update photo endpoint
         // TODO: check code
         // TODO: kdock

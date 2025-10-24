@@ -3,8 +3,11 @@ package leafcar.backend.repository
 import kotlinx.datetime.LocalDateTime
 import leafcar.backend.dao.AvailabilitiesEntity
 import leafcar.backend.dao.AvailabilitiesTable
+import leafcar.backend.dao.ReservationEntity
+import leafcar.backend.dao.ReservationsTable
 import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Availability
+import leafcar.backend.dto.request.AvailibilityCreateOrUpdate
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 import org.jetbrains.exposed.sql.and
@@ -51,6 +54,100 @@ class AvailabilitiesRepository {
     fun getByCarId(carId: String): List<Availability> = transaction {
         AvailabilitiesEntity.find { AvailabilitiesTable.carId eq carId }
             .map { it.toDomain() }
+    }
+
+    /**
+     * Retrieves all available time slots across all cars that are not covered by reservations.
+     *
+     * This function calculates availability gaps by subtracting overlapping reservation
+     * ranges from the defined availabilities for each car. Partial overlaps are handled,
+     * and remaining free time slots are returned as individual entries.
+     *
+     * Optionally filters the resulting time slots by a provided date range and/or car ID.
+     *
+     * @param startDate Optional start date filter. Only slots overlapping this range will be returned.
+     * @param endDate Optional end date filter. Only slots overlapping this range will be returned.
+     * @param carId Optional car ID filter. Only slots for this car will be returned.
+     * @return A list of [AvailibilityCreateOrUpdate] objects representing available time slots.
+     */
+    fun getAvailableSlots( startDate: LocalDateTime? = null, endDate: LocalDateTime? = null, carId: String? = null ): List<AvailibilityCreateOrUpdate> = transaction {
+        val result = mutableListOf<AvailibilityCreateOrUpdate>()
+
+        // Fetch all availabilities from DB, optionally filtered by carId
+        val availabilities = if (carId != null) {
+            AvailabilitiesEntity.find { AvailabilitiesTable.carId eq carId }.toList()
+        } else {
+            AvailabilitiesEntity.all().toList()
+        }
+
+        for (availability in availabilities) {
+            val currentCarId = availability.carId
+
+            // Get all reservations for this car that overlap this availability
+            val availabilityEnd = availability.endDate
+            val reservations = if (availabilityEnd != null) {
+                ReservationEntity.find {
+                    (ReservationsTable.carId eq currentCarId) and
+                            (ReservationsTable.startDate lessEq availabilityEnd) and
+                            (ReservationsTable.endDate greaterEq availability.startDate)
+                }
+            } else {
+                ReservationEntity.find {
+                    (ReservationsTable.carId eq currentCarId) and
+                            (ReservationsTable.endDate greaterEq availability.startDate)
+                }
+            }
+
+            // Start with one initial free range: the full availability
+            val freeRanges = mutableListOf(
+                availability.startDate to availability.endDate
+            )
+
+            // Subtract each reservation from the free ranges
+            for (reservation in reservations) {
+                val newRanges = mutableListOf<Pair<LocalDateTime, LocalDateTime?>>()
+
+                for ((freeStart, freeEnd) in freeRanges) {
+                    // Reservation completely before or after the free slot → keep as is
+                    if (reservation.endDate <= freeStart || (freeEnd != null && reservation.startDate >= freeEnd)) {
+                        newRanges += freeStart to freeEnd
+                    }
+                    // Overlap at the start
+                    else if (reservation.startDate <= freeStart && reservation.endDate < (freeEnd ?: reservation.endDate)) {
+                        newRanges += reservation.endDate to freeEnd
+                    }
+                    // Overlap at the end
+                    else if (reservation.startDate > freeStart && (freeEnd == null || reservation.endDate >= freeEnd)) {
+                        newRanges += freeStart to reservation.startDate
+                    }
+                    // Reservation inside free range → split into two parts
+                    else if (reservation.startDate > freeStart && (freeEnd != null && reservation.endDate < freeEnd)) {
+                        newRanges += freeStart to reservation.startDate
+                        newRanges += reservation.endDate to freeEnd
+                    }
+                }
+                freeRanges.clear()
+                freeRanges.addAll(newRanges)
+            }
+
+            // Apply optional filtering by provided date range
+            val filteredRanges = freeRanges.mapNotNull { (slotStart, slotEnd) ->
+                val startOk = startDate == null || slotEnd == null || slotEnd > startDate
+                val endOk = endDate == null || slotStart < endDate
+                if (startOk && endOk) slotStart to slotEnd else null
+            }
+
+            // Add the remaining free ranges to the result
+            filteredRanges.forEach { (freeStart, freeEnd) ->
+                result += AvailibilityCreateOrUpdate(
+                    carId = currentCarId,
+                    startDate = freeStart,
+                    endDate = freeEnd
+                )
+            }
+        }
+
+        result
     }
 
     /**

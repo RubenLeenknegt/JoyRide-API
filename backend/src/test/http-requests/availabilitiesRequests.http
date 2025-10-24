@@ -11,6 +11,17 @@ Accept: application/json
 GET http://localhost:8081/availabilities/car/4b285f64-5717-4562-b3fc-2c963f66b001
 Accept: application/json
 
+### Get available availabilities
+GET http://localhost:8081/availabilities/available
+Accept: application/json
+
+### Get available availabilities with timeslot filter
+GET http://localhost:8081/availabilities/available?startDate=2025-10-01T06:00&endDate=2025-10-15T18:00
+Accept: application/json
+
+### Get available availabilities filterd by carId
+GET http://localhost:8081/availabilities/available/car/4b285f64-5717-4562-b3fc-2c963f66b005
+Accept: application/json
 
 ### Create a new availability
 POST http://localhost:8081/availabilities

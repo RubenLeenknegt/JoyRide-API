@@ -6,16 +6,20 @@ import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.request.ContentTransformationException
 import io.ktor.server.request.receive
+import kotlinx.datetime.LocalDateTime
 import leafcar.backend.dto.request.AvailibilityCreateOrUpdate
 import leafcar.backend.repository.AvailabilitiesRepository
 
 fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesRepository) {
-    route("/availabilities") {
+        route("/availabilities") {
+
+        // GET all availabilities
         get {
             val Availabilities = AvailabilitiesRepository.getAll()
             call.respond(status = HttpStatusCode.OK, Availabilities)
         }
 
+        // GET an availability by ID
         get("{id}") {
             val id = call.parameters["id"]
                 ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
@@ -28,6 +32,7 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                 call.respond(HttpStatusCode.OK, Availability)
         }
 
+        // GET an availability by carID
         get("/car/{carId}") {
             val carId = call.parameters["carId"]
                 ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing carId")
@@ -40,6 +45,32 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                 call.respond(HttpStatusCode.OK, availabilities)
         }
 
+        // GET all availabilities that do not have an overlapping reservation
+        get("/available") {
+            val availableSlots = AvailabilitiesRepository.getAvailableSlots(null, null)
+            call.respond(HttpStatusCode.OK, availableSlots)
+        }
+
+        // GET all availabilities that do not have an overlapping reservation, includes filtering for a daterange
+        get("/available/{startDate}/{endDate}") {
+            val startDateParam = call.parameters["startDate"]
+            val endDateParam = call.parameters["endDate"]
+
+            val startDate = startDateParam?.let { LocalDateTime.parse(it) }
+            val endDate = endDateParam?.let { LocalDateTime.parse(it) }
+
+            val availableSlots = AvailabilitiesRepository.getAvailableSlots(startDate, endDate)
+            call.respond(HttpStatusCode.OK, availableSlots)
+        }
+
+        // GET available slots for a specific car
+        get("/available/car/{carId}") {
+            val carId = call.parameters["carId"]
+            val availableSlots = AvailabilitiesRepository.getAvailableSlots(null, null, carId)
+            call.respond(HttpStatusCode.OK, availableSlots)
+        }
+
+        // POST new availability
         post {
             try {
                 val req = call.receive<AvailibilityCreateOrUpdate>()
@@ -56,6 +87,7 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
             }
         }
 
+        // PUT update an availability
         put("{id}") {
             val id = call.parameters["id"]
                 ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
@@ -78,6 +110,7 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
             }
         }
 
+        // DELETE an availability
         delete("{id}") {
             val id = call.parameters["id"]
                 ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
