@@ -10,11 +10,11 @@ import leafcar.backend.dto.UserDto
  *
  * @property user The `UserDto` object containing the details of the logged-in user.
  * @property message A message indicating the status of the login operation (default: "Login successful").
- * @property token The authentication token issued to the user for subsequent requests.
+ * @property accesstoken The authentication token issued to the user for subsequent requests.
  */
 @Serializable
 data class LoginResponse(
     val user: UserDto,
     val message: String = "Login successful",
-    val token: String
+    val accessToken: String
 )

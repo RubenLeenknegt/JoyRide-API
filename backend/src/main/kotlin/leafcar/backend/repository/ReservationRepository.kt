@@ -6,6 +6,9 @@ import leafcar.backend.dao.ReservationsTable
 import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Reservation
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.and
 import java.util.UUID
@@ -56,6 +59,15 @@ class ReservationRepository {
     fun getByCarId(carId: String): List<Reservation> = transaction {
         ReservationEntity.find { ReservationsTable.carId eq carId }
             .map { it.toDomain() }
+    }
+
+    fun exists(userId: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Boolean = transaction {
+        ReservationsTable.select {
+            (ReservationsTable.userId eq userId) and
+                    (ReservationsTable.carId eq carId) and
+                    (ReservationsTable.startDate eq startDate) and
+                    (ReservationsTable.endDate eq endDate)
+        }.any()
     }
 
     /**

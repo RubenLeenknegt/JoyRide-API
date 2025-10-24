@@ -27,6 +27,7 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
     // APP-UC-11: Route opvragen
     fun getLocations(): List<CarLocationRequest> = transaction {
         CarEntity.all().map { it.toCarLocationRequest() }
+//        CarEntity.findById(id)?.toCarLocationRequest()
     }
 
     // APP-UC-03: Auto beheren

@@ -3,6 +3,7 @@ plugins {
     application
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "2.2.0"
+    id("org.jetbrains.kotlinx.kover") version "0.9.3"
 }
 
 group = "leafcar.backend"
@@ -20,6 +21,9 @@ val logbackVersion = "1.5.12"
 val kotlinxSerializationVersion = "1.7.3"
 val kotlinxDatetimeVersion = "0.6.2"
 val dotenvVersion = "6.4.1"
+val mockkVersion = "1.13.8"
+val junitVersion = "5.10.0"
+val kotlinxCoroutinesVersion = "1.7.3"
 
 dependencies {
     // Ktor
@@ -53,6 +57,8 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("com.h2database:h2:2.2.224")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
+    testImplementation("com.h2database:h2:2.2.224")
+
     // Kotlin Datetime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
     // Java time
@@ -63,6 +69,14 @@ dependencies {
     implementation("io.ktor:ktor-server-auth:${ktorVersion}")
     implementation("io.ktor:ktor-server-auth-jwt:${ktorVersion}")
     implementation("io.ktor:ktor-server-status-pages:${ktorVersion}")
+    // Testing
+    testImplementation("io.ktor:ktor-server-test-host:${ktorVersion}")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${kotlinxCoroutinesVersion}")
+    testImplementation("io.mockk:mockk:${mockkVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation("org.mockito:mockito-core:5.20.0")
+    testImplementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
 
 }
 

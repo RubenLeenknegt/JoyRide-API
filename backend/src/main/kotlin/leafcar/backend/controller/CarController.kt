@@ -9,10 +9,13 @@ import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.util.toMap
+import kotlinx.datetime.toJavaLocalDateTime
 import leafcar.backend.dto.request.CarCreateOrUpdateRequest
 import leafcar.backend.repository.CarRepository
+import leafcar.backend.repository.ReservationRepository
 import leafcar.backend.services.CarService
 import leafcar.backend.services.JwtConfig.dotenv
+import java.time.LocalDateTime
 
 fun Route.carRouting(carRepository: CarRepository) {
 
@@ -46,7 +49,7 @@ fun Route.carRouting(carRepository: CarRepository) {
             }
 
             // APP-UC-11: Route opvragen
-            // GET /cars/location
+            // GET /cars/location/
             get("location") {
                 val cars = carRepository.getLocations()
 
@@ -56,11 +59,41 @@ fun Route.carRouting(carRepository: CarRepository) {
                     call.respond(cars)
             }
 
+            // APP-UC-11: Route opvragen
+            // GET /cars/location/{id}
+            get("location/{id}") {
+                val carId = call.parameters["id"].toString()
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal!!.payload.getClaim("id").asString()
+                val cars = carRepository.getLocations()
+                val car = cars.find { it.id == carId } ?: return@get call.respond(
+                    HttpStatusCode.NotFound,
+                    "No car with id $carId found"
+                )
+                val reservations = ReservationRepository().getReservationByCarId(carId)
+                val now = LocalDateTime.now()
+
+                if (reservations.isNotEmpty()) {
+                    reservations.forEach {
+                        if (it.userId == userId &&
+                            it.carId == carId &&
+                            it.startDate.toJavaLocalDateTime().isAfter(now.minusDays(5))
+                        ) {
+                            call.respond(HttpStatusCode.OK, car)
+                        }
+                    }
+                } else call.respond(
+                    HttpStatusCode.NotFound,
+                    "The combination userId and carId is not found or location was requested too early"
+                )
+
+            }
+
+
             // APP-UC-03: Auto beheren
             post {
                 val principal = call.principal<JWTPrincipal>()
                 val ownerId = principal!!.payload.getClaim("id").asString()
-//            val ownerId = "3fa85f64-5717-4562-b3fc-2c963f66a002"
 
                 val request = try {
                     call.receive<CarCreateOrUpdateRequest>()
@@ -99,7 +132,6 @@ fun Route.carRouting(carRepository: CarRepository) {
                     call.respond(HttpStatusCode.InternalServerError, mapOf("error" to (e.message ?: "Unknown error")))
                 }
             }
-
 
             // APP-UC-03: Auto beheren
             delete("id/{id}") {

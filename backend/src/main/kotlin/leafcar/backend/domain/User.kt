@@ -16,7 +16,6 @@ import kotlinx.serialization.Serializable
  * @property userType The role of the user in the system, represented by the `UserType` enum.
  * @property bankAccount The bank account number of the user (optional).
  * @property bankAccountName The name associated with the user's bank account (optional).
- * @property vehicleLocation The location of the user's vehicle (optional).
  */
 @Serializable
 data class User(
@@ -28,5 +27,4 @@ data class User(
     val userType: UserType,
     val bankAccount: String? = null,
     val bankAccountName: String? = null,
-    val vehicleLocation: String? = null
 )

@@ -18,7 +18,6 @@ import leafcar.backend.domain.UserType
  * @property userType The type of the user (e.g., admin, customer).
  * @property bankAccount The bank account number of the user (optional).
  * @property bankAccountName The name associated with the bank account (optional).
- * @property vehicleLocation The location of the user's vehicle (optional).
  */
 @Serializable
 data class UserDto(
@@ -30,5 +29,4 @@ data class UserDto(
     val userType: UserType,
     val bankAccount: String? = null,
     val bankAccountName: String? = null,
-    val vehicleLocation: String? = null
 )

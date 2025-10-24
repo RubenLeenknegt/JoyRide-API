@@ -78,8 +78,15 @@ fun Route.userRouting(userRepository: UserRepository) {
                 if (userId != idClaim) {
                     return@delete call.respond(HttpStatusCode.Unauthorized, "Token id and userId do not match")
                 } else {
-                    userRepository.deleteUser(userId)
-                    call.respond(HttpStatusCode.OK, "User with $userId was deleted")
+                    try {
+                        userRepository.deleteUser(userId)
+                        call.respond(HttpStatusCode.OK, "User with id $userId was deleted")
+                    } catch (e: Exception) {
+                        call.respond(
+                            HttpStatusCode.InternalServerError,
+                            "There was an error processing your request for user id $userId"
+                        )
+                    }
                 }
             }
         }
