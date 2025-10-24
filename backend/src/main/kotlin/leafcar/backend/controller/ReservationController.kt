@@ -53,6 +53,7 @@ fun Route.reservationRouting(reservationRepository: ReservationRepository, avail
                 call.respond(HttpStatusCode.OK, reservations)
         }
 
+        // POST new reservation, includes checking availability
         post {
             val request = call.receive<ReservationCreateOrUpdateRequest>()
 
@@ -90,6 +91,7 @@ fun Route.reservationRouting(reservationRepository: ReservationRepository, avail
             call.respond(HttpStatusCode.Created, reservation)
         }
 
+        // PUT update existing reservation, includes checking availability
         put("{id}") {
             val id = call.parameters["id"]
                 ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
@@ -136,10 +138,26 @@ fun Route.reservationRouting(reservationRepository: ReservationRepository, avail
                 call.respond(HttpStatusCode.OK, updated)
             }
         }
+
+        // DELETE existing reservation
+        delete("{id}") {
+            val id = call.parameters["id"]
+                ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
+
+            val deleted = reservationRepository.delete(id)
+
+            if (deleted)
+                call.respond(HttpStatusCode.NoContent)
+            else
+                call.respond(HttpStatusCode.NotFound, "No reservation with id $id")
+        }
+
     }
-        // TODO: Put enpoint, same as above
-        // TODO: DELETE
+
         // TODO: Auth for my endpoints
         // TODO: availibile availibilities
-        // TODO: get availibilties in timeslot
+        // TODO: get availibilties in timeslot filter
+        // TODO: update photo endpoint
+        // TODO: check code
+        // TODO: kdock
 }

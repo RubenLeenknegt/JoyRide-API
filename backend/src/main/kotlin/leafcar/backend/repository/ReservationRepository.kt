@@ -5,6 +5,7 @@ import leafcar.backend.dao.ReservationEntity
 import leafcar.backend.dao.ReservationsTable
 import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Reservation
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.and
 import java.util.UUID
@@ -119,6 +120,25 @@ class ReservationRepository {
         entity.endDate = endDate
 
         entity.toDomain()
+    }
+
+    /**
+     * Deletes a reservation record from the database by its ID.
+     *
+     * Executes the delete operation inside an Exposed [transaction].
+     * If a reservation with the given ID exists, it is removed from the database.
+     *
+     * @param id The unique identifier of the reservation to delete.
+     * @return `true` if the record was successfully deleted, or `false` if no reservation exists with the given ID.
+     */
+    fun delete(id: String): Boolean = transaction {
+        val entity = ReservationEntity.findById(EntityID(id, ReservationsTable))
+        if (entity != null) {
+            entity.delete()
+            true
+        } else {
+            false
+        }
     }
 
 }
