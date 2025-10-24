@@ -3,10 +3,10 @@ POST http://localhost:8081/auth/users/register
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
-  "firstName": "Peter",
+  "emailAddress": "PaulJackson@hotmail.com",
+  "firstName": "Paul",
   "lastName": "Jackson",
-  "birthDate": "1998-01-05",
+  "birthDate": "1993-02-05",
   "userType": "OWNER",
   "bankAccount": "ojghbjsk234820348",
   "bankAccountName": "HR P Jackson",
@@ -23,7 +23,7 @@ POST http://localhost:8081/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
+  "emailAddress": "PaulJackson@hotmail.com",
   "password": "Ditismijnwachtwoord"
 }
 > {%
@@ -34,30 +34,37 @@ Content-Type: application/json
 
 ### Get all availabilities
 GET http://localhost:8081/availabilities
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get availability by ID
 GET http://localhost:8081/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get availability by carId
 GET http://localhost:8081/availabilities/car/4b285f64-5717-4562-b3fc-2c963f66b001
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get available availabilities
 GET http://localhost:8081/availabilities/available
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get available availabilities with timeslot filter
 GET http://localhost:8081/availabilities/available?startDate=2025-10-01T06:00&endDate=2025-10-15T18:00
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get available availabilities filterd by carId
 GET http://localhost:8081/availabilities/available/car/4b285f64-5717-4562-b3fc-2c963f66b005
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Create a new availability
 POST http://localhost:8081/availabilities
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
@@ -70,6 +77,7 @@ Accept: application/json
 
 ### Update an existing availability
 PUT http://localhost:8081/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
@@ -81,4 +89,5 @@ Accept: application/json
 
 ### Delete an availability
 DELETE http://localhost:8081/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
+Authorization: Bearer {{access_token}}
 Accept: application/json

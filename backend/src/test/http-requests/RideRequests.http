@@ -3,9 +3,9 @@ POST http://localhost:8081/auth/users/register
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
-  "firstName": "Peter",
-  "lastName": "Jackson",
+  "emailAddress": "HenkKlaasen@hotmail.com",
+  "firstName": "Henk",
+  "lastName": "Klaasen",
   "birthDate": "1998-01-05",
   "userType": "OWNER",
   "bankAccount": "ojghbjsk234820348",
@@ -23,7 +23,7 @@ POST http://localhost:8081/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
+  "emailAddress": "HenkKlaasen@hotmail.com",
   "password": "Ditismijnwachtwoord"
 }
 > {%
@@ -34,18 +34,22 @@ Content-Type: application/json
 
 ### Get all rides
 GET http://localhost:8081/rides
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get ride by id
 GET http://localhost:8081/rides/6d485f64-5717-4562-b3fc-2c963f66d009
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get rides by reservationId
 GET http://localhost:8081/rides/reservation/5c385f64-5717-4562-b3fc-2c963f66c003
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Create a new ride
 POST http://localhost:8081/rides
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
@@ -55,9 +59,10 @@ Content-Type: application/json
   "endY": 4.8965,
   "length": 1500,
   "duration": 600,
-  "reservationId": "5c385f64-5717-4562-b3fc-2c963f66c010"
+  "reservationId": "5c385f64-5717-4562-b3fc-2c963f66c009"
 }
 
 ### Delete a ride
 DELETE http://localhost:8081/rides/6d485f64-5717-4562-b3fc-2c963f66d009
+Authorization: Bearer {{access_token}}
 Accept: application/json

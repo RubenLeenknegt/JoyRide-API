@@ -3,10 +3,10 @@ POST http://localhost:8081/auth/users/register
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
-  "firstName": "Peter",
+  "emailAddress": "PeteJackson@hotmail.com",
+  "firstName": "Pete",
   "lastName": "Jackson",
-  "birthDate": "1998-01-05",
+  "birthDate": "1977-01-05",
   "userType": "OWNER",
   "bankAccount": "ojghbjsk234820348",
   "bankAccountName": "HR P Jackson",
@@ -23,7 +23,7 @@ POST http://localhost:8081/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
+  "emailAddress": "PeteJackson@hotmail.com",
   "password": "Ditismijnwachtwoord"
 }
 > {%
@@ -34,26 +34,31 @@ Content-Type: application/json
 
 ### Get all reservations
 GET http://localhost:8081/reservations
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 
 ### Get reservation by ID
 GET http://localhost:8081/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 
 ### Get reservations by userId
 GET http://localhost:8081/reservations/user/3fa85f64-5717-4562-b3fc-2c963f66a009
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 
 ### Get reservations by carId
 GET http://localhost:8081/reservations/car/4b285f64-5717-4562-b3fc-2c963f66b010
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 
 ### Create a new reservation
 POST http://localhost:8081/reservations
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
@@ -67,6 +72,7 @@ Accept: application/json
 
 ### Update an existing reservation
 PUT http://localhost:8081/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
@@ -80,4 +86,5 @@ Accept: application/json
 
 ### Delete a reservation
 DELETE http://localhost:8081/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+Authorization: Bearer {{access_token}}
 Accept: application/json
