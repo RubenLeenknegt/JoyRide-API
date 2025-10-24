@@ -45,21 +45,7 @@ Content-Type: application/json
     "points":10000
 }
 
-
-### Get all users
-GET {{baseUrl}}/users
-Authorization: Bearer {{access_token}}
-
-### Update acount item like name or password
-PUT {{baseUrl}}/users/account/{{user_id}}/firstName
+### Get total bonuspoints
+GET {{baseUrl}}/bonuspoints/{{user_id}}
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
-
-{
-  "value": "Halloooo"
-}
-
-### Delete user account with its id
-DELETE {{baseUrl}}/users/account/{{user_id}}
-Authorization: Bearer {{access_token}}
-

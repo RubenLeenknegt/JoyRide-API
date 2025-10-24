@@ -9,8 +9,6 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.authenticate
 import io.ktor.server.plugins.ContentTransformationException
 import io.ktor.server.request.receive
-import leafcar.backend.dao.BonusPointsEntity
-import leafcar.backend.domain.BonusPoints
 import leafcar.backend.dto.request.BonusPointsCreate
 
 // Load environment variables using dotenv
@@ -23,17 +21,20 @@ val dotenv = dotenv()
  */
 fun Route.bonusPointsRouting(bonusPointsRepository: BonusPointsRepository) {
     // Define the base route for bonus points
-    route("/bonuspoints") {
-        // Authenticate routes using the JWT backend authentication name from environment variables
-        authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
-
+    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+        route("/bonuspoints") {
+            // Authenticate routes using the JWT backend authentication name from environment variables
             /**
              * GET endpoint to retrieve all bonus points.
              * Responds with a list of all bonus points in the system.
              */
-            get {
-                val bonuspoints = bonusPointsRepository.getAll()
-                call.respond(status = HttpStatusCode.OK, bonuspoints)
+            get("/{userId}") {
+                val userId = call.parameters["userId"].toString()
+                val bonusPoints = bonusPointsRepository.getTotalPointsByUserId(userId) ?: call.respond(
+                    HttpStatusCode.InternalServerError,
+                    "Something went wrong processing your request"
+                )
+                call.respond(status = HttpStatusCode.OK, mapOf("totalPoints" to bonusPoints))
             }
 
             /**
@@ -50,7 +51,11 @@ fun Route.bonusPointsRouting(bonusPointsRepository: BonusPointsRepository) {
                         userId = req.userId,
                         rideId = req.rideId,
                         points = req.points
+                    ) ?: call.respond(
+                        HttpStatusCode.Forbidden,
+                        "A point entry with rideId ${req.rideId} was already registered."
                     )
+
                     call.respond(HttpStatusCode.Created, created)
                 } catch (e: ContentTransformationException) {
                     // Handle invalid or missing JSON body
