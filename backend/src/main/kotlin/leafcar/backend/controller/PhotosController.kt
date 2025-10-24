@@ -25,7 +25,7 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
                 return@get call.respond(HttpStatusCode.BadRequest, "Missing entityType or entityId parameter.")
             }
 
-            val validTypes = listOf("cars", "users", "rentals")
+            val validTypes = listOf("cars", "users", "reservations")
             if (entityType !in validTypes) {
                 return@get call.respond(HttpStatusCode.BadRequest, "Invalid photo type")
             }
@@ -42,8 +42,6 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
             call.respond(HttpStatusCode.OK, photos)
         }
 
-        // TODO: Rentals -> reservations
-
         // Post new photos to a specific entity
         post("/{entityType}/{entityId}") {
             val entityType = call.parameters["entityType"]
@@ -53,7 +51,7 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
                 return@post call.respond(HttpStatusCode.BadRequest, "Missing entityType or entityId parameter.")
             }
 
-            val validTypes = listOf("cars", "users", "rentals")
+            val validTypes = listOf("cars", "users", "reservations")
             if (entityType !in validTypes) {
                 return@post call.respond(HttpStatusCode.BadRequest, "Invalid photo type")
             }
@@ -112,7 +110,7 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
                 return@delete call.respond(HttpStatusCode.BadRequest, "Missing required parameters.")
             }
 
-            val validTypes = listOf("cars", "users", "rentals")
+            val validTypes = listOf("cars", "users", "reservations")
             if (entityType !in validTypes) {
                 return@delete call.respond(HttpStatusCode.BadRequest, "Invalid photo type")
             }
@@ -143,7 +141,5 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
 
             call.respond(HttpStatusCode.OK, "${photos.size} photo(s) deleted successfully")
         }
-
-
     }
 }
