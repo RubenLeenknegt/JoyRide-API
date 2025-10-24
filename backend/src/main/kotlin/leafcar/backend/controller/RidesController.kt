@@ -15,11 +15,14 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
 
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
         route("/rides") {
+
+            // GET all rides
             get {
                 val rides = ridesRepository.getAll()
                 call.respond(HttpStatusCode.OK, rides)
             }
 
+            // GET a ride by Id
             get("{id}") {
                 val id = call.parameters["id"]
                     ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
@@ -32,6 +35,7 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                     call.respond(HttpStatusCode.OK, ride)
             }
 
+            // GET a ride by reservationId
             get("/reservation/{reservationId}") {
                 val reservationId = call.parameters["reservationId"]
                     ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing reservationId")
@@ -44,6 +48,7 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                     call.respond(HttpStatusCode.OK, rides)
             }
 
+            // POST a new ride
             post {
                 try {
                     val req = call.receive<RideCreate>()
@@ -64,6 +69,7 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                 }
             }
 
+            // DELETE a ride
             delete("/{id}") {
                 val id = call.parameters["id"]
                     ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")

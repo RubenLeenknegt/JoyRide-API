@@ -212,6 +212,21 @@ class AvailabilitiesRepository {
         }
     }
 
+    /**
+     * Checks if a car is available for the specified time period.
+     *
+     * This function queries the availabilities table to determine if there exists
+     * at least one availability window that completely encompasses the requested
+     * time period for the given car.
+     *
+     * @param carId The unique identifier of the car to check availability for
+     * @param startDate The start date and time of the requested period
+     * @param endDate The end date and time of the requested period
+     * @return `true` if the car is available for the entire requested period,
+     *         `false` otherwise
+     *
+     * @throws IllegalArgumentException if startDate is after endDate
+     */
     fun withinAvailability( carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Boolean = transaction {
         AvailabilitiesEntity.find {
             (AvailabilitiesTable.carId eq carId) and

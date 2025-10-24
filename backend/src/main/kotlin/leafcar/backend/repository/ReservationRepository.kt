@@ -61,15 +61,6 @@ class ReservationRepository {
             .map { it.toDomain() }
     }
 
-    fun exists(userId: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Boolean = transaction {
-        ReservationsTable.select {
-            (ReservationsTable.userId eq userId) and
-                    (ReservationsTable.carId eq carId) and
-                    (ReservationsTable.startDate eq startDate) and
-                    (ReservationsTable.endDate eq endDate)
-        }.any()
-    }
-
     /**
      * Checks if a given time window overlaps with existing reservations for a car.
      *

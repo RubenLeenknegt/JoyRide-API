@@ -14,6 +14,8 @@ import leafcar.backend.repository.AvailabilitiesRepository
 fun Route.reservationRouting(reservationRepository: ReservationRepository, availabilitiesRepository: AvailabilitiesRepository) {
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
         route("/reservations") {
+
+            // GET all reservations
             get {
                 val reservations = reservationRepository.getAll()
                 call.respond(status = HttpStatusCode.OK, reservations)
@@ -69,7 +71,7 @@ fun Route.reservationRouting(reservationRepository: ReservationRepository, avail
                 val carId = request.carId
                 val userId = request.userId
 
-                // Step 1: Check availability (✅ now uses the injected instance)
+                // Step 1: Check availability
                 val isAvailable = availabilitiesRepository.withinAvailability(carId, startDate, endDate)
                 if (!isAvailable) {
                     return@post call.respond(
