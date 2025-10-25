@@ -1,0 +1,139 @@
+// Class diagram v4 - updated to current backend domain models
+
+User: {
+  shape: class
+  label: "User"
+  - id: String
+  - firstName: String
+  - lastName: String
+  - birthDate: LocalDate
+  - emailAddress: String
+  - userType: UserType
+  - bankAccount: String?
+  - bankAccountName: String?
+}
+
+Car: {
+  shape: class
+  label: "Car"
+  - id: String
+  - ownerId: String
+  - brand: String
+  - model: String
+  - buildYear: Int
+  - transmissionType: TransmissionType
+  - color: Color
+  - fuelType: FuelType
+  - length: Int
+  - width: Int
+  - seats: Int
+  - isofixCompatible: Boolean
+  - phoneMount: Boolean
+  - luggageSpace: Double
+  - parkingSensors: Boolean
+  - locationX: Float
+  - locationY: Float
+  - licensePlate: String
+  - pricePerDay: Double
+  - purchasePrice: Double
+  - residualValue: Double
+  - usageYears: Int
+  - annualKm: Int
+  - energyCostPerKm: Double
+  - maintenanceCostPerKm: Double
+  - averageConsumption: Double
+}
+
+Reservation: {
+  shape: class
+  label: "Reservation"
+  - id: String
+  - userId: String
+  - carId: String
+  - startDate: LocalDateTime
+  - endDate: LocalDateTime
+}
+
+Ride: {
+  shape: class
+  label: "Ride"
+  - id: String
+  - startX: Float
+  - startY: Float
+  - endX: Float
+  - endY: Float
+  - length: Int
+  - duration: Int
+  - reservationId: String
+}
+
+Photo: {
+  shape: class
+  label: "Photo"
+  - id: String
+  - carId: String?
+  - reservationId: String?
+  - userId: String?
+  - filePath: String
+}
+
+BonusPoints: {
+  shape: class
+  label: "BonusPoints"
+  - id: String
+  - userId: String
+  - rideId: String
+  - points: Int
+}
+
+Availability: {
+  shape: class
+  label: "Availability"
+  - id: String
+  - carId: String
+  - startDate: LocalDateTime
+  - endDate: LocalDateTime?
+}
+
+// Enums (visual only)
+TransmissionType: {
+  shape: class
+  style: { stroke-dash: 3 }
+  label: "<<enum>> TransmissionType"
+}
+Color: {
+  shape: class
+  style: { stroke-dash: 3 }
+  label: "<<enum>> Color"
+}
+FuelType: {
+  shape: class
+  style: { stroke-dash: 3 }
+  label: "<<enum>> FuelType"
+}
+UserType: {
+  shape: class
+  style: { stroke-dash: 3 }
+  label: "<<enum>> UserType"
+}
+
+// Relationships (based on IDs in domain models)
+User <-> Car: "1 / 0..*" { label: "owns (ownerId)" }
+User <-> Reservation: "1 / 0..*" { label: "books (userId)" }
+Car <-> Reservation: "1 / 0..*" { label: "is reserved by (carId)" }
+Reservation -> Ride: "1 / 0..*" { label: "has rides (reservationId)" }
+Ride -> BonusPoints: "0..1 / 0..*" { label: "awards" }
+
+// Photos can belong to Car, Reservation or User (optional)
+Car <-> Photo: "1 / 0..*" { label: "has photos" }
+Reservation <-> Photo: "1 / 0..*" { label: "has photos" }
+User <-> Photo: "1 / 0..*" { label: "has photos" }
+
+// Car availability windows
+Car <-> Availability: "1 / 0..*" { label: "has availability" }
+
+// Enum annotations
+Car -> TransmissionType: "uses" { style: { stroke-dash: 3 } }
+Car -> Color: "uses" { style: { stroke-dash: 3 } }
+Car -> FuelType: "uses" { style: { stroke-dash: 3 } }
+User -> UserType: "uses" { style: { stroke-dash: 3 } }

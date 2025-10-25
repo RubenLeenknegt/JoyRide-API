@@ -17,35 +17,35 @@ project: {
     label: "backend/src/main/kotlin/leafcar/backend"
 
     application: {
-      label: "Application & Bootstrapping\n- Application.kt\n- Main.kt\n- DatabaseConfig.kt\n- DatabaseConnection.kt"
+      label: "Application & Bootstrapping\n- Application.kt\n- DatabaseConfig.kt\n- DatabaseConnection.kt"
     }
 
     controller: {
-      label: "controller\n- CarController.kt\n- UserController.kt\n- ReservationController.kt\n- AvailabilitiesController.kt\n- RidesController.kt\n- BonusPointscontroller.kt"
+      label: "controller\n- AuthController.kt\n- UserController.kt\n- CarController.kt\n- ReservationController.kt\n- AvailabilitiesController.kt\n- RidesController.kt\n- PhotosController.kt\n- BonusPointscontroller.kt"
     }
 
     service: {
-      label: "service\n- CarService.kt (present)"
+      label: "services\n- AuthService.kt\n- CarService.kt\n- JwtConfig.kt\n- MockDataGeneration.kt"
     }
 
     repository: {
-      label: "repository\n- SharedRepository.kt\n- CarRepository.kt\n- UserRepository.kt\n- ReservationRepository.kt\n- AvailabilitiesRepository.kt\n- RidesRepository.kt\n- BonusPointsRepository.kt"
+      label: "repository\n- SharedRepository.kt\n- UserRepository.kt\n- CarRepository.kt\n- ReservationRepository.kt\n- AvailabilitiesRepository.kt\n- RidesRepository.kt\n- PhotoRepository.kt\n- BonusPointsRepository.kt\n- UserUpdateResult.kt"
     }
 
     mappers: {
-      label: "mappers\n- CarMapper.kt"
+      label: "mappers\n- CarMapper.kt\n- UserMapper.kt"
     }
 
     dto: {
-      label: "dto.request\n- CarCreateRequest.kt\n- CarLocationRequest.kt"
+      label: "dto\nrequest:\n- CarCreateOrUpdateRequest.kt\n- CarLocationRequest.kt\n- CarCpkDataRequest.kt\n- CarTcoDataRequest.kt\n- RegisterRequest.kt\n- LoginRequest.kt\n- BonusPointsCreate.kt\n- AccountModifyRequest.kt\n\nresponse:\n- LoginResponse.kt\n- CarCpkDataResponse.kt\n- CarTcoDataResponse.kt\n\n- UserDto.kt"
     }
 
     domain: {
-      label: "domain\n- Car.kt\n- User.kt\n- Reservation.kt\n- Availability.kt\n- Ride.kt\n- BonusPoints.kt\n- Enums.kt"
+      label: "domain\n- Car.kt\n- User.kt\n- Reservation.kt\n- Availability.kt\n- Ride.kt\n- Photo.kt\n- BonusPoints.kt\n- Enums.kt\n\nauth:\n- UserCredentials.kt"
     }
 
     dao: {
-      label: "dao (Exposed)\n- Entity & Table classes\n  • CarEntity/CarsTable\n  • UserEntity/UsersTable\n  • ReservationEntity/ReservationsTable\n  • AvailabilitiesEntity/AvailabilitiesTable\n  • RideEntity/RidesTable\n  • BonusPointsEntity/BonusPointsTable"
+      label: "dao (Exposed)\n- Entity & Table classes\n  • CarEntity/CarsTable\n  • UserEntity/UsersTable\n  • PhotosEntity/PhotosTable\n  • ReservationEntity/ReservationsTable\n  • AvailabilitiesEntity/AvailabilitiesTable\n  • RideEntity/RidesTable\n  • BonusPointsEntity/BonusPointsTable"
     }
   }
 
@@ -84,9 +84,9 @@ project.backend.repository -> project.backend.dao: "CRUD via Exposed"
 project.backend.repository -> project.backend.mappers: "map entity ⇄ domain/dto"
 project.backend.repository -> project.backend.domain: "returns domain"
 
-project.backend.mappers -> project.backend.dao: "CarEntity, ResultRow"
-project.backend.mappers -> project.backend.domain: "Car, Enums"
-project.backend.mappers -> project.backend.dto: "CarLocationRequest, CarCreateRequest"
+project.backend.mappers -> project.backend.dao: "CarEntity, UserEntity, ResultRow"
+project.backend.mappers -> project.backend.domain: "Car, User, Enums"
+project.backend.mappers -> project.backend.dto: "Car DTOs, User DTOs"
 
 project.backend.dao -> project.backend.domain: "IDs/enums typed to domain" {
   style: {stroke-dash: 6}
@@ -109,7 +109,7 @@ project.docker: {
 }
 
 project.frontend: {
-  label: "frontend\n- (not present in repository)"
+  label: "frontend\n- (coming soon..)"
 }
 
 # // Docker relationships

@@ -21,7 +21,7 @@ fun Route.carRouting(carRepository: CarRepository) {
 
 
     route("/cars") {
-        authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+//        authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
             // APP-UC-04: Auto zoeken
             // GET /cars?brand=BMW
             get {
@@ -173,4 +173,4 @@ fun Route.carRouting(carRepository: CarRepository) {
             }
         }
     }
-}
+//}
