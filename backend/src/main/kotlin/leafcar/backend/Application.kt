@@ -3,7 +3,6 @@ package leafcar.backend
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTDecodeException
-import io.ktor.http.ContentType
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -18,10 +17,7 @@ import leafcar.backend.repository.*
 import org.jetbrains.exposed.sql.Database
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.auth.Authentication
-import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
-import leafcar.backend.domain.UserType
-import leafcar.backend.services.AuthService
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.server.auth.jwt.*
 import io.ktor.http.HttpStatusCode
@@ -45,7 +41,6 @@ import leafcar.backend.services.generateReservationsMock
  * Serves as the entry point for the Ktor server and initializes
  * all necessary services and routes.
  */
-
 fun main() {
     embeddedServer(
         Netty,
@@ -146,45 +141,8 @@ fun Application.module() {
     // --- Routing ---
     // Define API endpoints and serve static content
     routing {
-        // Eenvoudige homepage met een link naar de JSON-output van /cars
-        get("/") {
-            val names: Array<String> = arrayOf("Giel van Gaal", "Ruben Leenkegt", "Ivar Visser")
-            call.respondText(
-                """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>P1 Avans CICD Kotlin/Ktor</title>
-                </head>
-                <body>
-                    <h1>fantastic-lamp: A CI/CD pipeline for Kotlin and Ktor</h1>
-                    <p>Hello, our names are: ${
-                    names.joinToString(
-                        separator = ", <br/>",
-                        prefix = "<br/>",
-                        postfix = "."
-                    )
-                }</p>
-                    <a href="/cars">Bekijk alle auto's (JSON)</a><br/>
-                    <a href="/reservations">Bekijk alle reservations (JSON)</a><br/>
-                    <a href="/availabilities">Bekijk alle availabilities (JSON)</a><br/>
-                    <a href="/rides">Bekijk alle rides (JSON)</a><br/>
-                    <a href="/users">Bekijk alle User's (JSON)</a><br/>
-                    <a href="/bonuspoints">Bekijk alles bonuspoints (JSON)</a><br/>
-                    <br>
-                    <br>
-                    <a href="/photos/cars/4b285f64-5717-4562-b3fc-2c963f66b009">Bekijk fotos van Volkswagen Kever (JSON)</a><br/>
-                </body>
-                </html>
-                """.trimIndent(),
-                contentType = ContentType.Text.Html
-            )
-        }
-
         staticFiles("/photos", File("/app/photos"))
 
-        // JSON endpoint(s) voor auto’s
         carRouting(carRepository)
         reservationRouting(reservationRepository, availabilitiesRepository)
         AvailabilitiesRouting(availabilitiesRepository)
@@ -193,7 +151,7 @@ fun Application.module() {
         authRouting(userRepository)
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
-//        Generate a set of test users
+
       if (Database == Database) {
           println("Api is up and running")
       }
