@@ -26,58 +26,49 @@ val junitVersion = "5.10.0"
 val kotlinxCoroutinesVersion = "1.7.3"
 
 dependencies {
-    // Ktor
+    // --- Ktor core ---
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    // Logging
+    // --- Logging ---
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
-    // Database
+    // --- Database ---
     implementation("com.zaxxer:HikariCP:$hikariVersion")
     implementation("com.mysql:mysql-connector-j:$mysqlConnectorVersion")
 
-    // Exposed ORM
+    // --- Exposed ORM ---
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
-    // Serialization / Kotlin libs
+    // --- Kotlinx & Serialization ---
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")
 
-    // Env
+    // --- Environment variables (.env) ---
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
 
-    // Tests
+    // --- Security ---
+    implementation("org.springframework.security:spring-security-core:6.5.5")
+
+    // --- JWT / Authentication ---
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+
+    // --- Testing ---
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutinesVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     testImplementation(kotlin("test"))
     testImplementation("com.h2database:h2:2.2.224")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
-    testImplementation("com.h2database:h2:2.2.224")
-
-    // Kotlin Datetime
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
-    // Java time
-    implementation("org.jetbrains.exposed:exposed-java-time:0.44.1")
-    // Security
-    implementation("org.springframework.security:spring-security-core:6.5.5")
-    // JWT
-    implementation("io.ktor:ktor-server-auth:${ktorVersion}")
-    implementation("io.ktor:ktor-server-auth-jwt:${ktorVersion}")
-    implementation("io.ktor:ktor-server-status-pages:${ktorVersion}")
-    // Testing
-    testImplementation("io.ktor:ktor-server-test-host:${ktorVersion}")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${kotlinxCoroutinesVersion}")
-    testImplementation("io.mockk:mockk:${mockkVersion}")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-    testImplementation("org.mockito:mockito-core:5.20.0")
-    testImplementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
-
 }
 
 application {
