@@ -2,6 +2,13 @@ package leafcar.backend.domain
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Domain model representing a car within the application.
+ *
+ * Serves as the main data structure exchanged between services,
+ * repositories, and API layers. Serializable for API and storage use.
+ */
+
 @Serializable
 data class Car(
     val id: String,

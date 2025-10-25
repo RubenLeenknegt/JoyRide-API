@@ -31,6 +31,21 @@ import java.util.Date
 import leafcar.backend.services.generateUsersMock
 import leafcar.backend.services.generateReservationsMock
 
+/**
+ * Main application module for the LeafCar backend.
+ *
+ * Configures:
+ * - Database connection using Exposed and HikariCP
+ * - JSON serialization with Kotlinx Serialization
+ * - JWT authentication for secure endpoints
+ * - Repositories for car, user, reservations, bonus points, rides, and photos
+ * - Mock data generation for users and reservations
+ * - Routing for API endpoints and static content (photos)
+ *
+ * Serves as the entry point for the Ktor server and initializes
+ * all necessary services and routes.
+ */
+
 fun main() {
     embeddedServer(
         Netty,
@@ -41,10 +56,12 @@ fun main() {
 }
 
 fun Application.module() {
-    // Initialiseert Exposed met een Hikari-connection pool
+    // --- Database ---
+    // Initialize Exposed with Hikari connection pool
     Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
 
-    // JSON-serialisatie voor request/response-bodies met Kotlinx Serialization
+    // --- Serialization ---
+    // Configure JSON serialization for requests/responses
     install(ContentNegotiation) {
         json(
             Json {
@@ -56,7 +73,8 @@ fun Application.module() {
         )
     }
 
-
+    // --- Serialization ---
+    // Configure JSON serialization for requests/responses
     val dotenv = dotenv()
     val secret = dotenv["JWT_SECRET"]
     val issuer = dotenv["JWT_ISSUER"]
@@ -110,19 +128,23 @@ fun Application.module() {
         }
     }
 
+    // --- Repositories ---
+    // Instantiate repositories for various entities
     val carRepository = CarRepository()
     val userRepository = UserRepository()
     val bonusPointsRepository = BonusPointsRepository()
     val reservationRepository = ReservationRepository()
     val availabilitiesRepository = AvailabilitiesRepository()
     val ridesRepository = RidesRepository()
-
     val PhotosRepository = PhotoRepository()
 
-    // Seed mock data (idempotent)
+    // --- Mock data ---
+    // Generate test users and reservations, seed mock data (idempotent)
     generateUsersMock()
     generateReservationsMock()
 
+    // --- Routing ---
+    // Define API endpoints and serve static content
     routing {
         // Eenvoudige homepage met een link naar de JSON-output van /cars
         get("/") {
@@ -167,10 +189,7 @@ fun Application.module() {
         reservationRouting(reservationRepository)
         AvailabilitiesRouting(availabilitiesRepository)
         RidesRouting(ridesRepository)
-
-
         userRouting(userRepository)
-
         authRouting(userRepository)
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
@@ -180,10 +199,3 @@ fun Application.module() {
     }
 
 }
-
-//#### Tips en vervolgstappen
-//- Configuratie scheiden: gebruik `application.conf`/HOCON of environment-variabelen (bijv. via `System.getenv`) voor host/poort en DB‑instellingen.
-//- Health endpoints: voeg `GET /health` of `GET /ready` toe om readiness/liveness checks te ondersteunen in CI/CD en container‑omgevingen.
-//- Error handling: installeer `StatusPages` om consistente foutresponses (JSON) te retourneren, inclusief logging/tracing.
-//- OpenAPI: overweeg integratie met een OpenAPI/Swagger plugin of handmatige schema’s zodat clients jouw API eenvoudig kunnen verbruiken.
-//- Security: voeg CORS, rate limiting en authenticatie toe zodra je endpoints publiek worden blootgesteld.

@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 /**
  * Enum representing the types of vehicle transmissions.
- *
  * This enum is used to specify the transmission type of a vehicle.
  */
 @Serializable
@@ -16,7 +15,6 @@ enum class TransmissionType {
 
 /**
  * Enum representing the colors of a vehicle.
- *
  * This enum is used to specify the color of a vehicle.
  */
 @Serializable
@@ -33,7 +31,6 @@ enum class Color {
 
 /**
  * Enum representing the types of fuel used by a vehicle.
- *
  * This enum is used to specify the fuel type of a vehicle.
  */
 @Serializable
@@ -45,7 +42,6 @@ enum class FuelType {
 
 /**
  * Enum representing the types of users in the system.
- *
  * This enum is used to specify whether a user is an owner or a renter.
  */
 @Serializable

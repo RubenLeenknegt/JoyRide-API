@@ -9,11 +9,23 @@ import leafcar.backend.mappers.CarMapper
 import leafcar.backend.mappers.CarMapper.toDomain
 import leafcar.backend.repository.CarRepository
 
+/**
+ * Service layer for managing car operations.
+ *
+ * Handles business logic for creating, updating, deleting cars,
+ * as well as calculating Total Cost of Ownership (TCO) and
+ * Cost Per Kilometer (CPK) metrics.
+ *
+ * Interacts with [CarRepository] for persistence and uses [CarMapper]
+ * for conversions between entities, domain models, and DTOs.
+ */
+
 class CarService(
     private val carRepository: CarRepository
 ) {
 
     // APP-UC-03: Auto beheren
+    /** Creates a new car for the given owner. Returns the created domain object or null on failure. */
     fun createCar(request: CarCreateOrUpdateRequest, ownerId: String): Car? {
         val car = CarMapper.fromCarCreateRequest(request, ownerId)
         val createdCar = carRepository.create(car)
@@ -23,7 +35,7 @@ class CarService(
         else
             return createdCar.toDomain()
     }
-
+    /** Updates an existing car by ID. Returns the updated domain object or null on failure. */
     // APP-UC-03: Auto beheren
     fun updateCar(request: CarCreateOrUpdateRequest, id: String): Car? {
         val car = CarMapper.fromCarUpdateRequest(request, id)
@@ -35,6 +47,7 @@ class CarService(
             return updatedCar.toDomain()
     }
 
+    /** Deletes a car by ID. Returns true if deletion succeeds, false otherwise. */
     // APP-UC-03: Auto beheren
     fun deleteCar(id: String): Boolean {
         return try {
@@ -45,6 +58,7 @@ class CarService(
         }
     }
 
+    /** Calculates the Total Cost of Ownership (TCO) for a car and returns a response DTO. */
     fun getTco(id: String): CarTcoDataResponse? {
         val tcoData = carRepository.getTcoData(id) ?: return null
 
@@ -60,6 +74,7 @@ class CarService(
         }
     }
 
+    /** Calculates the Cost Per Kilometer (CPK) for a car and returns a response DTO. */
     fun getCpk(id: String): CarCpkDataResponse? {
         val cpkData = carRepository.getCpkData(id) ?: return null
 

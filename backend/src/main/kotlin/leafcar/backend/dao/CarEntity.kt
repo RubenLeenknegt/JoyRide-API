@@ -4,7 +4,18 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 
+/**
+ * Data Access Object (DAO) representing a single record in [CarsTable].
+ * Provides ORM-level access to car data through Exposed's [Entity] API.
+ * @param id primary key of the car record, wrapped in [EntityID]
+ */
 class CarEntity(id: EntityID<String>) : Entity<String>(id) {
+
+    /**
+     * Companion object linking [CarEntity] to [CarsTable].
+     * Exposes standard CRUD operations such as [all], [findById], and [new]
+     * through Exposed's [EntityClass].
+     */
     companion object : EntityClass<String, CarEntity>(CarsTable)
 
     var ownerId by CarsTable.ownerId
