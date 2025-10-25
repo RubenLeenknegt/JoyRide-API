@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover") version "0.9.3"
 }
 
-group = "leafcar.backend"
+group = "joyride.backend"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -72,7 +72,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("leafcar.backend.ApplicationKt")
+    mainClass.set("joyride.backend.ApplicationKt")
 }
 
 tasks.test {
