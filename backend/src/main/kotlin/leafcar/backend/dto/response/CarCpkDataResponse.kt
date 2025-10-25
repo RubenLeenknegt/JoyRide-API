@@ -2,6 +2,11 @@ package leafcar.backend.dto.response
 
 import kotlinx.serialization.Serializable
 
+/**
+ * DTO representing the Cost Per Kilometer (CPK) response for a car.
+ * Provides efficiency, fuel type, fuel price, and calculated cost per kilometer.
+ */
+
 @Serializable
 data class CarCpkDataResponse(
     val id: String,

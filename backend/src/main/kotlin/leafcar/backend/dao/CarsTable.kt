@@ -4,7 +4,13 @@ import leafcar.backend.domain.Color
 import leafcar.backend.domain.FuelType
 import leafcar.backend.domain.TransmissionType
 import org.jetbrains.exposed.dao.id.IdTable
-
+/**
+ * Exposed table definition for car data.
+ *
+ * Maps the application's car-related domain model to the relational database.
+ * Each column represents a property of a car, such as specifications, pricing,
+ * and location data. Used as the persistence layer for [CarEntity].
+ */
 object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meegegeven, hoeft eigenlijk niet maar voor duidelijkheid
     override val id = varchar("id", 36).entityId()
     val ownerId = varchar("owner_id", 36)

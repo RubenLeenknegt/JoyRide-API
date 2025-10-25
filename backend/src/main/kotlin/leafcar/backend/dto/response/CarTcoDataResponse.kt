@@ -2,6 +2,11 @@ package leafcar.backend.dto.response
 
 import kotlinx.serialization.Serializable
 
+/**
+ * DTO representing the Total Cost of Ownership (TCO) response for a car.
+ * Provides cost-related metrics and the calculated total ownership cost.
+ */
+
 @Serializable
 data class CarTcoDataResponse(
     val id: String,

@@ -4,6 +4,13 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
 
+/**
+ * Provides a HikariCP connection pool for database access.
+ *
+ * Configures the pool with parameters from [DatabaseConfig] and
+ * retries up to 5 times if the initial connection fails.
+ */
+
 object DatabaseConnection {
     private val config = HikariConfig().apply {
         jdbcUrl = DatabaseConfig.dbUrl

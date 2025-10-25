@@ -15,8 +15,19 @@ import leafcar.backend.dto.response.CarTcoDataResponse
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 
+/**
+ * Mapper object for converting between car-related entities, domain models, and DTOs.
+ *
+ * Provides functions to:
+ * - Convert database entities ([CarEntity]) and DSL rows ([ResultRow]) to domain objects ([Car]).
+ * - Convert domain objects to entities for persistence.
+ * - Convert domain objects and entities to request/response DTOs for API communication.
+ *
+ * Ensures consistent transformation of car data across layers while handling enum/string conversions.
+ */
+
 object CarMapper {
-    // Entity to Car-object
+    /** Converts a [CarEntity] to the domain [Car] object. */
     fun CarEntity.toDomain(): Car = Car(
         id = this.id.value,
         ownerId = this.ownerId,
@@ -46,7 +57,7 @@ object CarMapper {
         averageConsumption = this.averageConsumption.toDouble()
     )
 
-    // DSL rows to Car-object
+    /** Converts a database DSL [ResultRow] to a domain [Car] object. */
     fun toCar(row: ResultRow): Car = Car(
         id = row[CarsTable.id].value,
         ownerId = row[CarsTable.ownerId],
@@ -76,14 +87,14 @@ object CarMapper {
         averageConsumption = row[CarsTable.averageConsumption].toDouble()
     )
 
-    // Entity to CarLocationRequest-object
+    /** Converts a [CarEntity] to [CarLocationRequest] for location-only data. */
     fun CarEntity.toCarLocationRequest(): CarLocationRequest = CarLocationRequest(
         id = this.id.value,
         locationX = this.locationX,
         locationY = this.locationY
     )
 
-    // Car-object from fromCarCreateRequest
+    /** Converts a [CarCreateOrUpdateRequest] to a new [Car] domain object. */
     fun fromCarCreateRequest(request: CarCreateOrUpdateRequest, ownerId: String): Car = Car(
         id = UUID.randomUUID().toString(),
         ownerId = ownerId,
@@ -113,10 +124,10 @@ object CarMapper {
         averageConsumption = request.averageConsumption.toDouble()
     )
 
-    // Car-object from fromCarUpdateRequest
+    /** Converts a [CarCreateOrUpdateRequest] to an existing [Car] domain object by ID. */
     fun fromCarUpdateRequest(request: CarCreateOrUpdateRequest, id: String): Car = Car(
         id = id,
-        ownerId = request.ownerId!!, // waarom moeten deze uitroeptekens?
+        ownerId = request.ownerId!!,
         brand = request.brand,
         model = request.model,
         buildYear = request.buildYear,
@@ -143,6 +154,7 @@ object CarMapper {
         averageConsumption = request.averageConsumption.toDouble()
     )
 
+    /** Updates a [CarEntity] with values from a [Car] domain object. */
     fun CarEntity.fromDomain(car: Car) {
         ownerId = car.ownerId
         brand = car.brand
@@ -171,6 +183,7 @@ object CarMapper {
         averageConsumption = car.averageConsumption.toBigDecimal()
     }
 
+    /** Converts a [CarEntity] to [CarTcoDataRequest] for TCO calculations. */
     fun CarEntity.toCarTcoDataRequest(): CarTcoDataRequest = CarTcoDataRequest(
         id = this.id.value,
         purchasePrice = this.purchasePrice.toDouble(),
@@ -181,6 +194,7 @@ object CarMapper {
         maintenanceCostPerKm = this.maintenanceCostPerKm.toDouble()
     )
 
+    /** Converts a [CarTcoDataRequest] and calculation result to [CarTcoDataResponse]. */
     fun toCarTcoDataResponse(request: CarTcoDataRequest, result: Double) : CarTcoDataResponse = CarTcoDataResponse(
         id = request.id,
         purchasePrice = request.purchasePrice,
@@ -192,6 +206,7 @@ object CarMapper {
         result = result
     )
 
+    /** Converts a [CarEntity] to [CarCpkDataRequest] for CPK calculations. */
     fun CarEntity.toCarCpkDataRequest(): CarCpkDataRequest = CarCpkDataRequest(
         id = this.id.value,
         ownerId = this.ownerId,
@@ -199,6 +214,7 @@ object CarMapper {
         fuelType = this.fuelType
     )
 
+    /** Converts a [CarCpkDataRequest], fuel price, and result to [CarCpkDataResponse]. */
     fun toCarCpkDataResponse(request: CarCpkDataRequest, fuelPrice: Double, result: Double) : CarCpkDataResponse = CarCpkDataResponse(
         id = request.id,
         ownerId = request.ownerId,

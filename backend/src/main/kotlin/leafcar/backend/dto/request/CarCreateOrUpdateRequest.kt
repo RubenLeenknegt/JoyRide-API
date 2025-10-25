@@ -2,6 +2,12 @@ package leafcar.backend.dto.request
 
 import kotlinx.serialization.Serializable
 
+/**
+ * DTO for creating or updating a car.
+ * Encapsulates all necessary properties for persisting a car
+ * in the system or updating its existing data.
+ */
+
 @Serializable
 data class CarCreateOrUpdateRequest(
     val ownerId: String? = null,
