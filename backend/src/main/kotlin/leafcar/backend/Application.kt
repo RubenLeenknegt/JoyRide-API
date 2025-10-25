@@ -194,7 +194,9 @@ fun Application.module() {
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
 //        Generate a set of test users
-      
+      if (Database == Database) {
+          println("Api is up and running")
+      }
 
     }
 
