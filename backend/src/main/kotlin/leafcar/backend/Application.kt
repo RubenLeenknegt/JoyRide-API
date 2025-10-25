@@ -151,6 +151,11 @@ fun Application.module() {
         authRouting(userRepository)
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
+
+      if (Database == Database) {
+          println("Api is up and running")
+      }
+
     }
 
 }
