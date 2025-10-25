@@ -24,15 +24,6 @@ fun Route.userRouting(userRepository: UserRepository) {
         route("/users") {
 
             /**
-             * GET endpoint to retrieve all users.
-             * Responds with a list of all users in the system.
-             */
-            get {
-                val users = userRepository.getAll()
-                call.respond(status = HttpStatusCode.OK, users)
-            }
-
-            /**
              * PUT endpoint to modify a specific attribute of a user account.
              * Accepts the user ID, the key of the attribute to modify, and the new value.
              *
