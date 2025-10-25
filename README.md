@@ -142,27 +142,55 @@ Coverage reports
 - HTML report: backend/build/reports/kover/html/index.html
 - XML report (for CI): backend/build/reports/kover/report.xml
 
-Helper script (Windows)
+Helper scripts: Rebuild fat JAR and local Docker stack
 
-- rebuild-fatjar-docker.ps1 — purpose and usage
-    - What it does:
-        - Runs a clean Gradle build to produce backend/build/libs/backend-fat.jar.
-        - Brings the local Docker Compose stack down and removes volumes (down -v), wiping the MySQL data volume.
-        - Brings the stack back up and rebuilds images (up --build -d).
-    - When to use it:
-        - After changing backend code or dependencies and you want a fresh image and a clean database.
-        - When local MySQL data got into a bad state and you want to reset it using db-init/init.sql.
-    - When not to use it:
-        - If you want to keep your current DB data. Use docker compose -f docker-compose.local.yml up --build instead.
-    - Prerequisites:
-        - Docker Desktop running, and a .env.local file in the project root.
-    - Usage examples (PowerShell):
-        - .\rebuild-fatjar-docker.ps1
-        - .\gradlew.bat clean :backend:build; docker compose -f docker-compose.local.yml down -v; docker compose -f
-          docker-compose.local.yml up --build -d  (equivalent manual commands)
-    - Notes:
-        - The script defines a -SkipTests switch, but the current implementation always runs tests as part of the Gradle
-          build. Update the script if you want to actually skip tests.
+- Purpose
+  - Automate rebuilding the backend fat JAR, resetting the local Docker Compose stack, and rebuilding images.
+  - Useful after code or dependency changes, or when you want to wipe and re-seed the local MySQL using db-init.
+- WARNING
+  - These scripts bring the stack down with -v (remove volumes). Your local MySQL data will be deleted and recreated.
+
+Scripts and usage
+
+- Linux/macOS (Bash)
+  - ./rebuild-fatjar-docker.sh [--skip-tests]
+- Windows (PowerShell)
+  - .\rebuild-fatjar-docker.ps1 [-SkipTests]
+
+What they do
+
+- Run Gradle builds to produce backend/build/libs/backend-fat.jar.
+- Tear down the Docker Compose stack with volumes: docker compose -f docker-compose.local.yml down -v.
+- Bring the stack back up, rebuilding images: docker compose -f docker-compose.local.yml up --build -d.
+
+Notes and differences
+
+- Bash script (rebuild-fatjar-docker.sh)
+  - Chooses ./gradlew if available, otherwise system gradle.
+  - Supports --skip-tests to skip tests for both the root build and the backend build.
+- PowerShell script (rebuild-fatjar-docker.ps1)
+  - Chooses .\\gradlew.bat if available, otherwise system gradle.
+  - Supports -SkipTests for the initial clean build; the dedicated backend build currently always runs tests. If you need to skip tests there as well, run the equivalent manual commands or adjust the script.
+
+Prerequisites
+
+- Docker Desktop (or Docker Engine) running.
+- .env.local present in the project root (used by docker-compose.local.yml).
+
+Examples
+
+- Linux/macOS
+  - ./rebuild-fatjar-docker.sh
+  - ./rebuild-fatjar-docker.sh --skip-tests
+- Windows (PowerShell)
+  - .\rebuild-fatjar-docker.ps1
+  - .\rebuild-fatjar-docker.ps1 -SkipTests
+
+Equivalent manual commands
+
+- ./gradlew :backend:build
+- docker compose -f docker-compose.local.yml down -v
+- docker compose -f docker-compose.local.yml up --build -d
 
 ---
 
