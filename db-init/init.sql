@@ -83,16 +83,16 @@ CREATE TABLE IF NOT EXISTS BonusPoints (
 
 -- 2. INSERT USERS
 INSERT INTO Users (id, first_name, last_name, birth_date, email_address, password_hash, user_type, bank_account, bank_account_name) VALUES
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a001','Sanne','Jansen','1997-01-01','sanne.jansen@gmail.com','hash1','RENTER','NL91ABNA0417164300','S Jansen'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a002','Mohammed','El Amrani','1990-01-01','mohammed.elamrani@protonmail.com','hash2','OWNER','NL32RABO0195612345','M El Amrani'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a003','Anouk','van Dijk','1983-01-01','anouk.vandijk@outlook.com','hash3','RENTER','NL55INGB0001234567','A van Dijk'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a004','Joris','Bakker','1995-01-01','joris.bakker@gmail.com','hash4','RENTER','NL12SNSB0912345678','J Bakker'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a005','Fatima','Karimi','1998-01-01','fatima.karimi@runbox.com','hash5','OWNER','NL43TRIO0339876543','F Karimi'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a006','Bas','de Vries','1992-01-01','bas.devries@gmail.com','hash6','RENTER','NL66BUNQ2045678901','B de Vries'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a007','Lotte','Vermeulen','1996-01-01','lotte.vermeulen@protonmail.com','hash7','OWNER','NL77KNAB0256789012','L Vermeulen'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a008','Hassan','Bouhaddou','1984-01-01','hassan.bouhaddou@gmail.com','hash8','RENTER','NL88ASN0123456789','H Bouhaddou'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a009','Frits','Manuhutu','1989-01-01','frits.manuhutu@outlook.com','hash9','OWNER','NL99RABO0987654321','F Manuhutu'),
-                                                                    ('3fa85f64-5717-4562-b3fc-2c963f66a010','Rachid','Mansour','2000-01-01','rachid.mansour@gmail.com','hash10','RENTER','NL10ABNA0123456789','R Mansour');
+    ('3fa85f64-5717-4562-b3fc-2c963f66a001','Sanne','Jansen','1997-01-01','sanne.jansen@gmail.com','hash1','RENTER','NL91ABNA0417164300','S Jansen'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a002','Mohammed','El Amrani','1990-01-01','mohammed.elamrani@protonmail.com','hash2','OWNER','NL32RABO0195612345','M El Amrani'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a003','Anouk','van Dijk','1983-01-01','anouk.vandijk@outlook.com','hash3','RENTER','NL55INGB0001234567','A van Dijk'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a004','Joris','Bakker','1995-01-01','joris.bakker@gmail.com','hash4','RENTER','NL12SNSB0912345678','J Bakker'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a005','Fatima','Karimi','1998-01-01','fatima.karimi@runbox.com','hash5','OWNER','NL43TRIO0339876543','F Karimi'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a006','Bas','de Vries','1992-01-01','bas.devries@gmail.com','hash6','RENTER','NL66BUNQ2045678901','B de Vries'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a007','Lotte','Vermeulen','1996-01-01','lotte.vermeulen@protonmail.com','hash7','OWNER','NL77KNAB0256789012','L Vermeulen'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a008','Hassan','Bouhaddou','1984-01-01','hassan.bouhaddou@gmail.com','hash8','RENTER','NL88ASN0123456789','H Bouhaddou'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a009','Frits','Manuhutu','1989-01-01','frits.manuhutu@outlook.com','hash9','OWNER','NL99RABO0987654321','F Manuhutu'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66a010','Rachid','Mansour','2000-01-01','rachid.mansour@gmail.com','hash10','RENTER','NL10ABNA0123456789','R Mansour');
 -- 3. INSERT NEW CARS
 INSERT INTO Cars (id, owner_id, brand, model, build_year, transmission_type, color, fuel_type, length, width, seats, isofix_compatible, phone_mount, luggage_space, parking_sensors, location_x, location_y, license_plate, price_per_day, purchase_price, residual_value, usage_years, annual_km, energy_cost_per_km, maintenance_cost_per_km, average_consumption) VALUES
     ('4b285f64-5717-4562-b3fc-2c963f66b001','3fa85f64-5717-4562-b3fc-2c963f66a002','Land Rover','Series 3',1975,'MANUAL','GREEN','ICE',3880,1600,2,FALSE,FALSE,200.0,FALSE,51.5652,3.5912,'98-YA-67',80.00,25000.00,15000.00,5,15000,0.10,0.05, 15),
@@ -109,29 +109,30 @@ INSERT INTO Cars (id, owner_id, brand, model, build_year, transmission_type, col
 
 -- 4. INSERT RESERVATIONS
 INSERT INTO Reservations (id, user_id, car_id, start_date, end_date) VALUES
-    ('5c385f64-5717-4562-b3fc-2c963f66c001','3fa85f64-5717-4562-b3fc-2c963f66a001','4b285f64-5717-4562-b3fc-2c963f66b001','2025-10-10 09:00','2025-10-10 18:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c002','3fa85f64-5717-4562-b3fc-2c963f66a004','4b285f64-5717-4562-b3fc-2c963f66b002','2025-10-11 08:00','2025-10-11 17:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c003','3fa85f64-5717-4562-b3fc-2c963f66a006','4b285f64-5717-4562-b3fc-2c963f66b003','2025-10-12 10:00','2025-10-12 16:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c004','3fa85f64-5717-4562-b3fc-2c963f66a008','4b285f64-5717-4562-b3fc-2c963f66b004','2025-10-13 09:00','2025-10-13 18:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c005','3fa85f64-5717-4562-b3fc-2c963f66a010','4b285f64-5717-4562-b3fc-2c963f66b005','2025-10-14 07:00','2025-10-14 15:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c006','3fa85f64-5717-4562-b3fc-2c963f66a003','4b285f64-5717-4562-b3fc-2c963f66b006','2025-10-15 12:00','2025-10-15 20:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c007','3fa85f64-5717-4562-b3fc-2c963f66a002','4b285f64-5717-4562-b3fc-2c963f66b007','2025-10-16 08:00','2025-10-16 18:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c008','3fa85f64-5717-4562-b3fc-2c963f66a009','4b285f64-5717-4562-b3fc-2c963f66b008','2025-10-17 09:00','2025-10-17 17:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c009','3fa85f64-5717-4562-b3fc-2c963f66a007','4b285f64-5717-4562-b3fc-2c963f66b009','2025-10-18 10:00','2025-10-18 16:00'),
-    ('5c385f64-5717-4562-b3fc-2c963f66c010','3fa85f64-5717-4562-b3fc-2c963f66a001','4b285f64-5717-4562-b3fc-2c963f66b010','2025-10-19 09:00','2025-10-19 18:00');
+    ('5c385f64-5717-4562-b3fc-2c963f66c001','3fa85f64-5717-4562-b3fc-2c963f66a001','4b285f64-5717-4562-b3fc-2c963f66b001','2025-10-10 09:00:00','2025-10-10 18:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c002','3fa85f64-5717-4562-b3fc-2c963f66a004','4b285f64-5717-4562-b3fc-2c963f66b002','2025-10-11 08:00:00','2025-10-11 17:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c003','3fa85f64-5717-4562-b3fc-2c963f66a006','4b285f64-5717-4562-b3fc-2c963f66b003','2025-10-12 10:00:00','2025-10-12 16:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c004','3fa85f64-5717-4562-b3fc-2c963f66a008','4b285f64-5717-4562-b3fc-2c963f66b004','2025-10-13 09:00:00','2025-10-13 18:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c005','3fa85f64-5717-4562-b3fc-2c963f66a010','4b285f64-5717-4562-b3fc-2c963f66b005','2025-10-14 07:00:00','2025-10-14 15:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c006','3fa85f64-5717-4562-b3fc-2c963f66a003','4b285f64-5717-4562-b3fc-2c963f66b006','2025-10-15 12:00:00','2025-10-15 20:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c007','3fa85f64-5717-4562-b3fc-2c963f66a002','4b285f64-5717-4562-b3fc-2c963f66b007','2025-10-16 08:00:00','2025-10-16 18:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c008','3fa85f64-5717-4562-b3fc-2c963f66a009','4b285f64-5717-4562-b3fc-2c963f66b008','2025-10-17 09:00:00','2025-10-17 17:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c009','3fa85f64-5717-4562-b3fc-2c963f66a007','4b285f64-5717-4562-b3fc-2c963f66b009','2025-10-18 10:00:00','2025-10-18 16:00:00'),
+    ('5c385f64-5717-4562-b3fc-2c963f66c010','3fa85f64-5717-4562-b3fc-2c963f66a001','4b285f64-5717-4562-b3fc-2c963f66b010','2025-10-19 09:00:00','2025-10-19 18:00:00');
 
 -- 5. INSERT AVAILABILITIES
 INSERT INTO Availabilities (id, car_id, start_date, end_date) VALUES
-    ('9d785f64-5717-4562-b3fc-2c963f66d001','4b285f64-5717-4562-b3fc-2c963f66b001','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d002','4b285f64-5717-4562-b3fc-2c963f66b002','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d003','4b285f64-5717-4562-b3fc-2c963f66b003','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d004','4b285f64-5717-4562-b3fc-2c963f66b004','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d005','4b285f64-5717-4562-b3fc-2c963f66b005','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d006','4b285f64-5717-4562-b3fc-2c963f66b006','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d007','4b285f64-5717-4562-b3fc-2c963f66b007','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d008','4b285f64-5717-4562-b3fc-2c963f66b008','2025-10-01 08:00','2025-10-31 20:00'),
-    ('9d785f64-5717-4562-b3fc-2c963f66d009','4b285f64-5717-4562-b3fc-2c963f66b009','2025-10-01 08:00', NULL),
-    ('9d785f64-5717-4562-b3fc-2c963f66d010','4b285f64-5717-4562-b3fc-2c963f66b010','2025-10-01 08:00', NULL);
+    ('9d785f64-5717-4562-b3fc-2c963f66d001','4b285f64-5717-4562-b3fc-2c963f66b001','2025-10-01 08::00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d002','4b285f64-5717-4562-b3fc-2c963f66b002','2025-10-01 08:00:00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d003','4b285f64-5717-4562-b3fc-2c963f66b003','2025-10-01 08:00:00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d004','4b285f64-5717-4562-b3fc-2c963f66b004','2025-10-01 08:00:00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d005','4b285f64-5717-4562-b3fc-2c963f66b005','2025-10-01 08:00:00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d006','4b285f64-5717-4562-b3fc-2c963f66b006','2025-10-01 08:00:00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d007','4b285f64-5717-4562-b3fc-2c963f66b007','2025-10-01 08:00:00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d008','4b285f64-5717-4562-b3fc-2c963f66b008','2025-10-01 08:00:00','2025-10-31 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d011','4b285f64-5717-4562-b3fc-2c963f66b010','2025-11-01 08:00:00','2025-11-30 20:00:00'),
+    ('9d785f64-5717-4562-b3fc-2c963f66d009','4b285f64-5717-4562-b3fc-2c963f66b009','2025-10-01 08:00:00', NULL),
+    ('9d785f64-5717-4562-b3fc-2c963f66d010','4b285f64-5717-4562-b3fc-2c963f66b010','2025-10-01 08:00:00', NULL);
 
 -- 6. INSERT RIDES
 INSERT INTO Rides (id, reservation_id, start_x, start_y, end_x, end_y, length, duration) VALUES
@@ -147,7 +148,6 @@ INSERT INTO Rides (id, reservation_id, start_x, start_y, end_x, end_y, length, d
     ('6d485f64-5717-4562-b3fc-2c963f66d010','5c385f64-5717-4562-b3fc-2c963f66c010',52.0116,4.3571,52.3702,4.8952,50,75);
 
 -- 7. INSERT PHOTOS
--- 4. INSERT PHOTOS
 INSERT INTO Photos (id, car_id, reservation_id, user_id, file_path) VALUES
     ('f0010001-5717-4562-b3fc-2c963f66b001', '4b285f64-5717-4562-b3fc-2c963f66b001', NULL, NULL, 'photos/cars/4b285f64-5717-4562-b3fc-2c963f66b001/car_1.webp'),
     ('f0010002-5717-4562-b3fc-2c963f66b001', '4b285f64-5717-4562-b3fc-2c963f66b001', NULL, NULL, 'photos/cars/4b285f64-5717-4562-b3fc-2c963f66b001/car_2.webp'),

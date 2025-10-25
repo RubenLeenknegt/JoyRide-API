@@ -186,7 +186,7 @@ fun Application.module() {
 
         // JSON endpoint(s) voor auto’s
         carRouting(carRepository)
-        reservationRouting(reservationRepository)
+        reservationRouting(reservationRepository, availabilitiesRepository)
         AvailabilitiesRouting(availabilitiesRepository)
         RidesRouting(ridesRepository)
         userRouting(userRepository)

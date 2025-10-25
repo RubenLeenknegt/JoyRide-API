@@ -1,15 +1,16 @@
 package leafcar.backend.repository
 
+import kotlinx.datetime.LocalDateTime
 import leafcar.backend.dao.ReservationEntity
 import leafcar.backend.dao.ReservationsTable
 import leafcar.backend.dao.toDomain
 import leafcar.backend.domain.Reservation
-import kotlinx.datetime.LocalDateTime
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.and
 import java.util.UUID
 
 /**
@@ -28,40 +29,119 @@ class ReservationRepository {
         ReservationEntity.all().map { it.toDomain() }
     }
 
-    fun getReservationByUserId(userId: String) {
-        ReservationsTable.select { ReservationsTable.userId like "%$userId%" }
+    /**
+     * Returns a reservation by its ID.
+     *
+     * @param id The unique reservation ID.
+     * @return [Reservation] object if found, or null otherwise.
+     */
+    fun getById(id: String): Reservation? = transaction {
+        ReservationEntity.findById(id)?.toDomain()
     }
 
-    fun getReservationByCarId(carId: String): List<Reservation> {
-        return transaction {
-            ReservationsTable.select { ReservationsTable.carId like "%$carId%" }
-                .map { ReservationEntity.wrapRow(it).toDomain() }
-        }
+    /**
+     * Returns all reservations for a specific user.
+     *
+     * @param userId The unique ID of the user.
+     * @return List of [Reservation] objects belonging to the user.
+     */
+    fun getByUserId(userId: String): List<Reservation> = transaction {
+        ReservationEntity.find { ReservationsTable.userId eq userId }
+            .map { it.toDomain() }
     }
 
-    fun exists(userId: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Boolean = transaction {
-        ReservationsTable.select {
-            (ReservationsTable.userId eq userId) and
+    /**
+     * Returns all reservations for a specific car.
+     *
+     * @param carId The unique ID of the car.
+     * @return List of [Reservation] objects for the car.
+     */
+    fun getByCarId(carId: String): List<Reservation> = transaction {
+        ReservationEntity.find { ReservationsTable.carId eq carId }
+            .map { it.toDomain() }
+    }
+
+    /**
+     * Checks if a given time window overlaps with existing reservations for a car.
+     *
+     * @param carId The car ID to check.
+     * @param start Start of the desired reservation window.
+     * @param end End of the desired reservation window.
+     * @param excludeId Optional reservation ID to exclude from the check (useful for updates).
+     * @return True if there is an overlap, false otherwise.
+     */
+    fun overlapsExistingReservation( carId: String, start: LocalDateTime, end: LocalDateTime, excludeId: String? = null ): Boolean = transaction {
+        val query = ReservationEntity.find {
             (ReservationsTable.carId eq carId) and
-            (ReservationsTable.startDate eq startDate) and
-            (ReservationsTable.endDate eq endDate)
-        }.any()
+                    (
+                        (ReservationsTable.startDate less end) and
+                            (ReservationsTable.endDate greater start)
+                    )
+        }
+
+        excludeId?.let { idToSkip ->
+            query.any { it.id.value != idToSkip }
+        } ?: query.any()
     }
 
-    fun create(userId: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Reservation? = transaction {
-        // prevent exact-duplicate reservation rows
-        if (exists(userId, carId, startDate, endDate)) {
-            return@transaction null
-        }
-        val newId = UUID.randomUUID().toString()
-        ReservationsTable.insert { row ->
-            row[ReservationsTable.id] = EntityID(newId, ReservationsTable)
-            row[ReservationsTable.userId] = userId
-            row[ReservationsTable.carId] = carId
-            row[ReservationsTable.startDate] = startDate
-            row[ReservationsTable.endDate] = endDate
-        }
-        // return the created row as domain
-        ReservationEntity.findById(newId)?.toDomain()
+    /**
+     * Creates a new reservation.
+     *
+     * Generates a new UUID for the reservation ID.
+     *
+     * @param userId The user ID making the reservation.
+     * @param carId The car ID being reserved.
+     * @param startDate Start of the reservation.
+     * @param endDate End of the reservation.
+     * @return The created [Reservation] object.
+     */
+    fun createReservation(userId: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime): Reservation = transaction {
+        ReservationEntity.new(UUID.randomUUID().toString()) {
+            this.userId = userId
+            this.carId = carId
+            this.startDate = startDate
+            this.endDate = endDate
+        }.toDomain()
     }
+
+    /**
+     * Updates an existing reservation by ID.
+     *
+     * @param id The reservation ID to update.
+     * @param userId The new user ID.
+     * @param carId The new car ID.
+     * @param startDate New start time.
+     * @param endDate New end time.
+     * @return Updated [Reservation] object if found, null otherwise.
+     */
+    fun updateReservation( id: String, userId: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime ): Reservation? = transaction {
+        val entity = ReservationEntity.findById(id) ?: return@transaction null
+
+        entity.userId = userId
+        entity.carId = carId
+        entity.startDate = startDate
+        entity.endDate = endDate
+
+        entity.toDomain()
+    }
+
+    /**
+     * Deletes a reservation record from the database by its ID.
+     *
+     * Executes the delete operation inside an Exposed [transaction].
+     * If a reservation with the given ID exists, it is removed from the database.
+     *
+     * @param id The unique identifier of the reservation to delete.
+     * @return `true` if the record was successfully deleted, or `false` if no reservation exists with the given ID.
+     */
+    fun delete(id: String): Boolean = transaction {
+        val entity = ReservationEntity.findById(EntityID(id, ReservationsTable))
+        if (entity != null) {
+            entity.delete()
+            true
+        } else {
+            false
+        }
+    }
+
 }

@@ -11,11 +11,11 @@ class AvailabilitiesEntity(id: EntityID<String>) : Entity<String>(id) {
 
     companion object : EntityClass<String, AvailabilitiesEntity>(AvailabilitiesTable)
 
-    val carId by AvailabilitiesTable.carId
+    var carId by AvailabilitiesTable.carId
 
-    val startDate by AvailabilitiesTable.startDate
+    var startDate by AvailabilitiesTable.startDate
 
-    val endDate: LocalDateTime? by AvailabilitiesTable.endDate
+    var endDate: LocalDateTime? by AvailabilitiesTable.endDate
 }
 
 /**

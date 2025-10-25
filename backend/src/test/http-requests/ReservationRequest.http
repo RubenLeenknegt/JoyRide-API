@@ -1,0 +1,90 @@
+### Register new user
+POST http://localhost:8081/auth/users/register
+Content-Type: application/json
+
+{
+  "emailAddress": "PeteJackson@hotmail.com",
+  "firstName": "Pete",
+  "lastName": "Jackson",
+  "birthDate": "1977-01-05",
+  "userType": "OWNER",
+  "bankAccount": "ojghbjsk234820348",
+  "bankAccountName": "HR P Jackson",
+  "password": "Ditismijnwachtwoord"
+}
+
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+%}
+
+### Log in to api and key jwt
+POST http://localhost:8081/auth/users/login
+Content-Type: application/json
+
+{
+  "emailAddress": "PeteJackson@hotmail.com",
+  "password": "Ditismijnwachtwoord"
+}
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+
+%}
+
+### Get all reservations
+GET http://localhost:8081/reservations
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+
+### Get reservation by ID
+GET http://localhost:8081/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+
+### Get reservations by userId
+GET http://localhost:8081/reservations/user/3fa85f64-5717-4562-b3fc-2c963f66a009
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+
+### Get reservations by carId
+GET http://localhost:8081/reservations/car/4b285f64-5717-4562-b3fc-2c963f66b010
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+
+### Create a new reservation
+POST http://localhost:8081/reservations
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userId": "3fa85f64-5717-4562-b3fc-2c963f66a009",
+  "carId": "4b285f64-5717-4562-b3fc-2c963f66b010",
+  "startDate": "2025-11-01T09:00:00",
+  "endDate": "2025-11-12T12:00:00"
+}
+
+
+### Update an existing reservation
+PUT http://localhost:8081/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userId": "3fa85f64-5717-4562-b3fc-2c963f66a009",
+  "carId": "4b285f64-5717-4562-b3fc-2c963f66b010",
+  "startDate": "2025-11-15T09:00:00",
+  "endDate": "2025-11-27T12:00:00"
+}
+
+
+### Delete a reservation
+DELETE http://localhost:8081/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+Authorization: Bearer {{access_token}}
+Accept: application/json

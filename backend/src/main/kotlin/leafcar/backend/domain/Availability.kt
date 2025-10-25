@@ -9,4 +9,10 @@ data class Availability(
     val carId: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime?
-)
+) {
+    init {
+        if (endDate != null) {
+            require(endDate > startDate) { "Availability end date must be after start date" }
+        }
+    }
+}

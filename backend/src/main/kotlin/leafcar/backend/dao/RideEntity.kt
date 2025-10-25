@@ -8,19 +8,19 @@ import leafcar.backend.domain.Ride
 class RideEntity(id: EntityID<String>) : Entity<String>(id) {
     companion object : EntityClass<String, RideEntity>(RidesTable)
 
-    val startX by RidesTable.startX
+    var startX by RidesTable.startX
 
-    val startY by RidesTable.startY
+    var startY by RidesTable.startY
 
-    val endX by RidesTable.endX
+    var endX by RidesTable.endX
 
-    val endY by RidesTable.endY
+    var endY by RidesTable.endY
 
-    val length by RidesTable.length
+    var length by RidesTable.length
 
-    val duration by RidesTable.duration
+    var duration by RidesTable.duration
 
-    val reservationId by RidesTable.reservationId
+    var reservationId by RidesTable.reservationId
 }
 
 fun RideEntity.toDomain(): Ride = Ride(
