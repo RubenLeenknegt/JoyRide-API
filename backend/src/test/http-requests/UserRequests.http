@@ -5,7 +5,7 @@ POST {{baseUrl}}/auth/users/register
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
+  "emailAddress": "JohnJackson@hotmail.com",
   "firstName": "Peter",
   "lastName": "Jackson",
   "birthDate": "1998-01-05",
@@ -25,7 +25,7 @@ POST {{baseUrl}}/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson@hotmail.com",
+  "emailAddress": "JohnJackson@hotmail.com",
   "password": "Ditismijnwachtwoord"
 }
 > {%
@@ -41,10 +41,6 @@ POST {{baseUrl}}/refresh
 > {%
     client.global.set("access_token", response.body.accessToken);
 %}
-
-### Get all users
-GET {{baseUrl}}/users
-Authorization: Bearer {{access_token}}
 
 ### Update acount item like name or password
 PUT {{baseUrl}}/users/account/{{user_id}}/firstName

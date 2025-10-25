@@ -41,7 +41,7 @@ Content-Type: application/json
 
 {
     "userId":"{{user_id}}",
-    "rideId":"6d485f64-5717-4562-b3fc-2c963f66d001",
+    "rideId":"fec201d3-5b64-4bbd-bd48-7721dcc7dad8",
     "points":10000
 }
 

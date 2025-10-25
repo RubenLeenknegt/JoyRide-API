@@ -37,9 +37,9 @@ If you are running tests, then also create a .env file in src/.env otherwise tes
 ```env
 # JWT (required by the app). Choose your own secrets/values
 JWT_SECRET=dev-secret
-JWT_ISSUER=leafcar-backend
-JWT_AUDIENCE=leafcar-clients
-JWT_BACKEND_REALM=Leafcar Backend
+JWT_ISSUER=joyride-backend
+JWT_AUDIENCE=joyride-clients
+JWT_BACKEND_REALM=joyride Backend
 JWT_BACKEND_AUTH_NAME=auth-jwt
 ```
 
@@ -83,7 +83,7 @@ Notes
 
 ## How it runs
 
-- Application entry point (JVM): leafcar.backend.ApplicationKt.main
+- Application entry point (JVM): joyride.backend.ApplicationKt.main
     - Binds Netty server on 0.0.0.0:8080 inside the container.
 - Container entrypoint: java -jar app.jar (see backend/Dockerfile)
 - Compose port mapping (local/acc): 8081:8080, (prod): 8080:8080
@@ -205,11 +205,11 @@ Unit tests and the test database
 - Tests use an in-memory H2 database in MySQL compatibility mode.
     - JDBC URL: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=MySQL
     - Driver: org.h2.Driver
-    - Configured in: backend/src/test/kotlin/leafcar/backend/TestDatabaseConfig.kt
+    - Configured in: backend/src/test/kotlin/joyride/backend/TestDatabaseConfig.kt
 - HikariCP test datasource is created in TestDatabaseConnection and used to connect Exposed.
 - Before each test suite that calls EnvironmentSetup.setup(db), the schema is dropped and recreated using Exposed
   SchemaUtils (no migrations are run in tests):
-    - See backend/src/test/kotlin/leafcar/backend/EnvironmentSetup.kt
+    - See backend/src/test/kotlin/joyride/backend/EnvironmentSetup.kt
 - Example usage in tests:
     - Database.connect(HikariDataSource(TestDatabaseConnection.getDataSource()))
     - EnvironmentSetup.setup(database)
@@ -229,12 +229,12 @@ TODOs for testing
     - build.gradle.kts (module build with Kover configured)
     - Dockerfile (copies build/libs/backend-fat.jar, exposes 8080)
     - src/main/kotlin/
-        - leafcar/backend/Application.kt (Ktor module and main)
-        - leafcar/backend/controller/ (CarController.kt, UserController.kt, ...)
-        - leafcar/backend/repository/ (repositories)
-        - leafcar/backend/dao/ (Exposed tables/entities)
-        - leafcar/backend/domain/ (domain models/enums)
-        - leafcar/backend/services/ (business logic incl. AuthService)
+        - joyride/backend/Application.kt (Ktor module and main)
+        - joyride/backend/controller/ (CarController.kt, UserController.kt, ...)
+        - joyride/backend/repository/ (repositories)
+        - joyride/backend/dao/ (Exposed tables/entities)
+        - joyride/backend/domain/ (domain models/enums)
+        - joyride/backend/services/ (business logic incl. AuthService)
     - src/test/kotlin/ (tests, H2 config, schema setup)
     - src/test/http-requests/ (HTTP examples)
     - photos/ (mounted into container at /app/photos)
