@@ -23,23 +23,23 @@ Content-Type: application/json
 
 
 ### Get all cars
-GET http://localhost:8081/cars
+GET {{baseUrl}}/cars
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get car by id
-GET http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+GET {{baseUrl}}/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get car locations
-GET http://localhost:8081/cars/location
+GET {{baseUrl}}/cars/location
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 
 ### Create a new car
-POST http://localhost:8081/cars
+POST {{baseUrl}}/cars
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
@@ -72,7 +72,7 @@ Authorization: Bearer {{access_token}}
 
 ### Update a car
 ### For this test to work, you must be logged in, else ownerId is absent
-PUT http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+PUT {{baseUrl}}/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
@@ -105,21 +105,21 @@ Authorization: Bearer {{access_token}}
 }
 
 ### Optional: Get filtered cars
-GET http://localhost:8081/cars?brand=BMW&phonemount=false
+GET {{baseUrl}}/cars?brand=BMW&phonemount=false
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Delete a car
-DELETE http://localhost:8081/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+DELETE {{baseUrl}}/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get TCO
-GET http://localhost:8081/cars/tco/4b285f64-5717-4562-b3fc-2c963f66b009
+GET {{baseUrl}}/cars/tco/4b285f64-5717-4562-b3fc-2c963f66b009
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get CPK
-GET http://localhost:8081/cars/cpk/4b285f64-5717-4562-b3fc-2c963f66b002
+GET {{baseUrl}}/cars/cpk/4b285f64-5717-4562-b3fc-2c963f66b002
 Accept: application/json
 Authorization: Bearer {{access_token}}
