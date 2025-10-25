@@ -27,7 +27,7 @@ object DatabaseConnection {
                 return@lazy HikariDataSource(config)
             } catch (e: Exception) {
                 attempts++
-                println("DB connectie mislukt, poging $attempts, wacht 3s...")
+                println("DB connectie mislukt, poging $attempts, wacht 10s...")
                 Thread.sleep(10000)
             }
         }
