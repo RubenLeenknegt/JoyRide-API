@@ -19,8 +19,10 @@ import joyride.backend.services.JwtConfig.dotenv
  * @param userRepository The repository used to interact with user data.
  */
 fun Route.userRouting(userRepository: UserRepository) {
+
     // Authenticate routes using the JWT backend authentication name from environment variables
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+
         route("/users") {
 
             /**
