@@ -11,6 +11,27 @@ import kotlinx.datetime.LocalDateTime
 import joyride.backend.dto.request.AvailibilityCreateOrUpdate
 import joyride.backend.repository.AvailabilitiesRepository
 
+/**
+ * Ktor routing for handling car availability endpoints.
+ *
+ * Provides authenticated CRUD operations and availability queries for cars.
+ *
+ * Routes:
+ * - `GET /availabilities` → Retrieve all availabilities.
+ * - `GET /availabilities/{id}` → Retrieve a single availability by its ID.
+ * - `GET /availabilities/car/{carId}` → Retrieve all availabilities for a specific car.
+ * - `GET /availabilities/available` → Retrieve all available slots without overlapping reservations.
+ * - `GET /availabilities/available/{startDate}/{endDate}` → Retrieve available slots filtered by date range.
+ * - `GET /availabilities/available/car/{carId}` → Retrieve available slots for a specific car.
+ * - `POST /availabilities` → Create a new availability entry.
+ * - `PUT /availabilities/{id}` → Update an existing availability entry by ID.
+ * - `DELETE /availabilities/{id}` → Delete an availability entry by ID.
+ *
+ * All routes are protected with JWT authentication using the backend auth name from environment variables.
+ *
+ * @param AvailabilitiesRepository Repository providing access to availability data.
+ */
+
 fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesRepository) {
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
 

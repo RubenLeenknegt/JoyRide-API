@@ -5,6 +5,21 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import joyride.backend.domain.Ride
 
+/**
+ * Exposed DAO entity representing a ride record in the database.
+ *
+ * Maps to [RidesTable] and stores spatial and temporal information about a ride
+ * linked to a specific reservation.
+ *
+ * @property startX Starting X-coordinate of the ride.
+ * @property startY Starting Y-coordinate of the ride.
+ * @property endX Ending X-coordinate of the ride.
+ * @property endY Ending Y-coordinate of the ride.
+ * @property length Total distance of the ride in meters.
+ * @property duration Duration of the ride in seconds.
+ * @property reservationId Identifier of the reservation this ride is associated with.
+ */
+
 class RideEntity(id: EntityID<String>) : Entity<String>(id) {
     companion object : EntityClass<String, RideEntity>(RidesTable)
 
@@ -22,6 +37,12 @@ class RideEntity(id: EntityID<String>) : Entity<String>(id) {
 
     var reservationId by RidesTable.reservationId
 }
+
+/**
+ * Extension function to convert a [RideEntity] to its domain model [Ride].
+ *
+ * Maps all entity properties to the domain data class.
+ */
 
 fun RideEntity.toDomain(): Ride = Ride(
     id = this.id.value,

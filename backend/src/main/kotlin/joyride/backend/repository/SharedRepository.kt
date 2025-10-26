@@ -22,10 +22,29 @@ import org.jetbrains.exposed.sql.select
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+/**
+ * An abstract generic repository providing shared filtering logic for Exposed-based repositories.
+ *
+ * @param T The domain model type returned by queries.
+ * @param table The Exposed [Table] to query.
+ * @param mapper A function that maps a [ResultRow] to an instance of [T].
+ *
+ * This base class offers a flexible `findWithFilters` method that dynamically builds
+ * query conditions from a given parameter map. Each entry in the map is matched against
+ * a column in the table by name, and a type-safe condition is created automatically.
+ */
 abstract class SharedRepository<T> (
     private val table: Table,
     private val mapper: (ResultRow) -> T // expects a mapper that accepts ResultRow
 ) {
+    /**
+     * Retrieves all records from [table] matching the provided [params] as filters.
+     *
+     * @param params A map of column names to filter values.
+     *               Each value is parsed and converted according to the column type.
+     *               Unsupported or unparsable values are ignored.
+     * @return A list of mapped entities of type [T] that satisfy the combined filter conditions.
+     */
     fun findWithFilters(
         params: Map<String, String>): List<T> = transaction {
         val conditions = params.mapNotNull { (key, value) ->

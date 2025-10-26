@@ -88,13 +88,6 @@ Notes
 - Container entrypoint: java -jar app.jar (see backend/Dockerfile)
 - Compose port mapping (local/acc): 8081:8080, (prod): 8080:8080
 
-Endpoints (current)
-
-- GET / → simple HTML landing page
-- GET /cars → returns cars (query parameters supported as filters, e.g. /cars?brand=BMW)
-- GET /users → returns all users
-- ...plus routes for reservations, availabilities, rides, photos, auth, and bonus points.
-
 ---
 
 ## Environment variables
@@ -216,11 +209,6 @@ Unit tests and the test database
 - Production/local dev DB initialization is handled by db-init/init.sql via Docker Compose; tests do NOT execute db-init
   scripts.
 
-TODOs for testing
-
-- Add more Ktor testApplication-based tests.
-- Consider Flyway/Liquibase for schema migrations and apply equivalent setup in tests if adopted.
-
 ---
 
 ## Project structure
@@ -252,9 +240,6 @@ TODOs for testing
 - Production → docker-compose.prod.yml (image tag: prod, ports: backend 8080, phpMyAdmin 8084)
 
 CI/CD
-
-- TODO: Workflows are not present in this repository snapshot. Document or add .github/workflows for build, test, image
-  build/push, and remote deploy if applicable.
 
 Database init in non-local envs
 
