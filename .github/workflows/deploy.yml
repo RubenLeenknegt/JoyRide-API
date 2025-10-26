@@ -15,7 +15,28 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        
+      - name: Create .env file for backend
+        run: |
+          mkdir -p backend
+          {
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
+            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}"
+            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}"
+            echo "JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }}"
+            echo "JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }}"
+          } > backend/.env
 
+      - name: Create .env file for project root
+        run: |
+          mkdir -p backend
+          {
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
+            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}"
+            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}"
+            echo "JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }}"
+            echo "JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }}"
+          } > /.env
 
       - name: Build with Gradle inside Docker and run tests
         run: |
