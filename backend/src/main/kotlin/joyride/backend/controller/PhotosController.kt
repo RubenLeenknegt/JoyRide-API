@@ -33,9 +33,11 @@ import java.util.UUID
  * @param photoRepository Repository providing access to photo data operations.
  */
 fun Route.photosRouting(photoRepository: PhotoRepository) {
-    route("/photos") {
-        authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
 
+    // Authenticate routes using the JWT backend authentication name from environment variables
+    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+
+        route("/photos") {
             // Get all photos for a specific entity
             get("/{entityType}/{entityId}") {
                 val entityType = call.parameters["entityType"]
