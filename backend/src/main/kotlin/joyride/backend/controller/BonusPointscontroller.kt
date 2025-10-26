@@ -20,8 +20,10 @@ val dotenv = dotenv()
  * @param bonusPointsRepository The repository used to interact with bonus points data.
  */
 fun Route.bonusPointsRouting(bonusPointsRepository: BonusPointsRepository) {
-    // Define the base route for bonus points
+
+    // Authenticate routes using the JWT backend authentication name from environment variables
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+        // Define the base route for bonus points
         route("/bonuspoints") {
             // Authenticate routes using the JWT backend authentication name from environment variables
             /**

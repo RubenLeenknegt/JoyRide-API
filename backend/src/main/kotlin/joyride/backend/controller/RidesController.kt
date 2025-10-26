@@ -1,6 +1,5 @@
 package joyride.backend.controller
 
-import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.request.ContentTransformationException
@@ -31,7 +30,9 @@ import io.ktor.server.auth.authenticate
 
 fun Route.RidesRouting(ridesRepository: RidesRepository) {
 
+    // Authenticate routes using the JWT backend authentication name from environment variables
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+
         route("/rides") {
 
             // GET all rides
