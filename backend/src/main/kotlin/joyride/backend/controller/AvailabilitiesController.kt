@@ -33,6 +33,8 @@ import joyride.backend.repository.AvailabilitiesRepository
  */
 
 fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesRepository) {
+
+    // Authenticate routes using the JWT backend authentication name from environment variables
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
 
         route("/availabilities") {

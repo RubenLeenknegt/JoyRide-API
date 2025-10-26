@@ -31,9 +31,10 @@ import java.time.LocalDateTime
  */
 fun Route.carRouting(carRepository: CarRepository) {
 
+    // Authenticate routes using the JWT backend authentication name from environment variables
+    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
 
-    route("/cars") {
-        authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+        route("/cars") {
             // APP-UC-04: Auto zoeken
             // GET /cars?brand=BMW
             /**
