@@ -28,7 +28,7 @@ jobs:
             -e JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }} \
             -e JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }} \
             gradle:8.5-jdk17 \
-            ./gradlew test
+            ./gradlew :backend:test
 
       - name: Build with Gradle inside Docker
         run: |
