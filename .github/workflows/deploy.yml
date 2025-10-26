@@ -46,13 +46,13 @@ jobs:
             ./gradlew :backend:test :backend:koverHtmlReport :backend:build
             
       - name: Upload test reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-test-reports
           path: backend/build/reports/tests/test
 
       - name: Upload Kover coverage
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-coverage-report
           path: backend/build/reports/kover/html
