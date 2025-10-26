@@ -1,0 +1,44 @@
+// Sequence diagram for POST /auth/users/register
+// Context: Ktor application, AuthController, Auth service, UserRepository, JwtConfig
+// Date: 2025-10-19
+// Notes: mirrors logic in backend/src/main/kotlin/joyride/backend/controller/AuthController.kt
+
+sequence: {
+  title: "POST /auth/users/register"
+
+  Client: participant
+  Ktor: participant
+  AuthController: participant
+  AuthService: participant
+  UserRepository: participant
+  JwtConfig: participant
+
+  Client->Ktor: HTTP POST /auth/users/register { user, password }
+  Ktor->AuthController: Route handler post("/auth/users/register")
+  AuthController->AuthController: request = call.receive<RegisterRequest>()
+  AuthController->AuthService: registration(
+    emailAddress=request.user.emailAddress,
+    password=request.password,
+    firstName, lastName, birthDate, userType,
+    bankAccount, bankAccountName, vehicleLocation
+  )
+  AuthService->UserRepository: existsByEmail(emailAddress)
+  UserRepository->AuthService: true | false
+
+  alt "Email already registered"
+    AuthService->AuthController: null
+    AuthController->Ktor: call.respond(409, { error: "Email already registered" })
+    Ktor->Client: 409 Conflict (application/json)
+  else "Registration ok"
+    AuthService->UserRepository: save(newUser with hashed password)
+    UserRepository->AuthService: createdUser
+    AuthService->AuthController: createdUser
+    AuthController->JwtConfig: generateAccessToken(createdUser.id, audience)
+    JwtConfig->AuthController: accessToken
+    AuthController->JwtConfig: generateRefreshToken(createdUser.id, audience)
+    JwtConfig->AuthController: refreshToken
+    AuthController->Ktor: call.response.cookies.append("refreshToken", refreshToken, httpOnly=true, path="/")
+    AuthController->Ktor: call.respond(201, LoginResponse(createdUserDto, token=accessToken))
+    Ktor->Client: 201 Created (application/json + Set-Cookie)
+  end
+}

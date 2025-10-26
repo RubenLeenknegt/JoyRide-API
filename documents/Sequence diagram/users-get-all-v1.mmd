@@ -1,0 +1,25 @@
+%% Mermaid sequence diagram for GET /users
+%% Context: Ktor application -> UserController -> UserRepository (Exposed ORM)
+%% Date: 2025-10-19
+
+sequenceDiagram
+    title GET /users
+
+    participant C as Client
+    participant K as Ktor
+    participant UC as UserController
+    participant UR as UserRepository
+    participant Ex as Exposed ORM
+    participant DB as Database
+
+    C->>K: HTTP GET /users
+    K->>UC: Route handler get("")
+    UC->>UR: getAll(): List<User>
+    UR->>Ex: transaction { UsersTable.selectAll() }
+    Ex->>DB: SELECT * FROM users
+    DB-->>Ex: Rows (0..n)
+    Ex-->>UR: ResultSet
+    UR->>UR: map toDomain() for each row
+    UR-->>UC: List<User>
+    UC-->>K: call.respond(200, users)
+    K-->>C: 200 OK (application/json)

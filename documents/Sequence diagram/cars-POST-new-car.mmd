@@ -1,0 +1,40 @@
+sequenceDiagram
+participant Client
+participant CarController
+participant CarService
+participant CarRepository
+participant Database
+
+    Client->>+CarController: POST /cars
+    Note over Client,CarController: CarCreateOrUpdateRequest JSON
+
+    CarController->>CarController: call.receive<CarCreateOrUpdateRequest>()
+    
+    alt Validatie mislukt
+        CarController-->>Client: 400 Bad Request
+        Note over CarController,Client: "Error bij aanmaken van DTO"
+    end
+
+    CarController->>CarController: ownerId ophalen ("3fa85f64-...")
+    
+    CarController->>+CarService: createCar(request, ownerId)
+    
+    CarService->>CarService: Request valideren en Car object maken
+    
+    CarService->>+CarRepository: create(car)
+    
+    CarRepository->>+Database: INSERT INTO cars_table
+    
+    alt Opslaan succesvol
+        Database-->>-CarRepository: CarEntity
+        CarRepository-->>-CarService: CarEntity
+        CarService->>CarService: CarEntity naar Car mappen
+        CarService-->>-CarController: Car object
+        CarController-->>-Client: 201 Created + Car object
+    else Opslaan mislukt
+        Database-->>CarRepository: null
+        CarRepository-->>CarService: null
+        CarService-->>CarController: null
+        CarController-->>Client: 500 Internal Server Error
+        Note over CarController,Client: "Error bij opslaan in DB"
+    end

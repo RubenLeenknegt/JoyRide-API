@@ -1,0 +1,39 @@
+%% Mermaid sequence diagram for POST /refresh
+%% Context: Ktor application -> AuthController -> JwtConfig -> JWT
+%% Date: 2025-10-19
+
+sequenceDiagram
+    title POST /refresh
+
+    participant C as Client
+    participant K as Ktor
+    participant AC as AuthController
+    participant JC as JwtConfig
+    participant J as JWT
+
+    C->>K: HTTP POST /refresh (Cookie: refreshToken)
+    K->>AC: Route handler post("/refresh")
+    AC->>AC: refreshToken = call.request.cookies["refreshToken"]
+
+    alt No refresh token provided
+        AC-->>K: call.respond(401, "No refresh token provided")
+        K-->>C: 401 Unauthorized (text/plain)
+    else Refresh token present
+        AC->>JC: verifyToken(refreshToken, audience, expectedToken="refreshToken")
+        alt Invalid token
+            JC-->>AC: false
+            AC-->>K: call.respond(401, "Invalid refresh token")
+            K-->>C: 401 Unauthorized (text/plain)
+        else Valid token
+            JC-->>AC: true
+            AC->>J: decode(refreshToken)
+            J-->>AC: claim id
+            AC->>JC: generateAccessToken(id, audience)
+            JC-->>AC: newAccessToken
+            AC->>JC: generateRefreshToken(id, audience)
+            JC-->>AC: newRefreshToken
+            AC->>K: call.response.cookies.append("refreshToken", newRefreshToken, httpOnly=true, path="/")
+            AC-->>K: call.respond({ accessToken: newAccessToken })
+            K-->>C: 200 OK (application/json + Set-Cookie)
+        end
+    end

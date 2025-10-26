@@ -1,0 +1,34 @@
+// Sequence diagram for GET /hello (JWT-protected)
+// Context: Ktor application with JWT auth, AuthController, JwtConfig
+// Date: 2025-10-19
+// Notes: mirrors logic in backend/src/main/kotlin/joyride/backend/controller/AuthController.kt
+
+sequence: {
+  title: "GET /hello (protected)"
+
+  Client: participant
+  Ktor: participant
+  AuthController: participant
+  JWTAuth: participant
+  JwtConfig: participant
+
+  Client->Ktor: HTTP GET /hello (Authorization: Bearer <accessToken>)
+  Ktor->JWTAuth: authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) middleware
+  JWTAuth->Ktor: principal = JWTPrincipal from token | null
+  Ktor->AuthController: Route handler get("/hello") with principal
+  AuthController->AuthController: id = principal.payload.getClaim("id").asString()
+  AuthController->AuthController: expiresAt = principal.expiresAt?.time - now
+
+  alt "expiresAt != null and < 700000"
+    AuthController->JwtConfig: generateAccessToken(id, audience)
+    JwtConfig->AuthController: token
+    AuthController->Ktor: call.respondText("Hello, {id}! Token is expired at {expiresAt} ms. Here is your new token {token}")
+    Ktor->Client: 200 OK (text/plain)
+  else "expiresAt != null and > 700000"
+    AuthController->Ktor: call.respondText("Hello, {id}! Token is expired at {expiresAt} ms.")
+    Ktor->Client: 200 OK (text/plain)
+  else "principal null or other"
+    AuthController->Ktor: call.respond(401, "token is expired or does not allow access to this source")
+    Ktor->Client: 401 Unauthorized (text/plain)
+  end
+}
