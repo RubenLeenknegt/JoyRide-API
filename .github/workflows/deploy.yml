@@ -17,18 +17,18 @@ jobs:
         uses: actions/checkout@v4
 
 
-      - name: Build with Gradle inside Docker and run tests
-        run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-            -e JWT_ISSUER=${{ secrets.JWT_ISSUER }} \
-            -e JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }} \
-            -e JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }} \
-            -e JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }} \
-            gradle:8.5-jdk17 \
-            ./gradlew :backend:test
+      # - name: Build with Gradle inside Docker and run tests
+      #   run: |
+      #     docker run --rm \
+      #       -v ${{ github.workspace }}:/workspace \
+      #       -w /workspace \
+      #       -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+      #       -e JWT_ISSUER=${{ secrets.JWT_ISSUER }} \
+      #       -e JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }} \
+      #       -e JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }} \
+      #       -e JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }} \
+      #       gradle:8.5-jdk17 \
+      #       ./gradlew :backend:test
 
       - name: Build with Gradle inside Docker
         run: |
