@@ -1,0 +1,28 @@
+// Sequence diagram for GET /users
+// Context: Ktor application, UserController, UserRepository (Exposed ORM)
+// Date: 2025-10-19
+// Notes: mirrors logic in backend/src/main/kotlin/joyride/backend/controller/UserController.kt
+//        and backend/src/main/kotlin/joyride/backend/repository/UserRepository.kt
+
+sequence: {
+  title: "GET /users"
+
+  Client: participant
+  Ktor: participant
+  UserController: participant
+  UserRepository: participant
+  Exposed: participant
+  Database: participant
+
+  Client->Ktor: HTTP GET /users
+  Ktor->UserController: Route handler get("")
+  UserController->UserRepository: getAll(): List<User>
+  UserRepository->Exposed: transaction { UsersTable.selectAll() }
+  Exposed->Database: SELECT * FROM users
+  Database->Exposed: Rows (0..n)
+  Exposed->UserRepository: ResultSet
+  UserRepository->UserRepository: map toDomain() for each row
+  UserRepository->UserController: List<User>
+  UserController->Ktor: call.respond(200, users)
+  Ktor->Client: 200 OK (application/json)
+}

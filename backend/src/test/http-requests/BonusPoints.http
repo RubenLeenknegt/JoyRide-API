@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:8081
+
+### Register new user
+POST {{baseUrl}}/auth/users/register
+Content-Type: application/json
+
+{
+  "emailAddress": "PeterJackson@hotmail.com",
+  "firstName": "Peter",
+  "lastName": "Jackson",
+  "birthDate": "1998-01-05",
+  "userType": "OWNER",
+  "bankAccount": "ojghbjsk234820348",
+  "bankAccountName": "HR P Jackson",
+  "password": "Ditismijnwachtwoord"
+}
+
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+%}
+
+### Log in to api and key jwt
+POST {{baseUrl}}/auth/users/login
+Content-Type: application/json
+
+{
+  "emailAddress": "PeterJackson@hotmail.com",
+  "password": "Ditismijnwachtwoord"
+}
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+
+%}
+
+### Post Bonuspoints
+POST {{baseUrl}}/bonuspoints
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "userId":"{{user_id}}",
+    "rideId":"fec201d3-5b64-4bbd-bd48-7721dcc7dad8",
+    "points":10000
+}
+
+### Get total bonuspoints
+GET {{baseUrl}}/bonuspoints/{{user_id}}
+Authorization: Bearer {{access_token}}
+Content-Type: application/json

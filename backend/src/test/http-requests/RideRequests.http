@@ -1,0 +1,70 @@
+@baseUrl = http://localhost:8081
+
+### Register new user
+POST {{baseUrl}}/auth/users/register
+Content-Type: application/json
+
+{
+  "emailAddress": "HenkKlaasen@hotmail.com",
+  "firstName": "Henk",
+  "lastName": "Klaasen",
+  "birthDate": "1998-01-05",
+  "userType": "OWNER",
+  "bankAccount": "ojghbjsk234820348",
+  "bankAccountName": "HR P Jackson",
+  "password": "Ditismijnwachtwoord"
+}
+
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+%}
+
+### Log in to api and key jwt
+POST {{baseUrl}}/auth/users/login
+Content-Type: application/json
+
+{
+  "emailAddress": "HenkKlaasen@hotmail.com",
+  "password": "Ditismijnwachtwoord"
+}
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+
+%}
+
+### Get all rides
+GET {{baseUrl}}/rides
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Get ride by id
+GET {{baseUrl}}/rides/6d485f64-5717-4562-b3fc-2c963f66d009
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Get rides by reservationId
+GET {{baseUrl}}/rides/reservation/5c385f64-5717-4562-b3fc-2c963f66c003
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Create a new ride
+POST {{baseUrl}}/rides
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "startX": 52.3702,
+  "startY": 4.8952,
+  "endX": 52.3710,
+  "endY": 4.8965,
+  "length": 1500,
+  "duration": 600,
+  "reservationId": "5c385f64-5717-4562-b3fc-2c963f66c009"
+}
+
+### Delete a ride
+DELETE {{baseUrl}}/rides/6d485f64-5717-4562-b3fc-2c963f66d009
+Authorization: Bearer {{access_token}}
+Accept: application/json

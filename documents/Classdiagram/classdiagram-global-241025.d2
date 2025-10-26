@@ -1,0 +1,74 @@
+User: {
+  shape: class
+  label: "User"
+}
+
+Car: {
+  shape: class
+  label: "Car"
+}
+
+Reservation: {
+  shape: class
+  label: "Reservation"
+}
+
+Ride: {
+  shape: class
+  label: "Ride"
+}
+
+Photo: {
+  shape: class
+  label: "Photo"
+}
+
+BonusPoints: {
+  shape: class
+  label: "BonusPoints"
+}
+
+Availability: {
+  shape: class
+  label: "Availability"
+}
+
+# // Enums
+TransmissionType: {
+  shape: class
+  style: {stroke-dash: 3}
+  label: "<<enum>> TransmissionType"
+}
+Color: {
+  shape: class
+  style: {stroke-dash: 3}
+  label: "<<enum>> Color"
+}
+FuelType: {
+  shape: class
+  style: {stroke-dash: 3}
+  label: "<<enum>> FuelType"
+}
+UserType: {
+  shape: class
+  style: {stroke-dash: 3}
+  label: "<<enum>> UserType"
+}
+
+# Relationships
+User <-> Car: "1 / 0..*" {label: "owns (ownerId)"}
+User <-> Reservation: "1 / 0..*" {label: "books (userId)"}
+Car <-> Reservation: "1 / 0..*" {label: "is reserved by (carId)"}
+Reservation -> Ride: "1 / 0..*" {label: "has rides (reservationId)"}
+Ride -> BonusPoints: "0..1 / 0..*" {label: "awards"}
+
+Car <-> Photo: "1 / 0..*" {label: "has photos"}
+Reservation <-> Photo: "1 / 0..*" {label: "has photos"}
+User <-> Photo: "1 / 0..*" {label: "has photos"}
+
+Car <-> Availability: "1 / 0..*" {label: "has availability"}
+
+Car -> TransmissionType: "uses" {style: {stroke-dash: 3}}
+Car -> Color: "uses" {style: {stroke-dash: 3}}
+Car -> FuelType: "uses" {style: {stroke-dash: 3}}
+User -> UserType: "uses" {style: {stroke-dash: 3}}
