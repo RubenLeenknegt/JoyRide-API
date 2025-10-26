@@ -50,6 +50,7 @@ bin/
 # Environment
 .env*
 .env.local
+backend/.env
 
 # Media
 videos/
