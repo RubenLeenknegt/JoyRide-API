@@ -15,28 +15,48 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-
-      # - name: Build with Gradle inside Docker and run tests
-      #   run: |
-      #     docker run --rm \
-      #       -v ${{ github.workspace }}:/workspace \
-      #       -w /workspace \
-      #       -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-      #       -e JWT_ISSUER=${{ secrets.JWT_ISSUER }} \
-      #       -e JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }} \
-      #       -e JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }} \
-      #       -e JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }} \
-      #       gradle:8.5-jdk17 \
-      #       ./gradlew :backend:test
-
-      - name: Build with Gradle inside Docker
+        
+      - name: Create .env file for backend
         run: |
-          docker run --rm \
+          mkdir -p backend
+          {
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
+            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}"
+            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}"
+            echo "JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }}"
+            echo "JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }}"
+          } > backend/.env
+
+      - name: Create .env file for project root
+        run: |
+          {
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
+            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}"
+            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}"
+            echo "JWT_BACKEND_REALM=${{ secrets.JWT_BACKEND_REALM }}"
+            echo "JWT_BACKEND_AUTH_NAME=${{ secrets.JWT_BACKEND_AUTH_NAME }}"
+          } > .env
+
+      - name: Build with Gradle inside Docker and run tests
+        run: |
+          docker run \
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
             gradle:8.5-jdk17 \
-            ./gradlew :backend:build
+            ./gradlew :backend:test :backend:koverHtmlReport :backend:build
+            
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: backend/build/reports/tests/test
+
+      - name: Upload Kover coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: backend/build/reports/kover/html
+
 
       # # - name: Build backend fat jar
       #   # run: ./gradlew :backend:shadowJar

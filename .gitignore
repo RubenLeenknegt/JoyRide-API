@@ -1,6 +1,7 @@
 # Gradle
 .gradle
 build/
+lib/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -50,6 +51,7 @@ bin/
 # Environment
 .env*
 .env.local
+backend/.env
 
 # Media
 videos/
