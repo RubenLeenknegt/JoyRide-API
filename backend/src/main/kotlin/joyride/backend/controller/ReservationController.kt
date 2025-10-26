@@ -11,6 +11,28 @@ import joyride.backend.dto.request.ReservationCreateOrUpdateRequest
 import joyride.backend.repository.ReservationRepository
 import joyride.backend.repository.AvailabilitiesRepository
 
+/**
+ * Configures routing for reservation-related endpoints.
+ *
+ * Provides authenticated HTTP routes for creating, retrieving, updating, and deleting
+ * car reservations. Ensures that reservations respect car availability and avoid overlaps.
+ *
+ * Supported operations:
+ * - `GET /reservations` → Retrieve all reservations.
+ * - `GET /reservations/{id}` → Retrieve a specific reservation by ID.
+ * - `GET /reservations/user/{userId}` → Retrieve all reservations for a specific user.
+ * - `GET /reservations/car/{carId}` → Retrieve all reservations for a specific car.
+ * - `POST /reservations` → Create a new reservation (checks availability and overlapping reservations).
+ * - `PUT /reservations/{id}` → Update an existing reservation (checks availability and overlapping reservations).
+ * - `DELETE /reservations/{id}` → Delete a reservation by ID.
+ *
+ * All endpoints are secured using JWT authentication with the backend auth name.
+ *
+ * @param reservationRepository Repository providing access to reservation data.
+ * @param availabilitiesRepository Repository used to check car availability during requested time windows.
+ */
+
+
 fun Route.reservationRouting(reservationRepository: ReservationRepository, availabilitiesRepository: AvailabilitiesRepository) {
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
         route("/reservations") {

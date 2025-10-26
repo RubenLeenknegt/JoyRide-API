@@ -14,6 +14,24 @@ import joyride.backend.repository.PhotoRepository
 import io.ktor.server.request.receiveMultipart
 import java.util.UUID
 
+/**
+ * Configures routing for photo management endpoints.
+ *
+ * Provides authenticated HTTP routes for uploading, retrieving, and deleting photos
+ * associated with cars, users, or reservations.
+ *
+ * Supported operations:
+ * - `GET /photos/{entityType}/{entityId}` → Retrieve all photos for a specific entity.
+ * - `POST /photos/{entityType}/{entityId}` → Upload one or more photos for a specific entity.
+ * - `DELETE /photos/{entityType}/{entityId}` → Delete all photos for a specific entity.
+ *
+ * Valid entity types are: `"cars"`, `"users"`, `"reservations"`.
+ *
+ * Uploaded files are stored under `photos/{entityType}/{entityId}/` on disk, and
+ * corresponding database entries are created or deleted accordingly.
+ *
+ * @param photoRepository Repository providing access to photo data operations.
+ */
 fun Route.photosRouting(photoRepository: PhotoRepository) {
     route("/photos") {
         authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {

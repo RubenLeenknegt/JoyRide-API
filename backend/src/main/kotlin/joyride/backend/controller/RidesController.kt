@@ -11,6 +11,24 @@ import joyride.backend.repository.RidesRepository
 import joyride.backend.dto.request.RideCreate
 import io.ktor.server.auth.authenticate
 
+/**
+ * Configures routing for ride-related endpoints.
+ *
+ * Provides authenticated HTTP routes for creating, retrieving, and deleting rides
+ * associated with reservations.
+ *
+ * Supported operations:
+ * - `GET /rides` → Retrieve all rides.
+ * - `GET /rides/{id}` → Retrieve a specific ride by ID.
+ * - `GET /rides/reservation/{reservationId}` → Retrieve all rides for a specific reservation.
+ * - `POST /rides` → Create a new ride entry.
+ * - `DELETE /rides/{id}` → Delete a ride by ID.
+ *
+ * All endpoints are secured using JWT authentication with the backend auth name.
+ *
+ * @param ridesRepository Repository providing access to ride data operations.
+ */
+
 fun Route.RidesRouting(ridesRepository: RidesRepository) {
 
     authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {

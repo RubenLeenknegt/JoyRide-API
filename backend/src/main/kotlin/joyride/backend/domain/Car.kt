@@ -37,6 +37,33 @@ data class Car(
     val energyCostPerKm: Double,
     val maintenanceCostPerKm: Double,
     val averageConsumption: Double,
-) {
-    // methodes
-}
+)
+
+/**
+ * @property id Unique identifier of the car.
+ * @property ownerId Identifier of the user who owns the car.
+ * @property brand Car brand (e.g., Tesla, BMW).
+ * @property model Specific model name of the car.
+ * @property buildYear Year the car was manufactured.
+ * @property transmissionType Type of transmission (manual or automatic).
+ * @property color Car color.
+ * @property fuelType Type of fuel used (e.g., electric, petrol, diesel).
+ * @property length Car length in centimeters.
+ * @property width Car width in centimeters.
+ * @property seats Number of available seats.
+ * @property isofixCompatible Whether the car supports ISOFIX child seats.
+ * @property phoneMount Whether the car is equipped with a phone mount.
+ * @property luggageSpace Trunk volume in liters.
+ * @property parkingSensors Whether the car has parking sensors.
+ * @property locationX X-coordinate representing car’s location.
+ * @property locationY Y-coordinate representing car’s location.
+ * @property licensePlate Official license plate number.
+ * @property pricePerDay Daily rental price.
+ * @property purchasePrice Original purchase price of the car.
+ * @property residualValue Estimated residual value after depreciation.
+ * @property usageYears Number of years the car has been in use.
+ * @property annualKm Average annual distance driven in kilometers.
+ * @property energyCostPerKm Energy cost per kilometer driven.
+ * @property maintenanceCostPerKm Maintenance cost per kilometer driven.
+ * @property averageConsumption Average energy or fuel consumption per 100 km.
+ */
