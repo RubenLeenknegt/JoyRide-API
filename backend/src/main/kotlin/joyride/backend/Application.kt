@@ -23,7 +23,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.server.auth.parseAuthorizationHeader
-import joyride.backend.module
+import joyride.backend.services.DatabaseSetup
 import java.util.Date
 import joyride.backend.services.generateUsersMock
 import joyride.backend.services.generateReservationsMock
@@ -54,7 +54,11 @@ fun main() {
 fun Application.module() {
     // --- Database ---
     // Initialize Exposed with Hikari connection pool
-    Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
+    val database = Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
+
+    // Create database Tables if not already exists
+    DatabaseSetup.createTables(database)
+
 
     // --- Serialization ---
     // Configure JSON serialization for requests/responses
@@ -136,8 +140,8 @@ fun Application.module() {
 
     // --- Mock data ---
     // Generate test users and reservations, seed mock data (idempotent)
-    generateUsersMock()
-    generateReservationsMock()
+//    generateUsersMock()
+//    generateReservationsMock()
 
     // --- Routing ---
     // Define API endpoints and serve static content

@@ -20,4 +20,5 @@ object AvailabilitiesTable : IdTable<String>("Availabilities") {
     val carId = varchar("car_id", 36).references(CarsTable.id, onDelete = ReferenceOption.CASCADE)
     val startDate = datetime("start_date")
     val endDate = datetime("end_date").nullable()
+    override val primaryKey = PrimaryKey(id)
 }

@@ -17,6 +17,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 object BonusPointsTable : IdTable<String>("BonusPoints") {
     override val id = varchar("id", 36).entityId()
     val userId = reference("user_id", UsersTable.id, onDelete = ReferenceOption.CASCADE)
-    val rideId = reference("ride_id", RidesTable.id, onDelete = ReferenceOption.SET_NULL)
+    val rideId = reference("ride_id", RidesTable.id, onDelete = ReferenceOption.RESTRICT)
     val points = integer("points")
+    override val primaryKey = PrimaryKey(id)
 }

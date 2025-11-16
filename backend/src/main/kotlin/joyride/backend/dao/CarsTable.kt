@@ -1,9 +1,5 @@
 package joyride.backend.dao
 
-import joyride.backend.domain.Color
-import joyride.backend.domain.FuelType
-import joyride.backend.domain.TransmissionType
-import org.jetbrains.exposed.dao.Reference
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
@@ -21,8 +17,8 @@ object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meeg
     val model = varchar("model", 255)
     val buildYear = integer("build_year")
     val transmissionType = varchar("transmission_type", 20)
-    val color = varchar("color", 20, )
-    val fuelType = varchar("fuel_type", 20, )
+    val color = varchar("color", 20)
+    val fuelType = varchar("fuel_type", 20)
     val length = integer("length")
     val width = integer("width")
     val seats = integer("seats")
@@ -41,4 +37,5 @@ object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meeg
     val energyCostPerKm = decimal("energy_cost_per_km", 10,2)
     val maintenanceCostPerKm = decimal("maintenance_cost_per_km", 10,2)
     val averageConsumption = decimal("average_consumption", 10,2)
+    override val primaryKey = PrimaryKey(id)
 }
