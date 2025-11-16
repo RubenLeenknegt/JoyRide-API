@@ -1,6 +1,7 @@
 package joyride.backend.domain
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.dao.id.EntityID
 
 /**
  * Represents the BonusPoints domain model.
