@@ -11,7 +11,7 @@ object DatabaseSetup {
             AvailabilitiesTable,
             Rides,
             Photos,
-            BonusPoints
+            BonusPointsTable
         )
     }
 }
