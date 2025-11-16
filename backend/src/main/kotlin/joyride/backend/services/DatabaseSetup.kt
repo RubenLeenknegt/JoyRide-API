@@ -6,7 +6,7 @@
 //    transaction(database) {
 //        SchemaUtils.create(
 //            Users,
-//            Cars,
+//            CarsTable,
 //            Reservations,
 //            AvailabilitiesTable,
 //            Rides,

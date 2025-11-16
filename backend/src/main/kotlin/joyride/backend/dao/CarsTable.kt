@@ -3,7 +3,10 @@ package joyride.backend.dao
 import joyride.backend.domain.Color
 import joyride.backend.domain.FuelType
 import joyride.backend.domain.TransmissionType
+import org.jetbrains.exposed.dao.Reference
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ReferenceOption
+
 /**
  * Exposed table definition for car data.
  *
@@ -13,7 +16,7 @@ import org.jetbrains.exposed.dao.id.IdTable
  */
 object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meegegeven, hoeft eigenlijk niet maar voor duidelijkheid
     override val id = varchar("id", 36).entityId()
-    val ownerId = varchar("owner_id", 36)
+    val ownerId = reference("owner_id", UsersTable.id, onDelete = ReferenceOption.CASCADE)
     val brand = varchar("brand", 255)
     val model = varchar("model", 255)
     val buildYear = integer("build_year")
