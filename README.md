@@ -32,7 +32,7 @@ If you are new to the project, start with Quick Start.
 ## Quick start (local)
 
 Create a .env in the project root: \
-If you are running tests, then also create a .env file in src/.env otherwise tests that use a .env will not work.
+If you are running tests, then also create a .env file in src/test/resources/.env otherwise tests that use a .env will not work.
 
 ```env
 # JWT (required by the app). Choose your own secrets/values
