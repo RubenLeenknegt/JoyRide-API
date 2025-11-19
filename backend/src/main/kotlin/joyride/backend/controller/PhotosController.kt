@@ -35,7 +35,7 @@ import java.util.UUID
 fun Route.photosRouting(photoRepository: PhotoRepository) {
 
     // Authenticate routes using the JWT backend authentication name from environment variables
-    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+//    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
 
         route("/photos") {
             // Get all photos for a specific entity
@@ -164,5 +164,5 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
                 call.respond(HttpStatusCode.OK, "${photos.size} photo(s) deleted successfully")
             }
         }
-    }
+//    }
 }

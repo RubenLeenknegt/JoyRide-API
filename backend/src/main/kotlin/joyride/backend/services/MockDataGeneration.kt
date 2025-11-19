@@ -13,6 +13,7 @@ import joyride.backend.dto.request.CarCreateOrUpdateRequest
 import joyride.backend.repository.AvailabilitiesRepository
 import joyride.backend.repository.BonusPointsRepository
 import joyride.backend.repository.CarRepository
+import joyride.backend.repository.PhotoRepository
 import joyride.backend.repository.ReservationRepository
 import joyride.backend.repository.RidesRepository
 import joyride.backend.repository.UserRepository
@@ -20,6 +21,9 @@ import kotlinx.datetime.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import kotlin.random.Random
 
 object MockDataGeneration {
@@ -29,6 +33,7 @@ object MockDataGeneration {
     val availabilitiesRepository = AvailabilitiesRepository()
     val ridesRepository = RidesRepository()
     val bonusPointsRepository = BonusPointsRepository()
+    val photoRepository = PhotoRepository()
     val carService = CarService(carRepository)
     val createdAvailability: MutableList<Availability> = mutableListOf()
     val createdBonusPoints: MutableList<BonusPoints> = mutableListOf()
@@ -746,17 +751,45 @@ object MockDataGeneration {
 
     fun generateBonusPointsMock() {
         createdRides.forEach { ride ->
-           val bonusPoints = bonusPointsRepository.create(
-               points = Random.nextInt(),
-               userId = createdReservations.first { it.id == ride.reservationId }.userId,
-               rideId = ride.id
-           )
+            val bonusPoints = bonusPointsRepository.create(
+                points = Random.nextInt(),
+                userId = createdReservations.first { it.id == ride.reservationId }.userId,
+                rideId = ride.id
+            )
             createdBonusPoints.add(bonusPoints!!)
         }
     }
 
+
+
+    private val imageExts = setOf("jpg", "jpeg", "png", "webp", "gif")
+    fun Path.isImageFile(): Boolean = Files.isRegularFile(this) && imageExts.contains(fileName.toString().substringAfterLast('.', "").lowercase())
     fun generatePhotosMock() {
 
+        val root = Paths.get("backend")
+
+        val base = root.resolve("photosMock")
+        val carsDir = base.resolve("cars")
+
+        if (!Files.isDirectory(carsDir)) return
+
+
+        createdCars.withIndex().forEach { (idx, car) ->
+            val carFolder = carsDir.resolve("car${idx + 1}")
+            if (!Files.isDirectory(carFolder)) return@forEach
+
+            val files = Files.list(carFolder).use { it.filter { p -> p.isImageFile() }.toList() }
+
+            files.forEach { img ->
+                // Use your enum/type for photos. If your project uses a different name, adjust `PhotoEntityType.CAR`.
+                val photo = photoRepository.createPhoto(
+                    entityType = "cars", // can be "cars", "users", "rentals"
+                    entityId = car.id,
+                    filePath = img.toString()
+                )
+                createdPhotos.add(photo)
+            }
+        }
     }
 
 }
