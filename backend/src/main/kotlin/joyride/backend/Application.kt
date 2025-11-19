@@ -21,9 +21,13 @@ import joyride.backend.controller.*
 import joyride.backend.repository.*
 import joyride.backend.services.DatabaseSetup
 import joyride.backend.services.MockDataGeneration.cleanup
+import joyride.backend.services.MockDataGeneration.generateAvailabilitiesMock
+import joyride.backend.services.MockDataGeneration.generateBonusPointsMock
 import joyride.backend.services.MockDataGeneration.generateUsersMock
 import joyride.backend.services.MockDataGeneration.generateCarsMock
+import joyride.backend.services.MockDataGeneration.generatePhotosMock
 import joyride.backend.services.MockDataGeneration.generateReservationsMock
+import joyride.backend.services.MockDataGeneration.generateRidesMock
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import java.io.File
@@ -144,7 +148,11 @@ fun Application.module() {
     cleanup(database)
     generateUsersMock()
     generateCarsMock()
+    generateAvailabilitiesMock()
     generateReservationsMock()
+    generateRidesMock()
+    generateBonusPointsMock()
+    generatePhotosMock()
     // --- Routing ---
     // Define API endpoints and serve static content
     routing {
@@ -159,9 +167,9 @@ fun Application.module() {
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
 
-      if (Database == Database) {
-          println("Api is up and running")
-      }
+        if (Database == Database) {
+            println("Api is up and running")
+        }
 
     }
 

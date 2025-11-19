@@ -10,21 +10,28 @@ import joyride.backend.dao.RidesTable
 import joyride.backend.dao.UsersTable
 import joyride.backend.domain.*
 import joyride.backend.dto.request.CarCreateOrUpdateRequest
+import joyride.backend.repository.AvailabilitiesRepository
+import joyride.backend.repository.BonusPointsRepository
 import joyride.backend.repository.CarRepository
 import joyride.backend.repository.ReservationRepository
+import joyride.backend.repository.RidesRepository
 import joyride.backend.repository.UserRepository
 import kotlinx.datetime.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.random.Random
 
 object MockDataGeneration {
     val userRepository = UserRepository()
     val carRepository = CarRepository()
     val reservationRepo = ReservationRepository()
+    val availabilitiesRepository = AvailabilitiesRepository()
+    val ridesRepository = RidesRepository()
+    val bonusPointsRepository = BonusPointsRepository()
     val carService = CarService(carRepository)
     val createdAvailability: MutableList<Availability> = mutableListOf()
-    val createdBonusPoints: MutableList<BonusPointsEntity> = mutableListOf()
+    val createdBonusPoints: MutableList<BonusPoints> = mutableListOf()
     val createdCars: MutableList<Car> = mutableListOf()
     val createdPhotos: MutableList<Photo> = mutableListOf()
     val createdReservations: MutableList<Reservation> = mutableListOf()
@@ -611,7 +618,145 @@ object MockDataGeneration {
                 createdReservations.add(reservation)
             }
             i++
-            if (i >= createdRenters.count()) { i = 0 }
+            if (i >= createdRenters.count()) {
+                i = 0
+            }
         }
     }
+
+    fun generateAvailabilitiesMock() {
+        val listOfAvailabilityPeriods: MutableList<List<LocalDateTime?>> = mutableListOf()
+        val now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val today: LocalDate = now.date
+
+        fun atHour(date: LocalDate, hour: Int) =
+            LocalDateTime(date.year, date.monthNumber, date.dayOfMonth, hour, 0)
+
+        // Availability for next 30 days (8am-8pm)
+        run {
+            val start = atHour(today.plus(DatePeriod(days = 1)), 8)
+            val end = atHour(today.plus(DatePeriod(days = 30)), 20)
+            listOfAvailabilityPeriods.add(listOf(start, end))
+        }
+
+        // Availability for 31-60 days from now (8am-8pm)
+        run {
+            val start = atHour(today.plus(DatePeriod(days = 31)), 8)
+            val end = atHour(today.plus(DatePeriod(days = 60)), 20)
+            listOfAvailabilityPeriods.add(listOf(start, end))
+        }
+
+        // Open-ended availability starting 61 days from now
+        run {
+            val start = atHour(today.plus(DatePeriod(days = 61)), 8)
+            listOfAvailabilityPeriods.add(listOf(start, null))
+        }
+
+        // Create availabilities for each car
+        createdCars.forEach { car ->
+            listOfAvailabilityPeriods.forEach { period ->
+                availabilitiesRepository.create(
+                    carId = car.id,
+                    startDate = period[0]!!,
+                    endDate = period.getOrNull(1)
+                )
+            }
+        }
+    }
+
+    fun generateRidesMock() {
+        data class RideCoords(val startX: Float, val startY: Float, val endX: Float, val endY: Float)
+
+        val hardcodedRideCoords: List<RideCoords> = listOf(
+            // Utrecht -> Amsterdam
+            RideCoords(
+                startX = 52.0905f,
+                startY = 5.1214f,
+                endX = 52.3720f,
+                endY = 4.8952f
+            ),
+            // Eindhoven -> Nijmegen
+            RideCoords(
+                startX = 51.4416f,
+                startY = 5.4697f,
+                endX = 51.9853f,
+                endY = 5.9112f
+            ),
+            // Groningen -> The Hague
+            RideCoords(
+                startX = 53.2194f,
+                startY = 6.5665f,
+                endX = 52.0790f,
+                endY = 4.3130f
+            )
+        )
+        val listOfRideDates: MutableList<List<LocalDateTime>> = mutableListOf()
+        val now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val today: LocalDate = now.date
+
+        fun atHour(date: LocalDate, hour: Int) =
+            LocalDateTime(date.year, date.monthNumber, date.dayOfMonth, hour, 0)
+
+        // Ride 1: 30-40 days ago
+        run {
+            val d1 = today.plus(DatePeriod(days = -35))
+            val start1 = atHour(d1, 9)
+            val end1 = atHour(d1, 17)
+            listOfRideDates.add(listOf(start1, end1))
+        }
+
+        // Ride 2: 15-20 days ago
+        run {
+            val d2 = today.plus(DatePeriod(days = -18))
+            val start2 = atHour(d2, 10)
+            val end2 = atHour(d2, 16)
+            listOfRideDates.add(listOf(start2, end2))
+        }
+
+        // Ride 3: 5-10 days ago
+        run {
+            val d3 = today.plus(DatePeriod(days = -7))
+            val start3 = atHour(d3, 8)
+            val end3 = atHour(d3, 14)
+            listOfRideDates.add(listOf(start3, end3))
+        }
+
+        // Create rides for each car (3 rides per car)
+        var i = 0
+        hardcodedRideCoords.forEach { rideCoords ->
+            createdCars.forEach { car ->
+                val ride = ridesRepository.create(
+                    startX = rideCoords.startX,
+                    startY = rideCoords.startY,
+                    endX = rideCoords.endX,
+                    endY = rideCoords.endY,
+                    length = 100,
+                    duration = 60,
+                    reservationId = createdReservations.first { it.carId == car.id }.id
+                )
+                createdRides.add(ride)
+                i++
+                if (i >= 6) {
+                    i = 0
+                }
+
+            }
+        }
+    }
+
+    fun generateBonusPointsMock() {
+        createdRides.forEach { ride ->
+           val bonusPoints = bonusPointsRepository.create(
+               points = Random.nextInt(),
+               userId = createdReservations.first { it.id == ride.reservationId }.userId,
+               rideId = ride.id
+           )
+            createdBonusPoints.add(bonusPoints!!)
+        }
+    }
+
+    fun generatePhotosMock() {
+
+    }
+
 }
