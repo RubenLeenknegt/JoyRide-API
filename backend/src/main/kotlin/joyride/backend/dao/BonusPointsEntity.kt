@@ -32,6 +32,6 @@ class BonusPointsEntity(id: EntityID<String>) : Entity<String>(id) {
 fun BonusPointsEntity.toDomain(): BonusPoints = BonusPoints(
     id = this.id.value,
     userId = this.userId.value,
-    rideId = this.rideId,
+    rideId = this.rideId.value,
     points = this.points
 )

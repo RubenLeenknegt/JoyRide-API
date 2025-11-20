@@ -66,5 +66,6 @@ object UsersTable : IdTable<String>("Users") {
      * Maximum length: 20 characters.
      */
     val bankAccountName = varchar("bank_account_name", 20).nullable()
+    override val primaryKey = PrimaryKey(id)
 
 }
