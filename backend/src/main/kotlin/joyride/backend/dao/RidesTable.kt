@@ -38,4 +38,5 @@ object RidesTable : IdTable<String>("Rides") {
         ReservationsTable.id,
         onDelete = ReferenceOption.CASCADE
     )
+    override val primaryKey = PrimaryKey(id)
 }

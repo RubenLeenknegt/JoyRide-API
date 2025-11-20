@@ -15,34 +15,9 @@ import org.jetbrains.exposed.sql.ReferenceOption
  * @property points An INTEGER column representing the number of bonus points awarded.
  */
 object BonusPointsTable : IdTable<String>("BonusPoints") {
-    /**
-     * Primary key column for the `BonusPoints` table.
-     *
-     * This column is a VARCHAR(36) and is typically used to store UUIDs.
-     *
-     * @see IdTable.id
-     */
     override val id = varchar("id", 36).entityId()
-
-    /**
-     * Foreign key column referencing the `UsersTable`.
-     *
-     * This column stores the ID of the user associated with the bonus points
-     * and enforces cascading delete behavior.
-     */
     val userId = reference("user_id", UsersTable.id, onDelete = ReferenceOption.CASCADE)
-
-    /**
-     * Column representing the ID of the associated ride.
-     *
-     * This column is a VARCHAR(36) and stores the ride's unique identifier.
-     */
-    val rideId = varchar("ride_id", 36)
-
-    /**
-     * Column representing the number of bonus points awarded.
-     *
-     * This column is an INTEGER and stores the points associated with the record.
-     */
+    val rideId = reference("ride_id", RidesTable.id, onDelete = ReferenceOption.RESTRICT)
     val points = integer("points")
+    override val primaryKey = PrimaryKey(id)
 }

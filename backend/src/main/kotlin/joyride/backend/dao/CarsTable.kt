@@ -1,9 +1,8 @@
 package joyride.backend.dao
 
-import joyride.backend.domain.Color
-import joyride.backend.domain.FuelType
-import joyride.backend.domain.TransmissionType
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ReferenceOption
+
 /**
  * Exposed table definition for car data.
  *
@@ -13,13 +12,13 @@ import org.jetbrains.exposed.dao.id.IdTable
  */
 object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meegegeven, hoeft eigenlijk niet maar voor duidelijkheid
     override val id = varchar("id", 36).entityId()
-    val ownerId = varchar("owner_id", 36)
+    val ownerId = reference("owner_id", UsersTable.id, onDelete = ReferenceOption.CASCADE)
     val brand = varchar("brand", 255)
     val model = varchar("model", 255)
     val buildYear = integer("build_year")
     val transmissionType = varchar("transmission_type", 20)
-    val color = varchar("color", 20, )
-    val fuelType = varchar("fuel_type", 20, )
+    val color = varchar("color", 20)
+    val fuelType = varchar("fuel_type", 20)
     val length = integer("length")
     val width = integer("width")
     val seats = integer("seats")
@@ -38,4 +37,5 @@ object CarsTable : IdTable<String>("Cars") { // Expliciete tabelnaam "Cars" meeg
     val energyCostPerKm = decimal("energy_cost_per_km", 10,2)
     val maintenanceCostPerKm = decimal("maintenance_cost_per_km", 10,2)
     val averageConsumption = decimal("average_consumption", 10,2)
+    override val primaryKey = PrimaryKey(id)
 }

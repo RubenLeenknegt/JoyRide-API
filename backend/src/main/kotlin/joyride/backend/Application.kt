@@ -3,30 +3,35 @@ package joyride.backend
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTDecodeException
+import com.zaxxer.hikari.HikariDataSource
+import io.github.cdimascio.dotenv.dotenv
+import io.ktor.http.*
+import io.ktor.http.auth.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.http.content.*
-import java.io.File
 import joyride.backend.controller.*
 import joyride.backend.repository.*
-import org.jetbrains.exposed.sql.Database
-import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.auth.Authentication
+import joyride.backend.services.DatabaseSetup
+import joyride.backend.services.MockDataGeneration.cleanup
+import joyride.backend.services.MockDataGeneration.generateAvailabilitiesMock
+import joyride.backend.services.MockDataGeneration.generateBonusPointsMock
+import joyride.backend.services.MockDataGeneration.generateUsersMock
+import joyride.backend.services.MockDataGeneration.generateCarsMock
+import joyride.backend.services.MockDataGeneration.generatePhotosMock
+import joyride.backend.services.MockDataGeneration.generateReservationsMock
+import joyride.backend.services.MockDataGeneration.generateRidesMock
 import kotlinx.serialization.json.Json
-import io.github.cdimascio.dotenv.dotenv
-import io.ktor.server.auth.jwt.*
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.auth.HttpAuthHeader
-import io.ktor.server.auth.parseAuthorizationHeader
-import joyride.backend.module
-import java.util.Date
-import joyride.backend.services.generateUsersMock
-import joyride.backend.services.generateReservationsMock
+import org.jetbrains.exposed.sql.Database
+import java.io.File
+import java.util.*
 
 /**
  * Main application module for the Joyride backend.
@@ -54,7 +59,11 @@ fun main() {
 fun Application.module() {
     // --- Database ---
     // Initialize Exposed with Hikari connection pool
-    Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
+    val database = Database.connect(HikariDataSource(DatabaseConnection.getDataSource()))
+
+    // Create database Tables if not already exists
+    DatabaseSetup.createTables(database)
+
 
     // --- Serialization ---
     // Configure JSON serialization for requests/responses
@@ -136,9 +145,14 @@ fun Application.module() {
 
     // --- Mock data ---
     // Generate test users and reservations, seed mock data (idempotent)
+    cleanup(database)
     generateUsersMock()
+    generateCarsMock()
+    generateAvailabilitiesMock()
     generateReservationsMock()
-
+    generateRidesMock()
+    generateBonusPointsMock()
+    generatePhotosMock()
     // --- Routing ---
     // Define API endpoints and serve static content
     routing {
@@ -153,9 +167,9 @@ fun Application.module() {
         bonusPointsRouting(bonusPointsRepository)
         photosRouting(PhotosRepository)
 
-      if (Database == Database) {
-          println("Api is up and running")
-      }
+        if (Database == Database) {
+            println("Api is up and running")
+        }
 
     }
 
