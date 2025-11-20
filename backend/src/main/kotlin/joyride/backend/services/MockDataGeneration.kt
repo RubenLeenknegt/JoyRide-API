@@ -766,9 +766,8 @@ object MockDataGeneration {
     fun Path.isImageFile(): Boolean = Files.isRegularFile(this) && imageExts.contains(fileName.toString().substringAfterLast('.', "").lowercase())
     fun generatePhotosMock() {
 
-        val root = Paths.get("backend")
-
-        val base = root.resolve("photosMock")
+//        val root = Paths.get("backend")
+        val base = Paths.get("photos")
         val carsDir = base.resolve("cars")
 
         if (!Files.isDirectory(carsDir)) return
