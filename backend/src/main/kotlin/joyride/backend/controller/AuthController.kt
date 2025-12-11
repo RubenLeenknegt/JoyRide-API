@@ -30,7 +30,12 @@ fun Route.authRouting(userRepository: UserRepository) {
             val principal = call.principal<io.ktor.server.auth.jwt.JWTPrincipal>()
                 ?: return@post call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid token"))
             val id = principal.payload.getClaim("id").asString()
-            call.respond(HttpStatusCode.OK, mapOf("id" to id))
+            val user = userRepository.getById(id)
+            if (user != null) {
+                call.respond(HttpStatusCode.OK, user.toDto())
+            } else {
+                call.respond(HttpStatusCode.NotFound, "The specified user was not found")
+            }
         }
     }
     /**
