@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -24,7 +25,14 @@ fun Route.authRouting(userRepository: UserRepository) {
     val authService = AuthService(userRepository)
     val dotenv = dotenv()
     val audience = dotenv["JWT_AUDIENCE"]
-
+    authenticate(dotenv["JWT_BACKEND_AUTH_NAME"]) {
+        post("/auth/autologin") {
+            val principal = call.principal<io.ktor.server.auth.jwt.JWTPrincipal>()
+                ?: return@post call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid token"))
+            val id = principal.payload.getClaim("id").asString()
+            call.respond(HttpStatusCode.OK, mapOf("id" to id))
+        }
+    }
     /**
      * Route to handle user login.
      * Verifies the user's credentials and generates access and refresh tokens.

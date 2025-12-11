@@ -1,11 +1,10 @@
 package joyride.backend.repository
 
-import kotlinx.datetime.LocalDate
 import joyride.backend.EnvironmentSetup
 import joyride.backend.domain.User
 import joyride.backend.domain.UserType
 import joyride.backend.services.AuthService
-import joyride.backend.services.userRepository
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,7 +12,7 @@ import kotlin.test.assertIs
 
 class UserRepositoryTest {
     private val authService = AuthService(UserRepository())
-
+    val userRepository = UserRepository()
     @BeforeEach
     fun setup() {
         EnvironmentSetup.setup()
