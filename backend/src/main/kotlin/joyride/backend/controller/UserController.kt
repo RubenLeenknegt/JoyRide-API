@@ -1,16 +1,15 @@
 package joyride.backend.controller
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.routing.*
-import io.ktor.server.response.*
+import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
-import io.ktor.server.request.receive
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import joyride.backend.dto.request.AccountModifyRequest
-import joyride.backend.repository.UserUpdateResult
 import joyride.backend.repository.UserRepository
+import joyride.backend.repository.UserUpdateResult
 import joyride.backend.services.JwtConfig.dotenv
 
 /**
