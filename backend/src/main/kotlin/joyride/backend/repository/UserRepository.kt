@@ -1,16 +1,16 @@
 package joyride.backend.repository
 
-import kotlinx.datetime.LocalDate
+import joyride.backend.dao.UserEntity
 import joyride.backend.dao.UsersTable
 import joyride.backend.domain.User
 import joyride.backend.domain.UserType
-import joyride.backend.dao.UserEntity
 import joyride.backend.domain.auth.UserCredentials
 import joyride.backend.mappers.UserMapper.toDomain
 import joyride.backend.mappers.UserMapper.toUserType
 import joyride.backend.services.AuthService
+import kotlinx.datetime.LocalDate
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.UUID
+import java.util.*
 
 /**
  * Repository class for managing user data.
@@ -64,6 +64,11 @@ class UserRepository {
         }
         user.toDomain()
     }
+
+    fun getById(id: String): User? = transaction {
+        return@transaction UserEntity.findById(id)?.toDomain()
+    }
+
 
     /**
      * Finds a user by their email address.

@@ -14,6 +14,7 @@ import joyride.backend.dto.response.CarCpkDataResponse
 import joyride.backend.dto.response.CarTcoDataResponse
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
+import org.jetbrains.exposed.dao.id.EntityID
 
 /**
  * Mapper object for converting between car-related entities, domain models, and DTOs.
@@ -30,7 +31,7 @@ object CarMapper {
     /** Converts a [CarEntity] to the domain [Car] object. */
     fun CarEntity.toDomain(): Car = Car(
         id = this.id.value,
-        ownerId = this.ownerId,
+        ownerId = this.ownerId.value,
         brand = this.brand,
         model = this.model,
         buildYear = this.buildYear,
@@ -60,7 +61,7 @@ object CarMapper {
     /** Converts a database DSL [ResultRow] to a domain [Car] object. */
     fun toCar(row: ResultRow): Car = Car(
         id = row[CarsTable.id].value,
-        ownerId = row[CarsTable.ownerId],
+        ownerId = row[CarsTable.ownerId].value,
         brand = row[CarsTable.brand],
         model = row[CarsTable.model],
         buildYear = row[CarsTable.buildYear],
@@ -156,7 +157,7 @@ object CarMapper {
 
     /** Updates a [CarEntity] with values from a [Car] domain object. */
     fun CarEntity.fromDomain(car: Car) {
-        ownerId = car.ownerId
+        ownerId = EntityID(car.ownerId, CarsTable)
         brand = car.brand
         model = car.model
         buildYear = car.buildYear
@@ -195,7 +196,7 @@ object CarMapper {
     )
 
     /** Converts a [CarTcoDataRequest] and calculation result to [CarTcoDataResponse]. */
-    fun toCarTcoDataResponse(request: CarTcoDataRequest, result: Double) : CarTcoDataResponse = CarTcoDataResponse(
+    fun toCarTcoDataResponse(request: CarTcoDataRequest, result: Double): CarTcoDataResponse = CarTcoDataResponse(
         id = request.id,
         purchasePrice = request.purchasePrice,
         residualValue = request.residualValue,
@@ -209,18 +210,19 @@ object CarMapper {
     /** Converts a [CarEntity] to [CarCpkDataRequest] for CPK calculations. */
     fun CarEntity.toCarCpkDataRequest(): CarCpkDataRequest = CarCpkDataRequest(
         id = this.id.value,
-        ownerId = this.ownerId,
+        ownerId = this.ownerId.value,
         averageConsumption = this.averageConsumption.toDouble(),
         fuelType = this.fuelType
     )
 
     /** Converts a [CarCpkDataRequest], fuel price, and result to [CarCpkDataResponse]. */
-    fun toCarCpkDataResponse(request: CarCpkDataRequest, fuelPrice: Double, result: Double) : CarCpkDataResponse = CarCpkDataResponse(
-        id = request.id,
-        ownerId = request.ownerId,
-        averageConsumption = request.averageConsumption,
-        fuelType = request.fuelType,
-        fuelPrice = fuelPrice,
-        cpk = result
-    )
+    fun toCarCpkDataResponse(request: CarCpkDataRequest, fuelPrice: Double, result: Double): CarCpkDataResponse =
+        CarCpkDataResponse(
+            id = request.id,
+            ownerId = request.ownerId,
+            averageConsumption = request.averageConsumption,
+            fuelType = request.fuelType,
+            fuelPrice = fuelPrice,
+            cpk = result
+        )
 }

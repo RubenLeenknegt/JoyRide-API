@@ -31,4 +31,5 @@ object ReservationsTable : IdTable<String>("Reservations") {
 
     val startDate = datetime("start_date")
     val endDate = datetime("end_date")
+    override val primaryKey = PrimaryKey(id)
 }

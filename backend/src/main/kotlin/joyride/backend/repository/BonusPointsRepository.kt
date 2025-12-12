@@ -5,6 +5,7 @@ import joyride.backend.dao.BonusPointsEntity
 import joyride.backend.dao.BonusPointsTable
 import joyride.backend.dao.ReservationEntity
 import joyride.backend.dao.RideEntity
+import joyride.backend.dao.RidesTable
 import joyride.backend.dao.UsersTable
 import joyride.backend.dao.toDomain
 import org.jetbrains.exposed.dao.id.EntityID
@@ -47,7 +48,7 @@ class BonusPointsRepository {
         if (bonuspointsEntity == 0) {
             val entity = BonusPointsEntity.new(UUID.randomUUID().toString()) {
                 this.userId = EntityID(userId, UsersTable)
-                this.rideId = rideId
+                this.rideId = EntityID(rideId, RidesTable)
                 this.points = points
             }
             entity.toDomain()
