@@ -55,3 +55,6 @@ Content-Type: application/json
 DELETE {{baseUrl}}/users/account/{{user_id}}
 Authorization: Bearer {{access_token}}
 
+###
+POST {{baseUrl}}/auth/autologin
+Authorization: Bearer {{access_token}}
