@@ -250,6 +250,16 @@ fun Route.carRouting(carRepository: CarRepository) {
                     call.respond(HttpStatusCode.OK, carCpk)
                 }
             }
+            get("carlist") {
+                val params: Map<String, String> = call.request.queryParameters.toMap().mapValues { it.value.first() }
+                val carList = carRepository.getCarList(params)
+
+                if (carList.isEmpty())
+                    call.respond(HttpStatusCode.NotFound, "No cars found")
+                else
+                    call.respond(HttpStatusCode.OK, carList)
+
+            }
         }
     }
 }

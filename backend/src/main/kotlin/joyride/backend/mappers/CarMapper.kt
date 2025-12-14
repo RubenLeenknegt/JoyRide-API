@@ -11,10 +11,12 @@ import joyride.backend.dto.request.CarCreateOrUpdateRequest
 import joyride.backend.dto.request.CarLocationRequest
 import joyride.backend.dto.request.CarTcoDataRequest
 import joyride.backend.dto.response.CarCpkDataResponse
+import joyride.backend.dto.response.CarListResponse
 import joyride.backend.dto.response.CarTcoDataResponse
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 import org.jetbrains.exposed.dao.id.EntityID
+import kotlin.String
 
 /**
  * Mapper object for converting between car-related entities, domain models, and DTOs.
@@ -224,5 +226,17 @@ object CarMapper {
             fuelType = request.fuelType,
             fuelPrice = fuelPrice,
             cpk = result
+        )
+
+    fun Car.toCarListResponse() =
+        CarListResponse(
+            id = id,
+            brand = brand,
+            model = model,
+            buildYear = buildYear,
+            transmissionType = transmissionType.name,
+            fuelType = fuelType.name,
+            pricePerDay = pricePerDay,
+            coverPhotoUrl = null
         )
 }

@@ -23,7 +23,7 @@ Content-Type: application/json
 
 
 ### Get all cars
-GET {{baseUrl}}/cars
+GET {{baseUrl}}/cars/carlist
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
