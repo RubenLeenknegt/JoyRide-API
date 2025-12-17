@@ -1,5 +1,6 @@
 package joyride.backend.repository
 
+import io.ktor.util.valuesOf
 import org.jetbrains.exposed.sql.BooleanColumnType
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.DecimalColumnType
@@ -18,6 +19,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import  org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -46,9 +48,15 @@ abstract class SharedRepository<T> (
      * @return A list of mapped entities of type [T] that satisfy the combined filter conditions.
      */
     fun findWithFilters(
-        params: Map<String, String>): List<T> = transaction {
-        val conditions = params.mapNotNull { (key, value) ->
-            table.columns.find { it.name.equals(key, ignoreCase = true) }?.let { column ->
+        params: Map<String, List<String>>
+    ): List<T> = transaction {
+
+        val conditions = params.mapNotNull { (key, values) ->
+            val column = table.columns.find { it.name.equals(key, ignoreCase = true) }
+                ?: return@mapNotNull null
+
+            values
+                .mapNotNull { value ->
                 when (column.columnType) {
                     is VarCharColumnType, is TextColumnType ->
                         (column as Column<String>) like "%$value%"
@@ -71,9 +79,11 @@ abstract class SharedRepository<T> (
                     else -> null
                 }
             }
+            .reduceOrNull { acc, expr -> acc or expr }
         }
+
         table
-            .select { conditions.reduceOrNull { acc, expr -> acc and expr } ?: Op.TRUE }
+            .select { conditions.reduceOrNull { a, b -> a and b } ?: Op.TRUE }
             .map(mapper)
     }
 

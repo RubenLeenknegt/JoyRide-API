@@ -46,7 +46,7 @@ fun Route.carRouting(carRepository: CarRepository) {
              * @return List of cars matching the filter criteria or 404 if none found
              */
             get {
-                val params: Map<String, String> = call.request.queryParameters.toMap().mapValues { it.value.first() }
+                val params: Map<String, List<String>> = call.request.queryParameters.toMap()
                 val cars = carRepository.findWithFilters(params)
 
                 if (cars.isEmpty())
@@ -251,7 +251,7 @@ fun Route.carRouting(carRepository: CarRepository) {
                 }
             }
             get("carlist") {
-                val params: Map<String, String> = call.request.queryParameters.toMap().mapValues { it.value.first() }
+                val params: Map<String, List<String>> = call.request.queryParameters.toMap()
                 val carList = carRepository.getCarList(params)
 
                 if (carList.isEmpty())
