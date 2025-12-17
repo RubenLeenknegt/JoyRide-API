@@ -21,14 +21,13 @@ Content-Type: application/json
     client.global.set("user_id", response.body.user.id)
 %}
 
-
 ### Get all cars
 GET {{baseUrl}}/cars
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get car by id
-GET {{baseUrl}}/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+GET {{baseUrl}}/cars/id/1dcdc1b0-ccdf-436a-9c66-77acb5eb5a39
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
@@ -105,7 +104,7 @@ Authorization: Bearer {{access_token}}
 }
 
 ### Optional: Get filtered cars
-GET {{baseUrl}}/cars?brand=BMW&phonemount=false
+GET {{baseUrl}}/cars?phonemount=false&color=GREY&color=RED
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
@@ -115,11 +114,16 @@ Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get TCO
-GET {{baseUrl}}/cars/tco/4b285f64-5717-4562-b3fc-2c963f66b009
+GET {{baseUrl}}/cars/tco/1dcdc1b0-ccdf-436a-9c66-77acb5eb5a39
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get CPK
-GET {{baseUrl}}/cars/cpk/4b285f64-5717-4562-b3fc-2c963f66b002
+GET {{baseUrl}}/cars/cpk/1dcdc1b0-ccdf-436a-9c66-77acb5eb5a39
+Accept: application/json
+Authorization: Bearer {{access_token}}
+
+### Get carlist
+GET {{baseUrl}}/cars/carlist?brand=BMW&phonemount=false&color=GREY&color=RED
 Accept: application/json
 Authorization: Bearer {{access_token}}
