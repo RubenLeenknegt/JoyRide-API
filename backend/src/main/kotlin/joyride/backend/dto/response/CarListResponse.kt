@@ -11,5 +11,6 @@ data class CarListItemDto(
     val transmissionType: String,
     val fuelType: String,
     val pricePerDay: Double,
+    val seats: Int,
     val coverPhotoUrl: String?
 )

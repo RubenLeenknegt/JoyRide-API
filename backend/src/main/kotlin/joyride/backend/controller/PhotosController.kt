@@ -12,6 +12,7 @@ import io.ktor.server.routing.*
 import java.io.File
 import joyride.backend.repository.PhotoRepository
 import io.ktor.server.request.receiveMultipart
+import joyride.backend.utils.baseUrl
 import java.util.UUID
 
 /**
@@ -52,8 +53,7 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
                     return@get call.respond(HttpStatusCode.BadRequest, "Invalid photo type")
                 }
 
-                val origin = call.request.origin
-                val baseUrl = "${origin.scheme}://${origin.serverHost}"
+                val baseUrl = call.baseUrl()
 
                 val photos = photoRepository.getPhotosByEntity(entityType, entityId, baseUrl)
 

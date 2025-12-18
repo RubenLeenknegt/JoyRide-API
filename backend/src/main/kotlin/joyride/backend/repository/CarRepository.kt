@@ -1,5 +1,6 @@
 package joyride.backend.repository
 
+import io.ktor.server.application.call
 import joyride.backend.dao.CarEntity
 import joyride.backend.domain.Car
 import joyride.backend.dao.CarsTable
@@ -15,6 +16,7 @@ import joyride.backend.mappers.CarMapper.toCarCpkDataRequest
 import joyride.backend.mappers.CarMapper.toCarListItemResponse
 import joyride.backend.mappers.CarMapper.toCarLocationRequest
 import joyride.backend.mappers.CarMapper.toCarTcoDataRequest
+import joyride.backend.utils.baseUrl
 
 /**
  * Repository providing database operations for [Car] entities.
@@ -123,17 +125,18 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
     }
 
-    fun getCarList(params: Map<String, List<String>>): List<CarListItemDto> =
+    fun getCarList(params: Map<String, List<String>>, baseUrl: String): List<CarListItemDto> =
         transaction {
             val cars = findWithFilters(params)
+            val baseUrl = baseUrl
 
             cars.map { car ->
                 val photoUrl = PhotosEntity
                     .find { PhotosTable.carId eq car.id }
-                    .firstOrNull()
+                    .firstOrNull() { it.filePath.endsWith("1.webp") }
                     ?.filePath
 
-                car.toCarListItemResponse(photoUrl)
+                car.toCarListItemResponse(baseUrl, photoUrl)
             }
 
         }
