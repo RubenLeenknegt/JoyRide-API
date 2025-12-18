@@ -53,7 +53,7 @@ fun Route.photosRouting(photoRepository: PhotoRepository) {
                 }
 
                 val origin = call.request.origin
-                val baseUrl = "${origin.scheme}://${origin.serverHost}:${origin.serverPort}"
+                val baseUrl = "${origin.scheme}://${origin.serverHost}"
 
                 val photos = photoRepository.getPhotosByEntity(entityType, entityId, baseUrl)
 
