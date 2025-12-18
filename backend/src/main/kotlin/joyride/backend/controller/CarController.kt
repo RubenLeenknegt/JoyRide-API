@@ -15,6 +15,7 @@ import joyride.backend.repository.CarRepository
 import joyride.backend.repository.ReservationRepository
 import joyride.backend.services.CarService
 import joyride.backend.services.JwtConfig.dotenv
+import joyride.backend.utils.baseUrl
 import java.time.LocalDateTime
 
 /**
@@ -252,7 +253,7 @@ fun Route.carRouting(carRepository: CarRepository) {
             }
             get("carlist") {
                 val params: Map<String, List<String>> = call.request.queryParameters.toMap()
-                val carList = carRepository.getCarList(params)
+                val carList = carRepository.getCarList(params, baseUrl = call.baseUrl())
 
                 if (carList.isEmpty())
                     call.respond(HttpStatusCode.NotFound, "No cars found")
