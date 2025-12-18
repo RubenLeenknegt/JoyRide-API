@@ -1,5 +1,7 @@
 package joyride.backend.mappers
 
+//import com.sun.tools.jdeprscan.Main.call
+import io.ktor.server.application.call
 import joyride.backend.dao.CarEntity
 import joyride.backend.dao.CarsTable
 import joyride.backend.domain.Car
@@ -13,6 +15,7 @@ import joyride.backend.dto.request.CarTcoDataRequest
 import joyride.backend.dto.response.CarCpkDataResponse
 import joyride.backend.dto.response.CarListItemDto
 import joyride.backend.dto.response.CarTcoDataResponse
+import joyride.backend.utils.baseUrl
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 import org.jetbrains.exposed.dao.id.EntityID
@@ -228,15 +231,19 @@ object CarMapper {
             cpk = result
         )
 
-    fun Car.toCarListItemResponse(photoUrl: String?) =
-        CarListItemDto(
-            id = id,
-            brand = brand,
-            model = model,
-            buildYear = buildYear,
-            transmissionType = transmissionType.name,
-            fuelType = fuelType.name,
-            pricePerDay = pricePerDay,
-            coverPhotoUrl = photoUrl
-        )
+    fun Car.toCarListItemResponse(
+        baseUrl: String,
+        photoUrl: String?
+    ) = CarListItemDto(
+        id = id,
+        brand = brand,
+        model = model,
+        buildYear = buildYear,
+        transmissionType = transmissionType.name,
+        fuelType = fuelType.name,
+        pricePerDay = pricePerDay,
+        seats = seats,
+        coverPhotoUrl = photoUrl.let { "$baseUrl/$it" }
+    )
+
 }

@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:8081
+
+### Get photo
+GET {{baseUrl}}/photos/cars/84561d69-5498-46b9-894c-dd4af5eb112c
+Accept: application/json
+Authorization: Bearer {{access_token}}
+
