@@ -124,6 +124,7 @@ Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ### Get carlist
-GET {{baseUrl}}/cars/carlist?brand=BMW&phonemount=false&color=GREY&color=RED
+GET {{baseUrl}}/cars/carlist
 Accept: application/json
 Authorization: Bearer {{access_token}}
+
