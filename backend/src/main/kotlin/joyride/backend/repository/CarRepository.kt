@@ -3,13 +3,16 @@ package joyride.backend.repository
 import joyride.backend.dao.CarEntity
 import joyride.backend.domain.Car
 import joyride.backend.dao.CarsTable
-import joyride.backend.repository.SharedRepository
+import joyride.backend.dao.PhotosEntity
+import joyride.backend.dao.PhotosTable
 import org.jetbrains.exposed.sql.transactions.transaction
 import joyride.backend.mappers.CarMapper.toDomain
 import joyride.backend.dto.request.*
+import joyride.backend.dto.response.CarListItemDto
 import joyride.backend.mappers.CarMapper
 import joyride.backend.mappers.CarMapper.fromDomain
 import joyride.backend.mappers.CarMapper.toCarCpkDataRequest
+import joyride.backend.mappers.CarMapper.toCarListItemResponse
 import joyride.backend.mappers.CarMapper.toCarLocationRequest
 import joyride.backend.mappers.CarMapper.toCarTcoDataRequest
 
@@ -119,4 +122,19 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
             null
         }
     }
+
+    fun getCarList(params: Map<String, List<String>>): List<CarListItemDto> =
+        transaction {
+            val cars = findWithFilters(params)
+
+            cars.map { car ->
+                val photoUrl = PhotosEntity
+                    .find { PhotosTable.carId eq car.id }
+                    .firstOrNull()
+                    ?.filePath
+
+                car.toCarListItemResponse(photoUrl)
+            }
+
+        }
 }
