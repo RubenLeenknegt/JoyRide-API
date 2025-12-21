@@ -769,6 +769,7 @@ object MockDataGeneration {
 //        val root = Paths.get("backend")
         val base = Paths.get("photos")
         val carsDir = base.resolve("cars")
+        val usersDir = base.resolve("users")
 
         if (!Files.isDirectory(carsDir)) return
 
@@ -787,6 +788,26 @@ object MockDataGeneration {
                     filePath = img.toString()
                 )
                 createdPhotos.add(photo)
+            }
+        }
+
+        if (Files.isDirectory(usersDir)) {
+            createdUsers.withIndex().forEach { (idx, user) ->
+                val userFolder = usersDir.resolve("user${idx + 1}")
+                if (!Files.isDirectory(userFolder)) return@forEach
+
+                val files = Files.list(userFolder).use {
+                    it.filter { p -> p.isImageFile() }.toList()
+                }
+
+                files.forEach { img ->
+                    val photo = photoRepository.createPhoto(
+                        entityType = "users",
+                        entityId = user.id,
+                        filePath = img.toString()
+                    )
+                    createdPhotos.add(photo)
+                }
             }
         }
     }
