@@ -524,6 +524,84 @@ object MockDataGeneration {
                 "0.14",
                 "0.05",
                 "17"
+            ),
+            listOf(
+                "Ferrari",
+                "Testarossa",
+                "1987",
+                "MANUAL",
+                "RED",
+                "ICE",
+                "4480",
+                "1970",
+                "2",
+                "FALSE",
+                "FALSE",
+                "250",
+                "FALSE",
+                "51.9504",
+                "5.2252",
+                "13-BS-RB",
+                "735.00",
+                "179.500",
+                "172.600",
+                "5",
+                "8000",
+                "0.19",
+                "0.15",
+                "25"
+            ),
+            listOf(
+                "Nissan",
+                "Skyline R34",
+                "1999",
+                "MANUAL",
+                "BLUE",
+                "ICE",
+                "4600",
+                "1785",
+                "4",
+                "FALSE",
+                "TRUE",
+                "181",
+                "FALSE",
+                "52.1197",
+                "5.2857",
+                "04-VPN-4",
+                "812.00",
+                "210.000",
+                "199.600",
+                "8",
+                "16000",
+                "0.17",
+                "0.15",
+                "23"
+            ),
+            listOf(
+                "DMC",
+                "DeLorean",
+                "1982",
+                "MANUAL",
+                "SILVER",
+                "ICE",
+                "4261",
+                "1854",
+                "2",
+                "FALSE",
+                "TRUE",
+                "396",
+                "FALSE",
+                "52.8450",
+                "5.7072",
+                "TT-88-N",
+                "156.00",
+                "77.500",
+                "55.212",
+                "43",
+                "1200",
+                "0.12",
+                "0.11",
+                "16"
             )
         )
         var i = 0
@@ -766,9 +844,9 @@ object MockDataGeneration {
     fun Path.isImageFile(): Boolean = Files.isRegularFile(this) && imageExts.contains(fileName.toString().substringAfterLast('.', "").lowercase())
     fun generatePhotosMock() {
 
-//        val root = Paths.get("backend")
         val base = Paths.get("photos")
         val carsDir = base.resolve("cars")
+        val usersDir = base.resolve("users")
 
         if (!Files.isDirectory(carsDir)) return
 
@@ -787,6 +865,26 @@ object MockDataGeneration {
                     filePath = img.toString()
                 )
                 createdPhotos.add(photo)
+            }
+        }
+
+        if (Files.isDirectory(usersDir)) {
+            createdUsers.withIndex().forEach { (idx, user) ->
+                val userFolder = usersDir.resolve("user${idx + 1}")
+                if (!Files.isDirectory(userFolder)) return@forEach
+
+                val files = Files.list(userFolder).use {
+                    it.filter { p -> p.isImageFile() }.toList()
+                }
+
+                files.forEach { img ->
+                    val photo = photoRepository.createPhoto(
+                        entityType = "users",
+                        entityId = user.id,
+                        filePath = img.toString()
+                    )
+                    createdPhotos.add(photo)
+                }
             }
         }
     }
