@@ -27,7 +27,9 @@ enum class Color {
     BLACK,
     WHITE,
     OTHER,
-    SILVER
+    SILVER,
+    ORANGE,
+    YELLOW
 }
 
 /**
