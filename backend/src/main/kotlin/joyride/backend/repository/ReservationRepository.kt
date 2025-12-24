@@ -1,16 +1,20 @@
 package joyride.backend.repository
 
+import joyride.backend.dao.CarEntity
+import joyride.backend.dao.PhotosEntity
+import joyride.backend.dao.PhotosTable
 import kotlinx.datetime.LocalDateTime
 import joyride.backend.dao.ReservationEntity
 import joyride.backend.dao.ReservationsTable
 import joyride.backend.dao.toDomain
 import joyride.backend.domain.Reservation
+import joyride.backend.dto.response.ReservationList
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.and
 import java.util.UUID
 
 /**
@@ -49,6 +53,71 @@ class ReservationRepository {
         ReservationEntity.find { ReservationsTable.userId eq userId }
             .map { it.toDomain() }
     }
+
+    /**
+     * Retrieves a list of reservations for a specific user, enriched with car details and cover photos.
+     *
+     * Reservations are sorted in the following priority order:
+     * 1. Active reservations (current date falls within the reservation period) - sorted by start date
+     * 2. Upcoming reservations (start date is in the future) - sorted by start date (soonest first)
+     * 3. Past reservations (end date is in the past) - sorted by end date (most recent first)
+     *
+     * This method fetches all reservations belonging to the specified user and enhances each reservation
+     * with the corresponding car's brand, model, and cover photo URL. This combined data is optimized
+     * for displaying reservation lists in the UI without requiring additional API calls.
+     *
+     *
+     * @param userId The unique identifier of the user whose reservations should be retrieved.
+     * @param baseUrl The base URL of the application, used to construct full URLs for cover photos.
+     * @return A sorted list of [ReservationList] objects containing reservation data combined with car details.
+     *         Returns an empty list if the user has no reservations.
+     *
+     * @see ReservationList
+     * @see getByUserId
+     */
+    fun getReservationsList(userId: String, baseUrl: String): List<ReservationList> =
+        transaction {
+            val reservations = getByUserId(userId)
+            val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+            val reservationList = reservations.map { reservation ->
+                // Get the car details
+                val car = CarEntity.findById(reservation.carId)
+
+                // Get the cover photo (first photo ending with 1.webp, similar to carList logic)
+                val photoUrl = PhotosEntity
+                    .find { PhotosTable.carId eq reservation.carId }
+                    .firstOrNull { it.filePath.endsWith("1.webp") }
+                    ?.filePath
+
+                // Construct full photo URL
+                val coverPhotoUrl = photoUrl?.let { "$baseUrl/$it" } ?: ""
+
+                ReservationList(
+                    id = reservation.id,
+                    userId = reservation.userId,
+                    carId = reservation.carId,
+                    startDate = reservation.startDate,
+                    endDate = reservation.endDate,
+                    carBrand = car?.brand ?: "",
+                    carModel = car?.model ?: "",
+                    coverPhotoUrl = coverPhotoUrl
+                )
+            }
+
+            // Split into categories
+            val active = reservationList.filter { it.startDate <= now && it.endDate >= now }
+                .sortedBy { it.startDate }
+
+            val upcoming = reservationList.filter { it.startDate > now }
+                .sortedBy { it.startDate }
+
+            val past = reservationList.filter { it.endDate < now }
+                .sortedByDescending { it.endDate }
+
+            // Combine in desired order
+            active + upcoming + past
+        }
 
     /**
      * Returns all reservations for a specific car.

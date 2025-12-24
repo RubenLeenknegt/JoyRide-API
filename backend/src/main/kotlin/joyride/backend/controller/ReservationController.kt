@@ -10,6 +10,7 @@ import kotlinx.datetime.LocalDateTime
 import joyride.backend.dto.request.ReservationCreateOrUpdateRequest
 import joyride.backend.repository.ReservationRepository
 import joyride.backend.repository.AvailabilitiesRepository
+import joyride.backend.utils.baseUrl
 
 /**
  * Configures routing for reservation-related endpoints.
@@ -21,6 +22,7 @@ import joyride.backend.repository.AvailabilitiesRepository
  * - `GET /reservations` → Retrieve all reservations.
  * - `GET /reservations/{id}` → Retrieve a specific reservation by ID.
  * - `GET /reservations/user/{userId}` → Retrieve all reservations for a specific user.
+ * - `GET /reservations/user/reservationList/{userId}` → Retrieve all reservations for a specific user, return reservation along with data required for presentation in frontend.
  * - `GET /reservations/car/{carId}` → Retrieve all reservations for a specific car.
  * - `POST /reservations` → Create a new reservation (checks availability and overlapping reservations).
  * - `PUT /reservations/{id}` → Update an existing reservation (checks availability and overlapping reservations).
@@ -31,8 +33,6 @@ import joyride.backend.repository.AvailabilitiesRepository
  * @param reservationRepository Repository providing access to reservation data.
  * @param availabilitiesRepository Repository used to check car availability during requested time windows.
  */
-
-
 fun Route.reservationRouting(reservationRepository: ReservationRepository, availabilitiesRepository: AvailabilitiesRepository) {
 
     // Authenticate routes using the JWT backend authentication name from environment variables
@@ -68,6 +68,22 @@ fun Route.reservationRouting(reservationRepository: ReservationRepository, avail
                     call.respond(HttpStatusCode.NotFound, "No reservations found for user $userId")
                 else
                     call.respond(HttpStatusCode.OK, reservations)
+            }
+
+            // GET reservations with car details for a user
+            get("user/reservationList/{userId}") {
+                val userId = call.parameters["userId"]
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing userId")
+
+                val reservationsWithDetails = reservationRepository.getReservationsList(
+                    userId = userId,
+                    baseUrl = call.baseUrl()
+                )
+
+                if (reservationsWithDetails.isEmpty())
+                    call.respond(HttpStatusCode.NotFound, "No reservations found for user $userId")
+                else
+                    call.respond(HttpStatusCode.OK, reservationsWithDetails)
             }
 
             // GET by car ID
