@@ -125,19 +125,26 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
     }
 
-    fun getCarList(params: Map<String, List<String>>, baseUrl: String): List<CarListItemDto> =
+    fun getCarList(
+        params: Map<String, List<String>>,
+        baseUrl: String
+    ): List<CarListItemDto> =
         transaction {
             val cars = findWithFilters(params)
-            val baseUrl = baseUrl
 
             cars.map { car ->
-                val photoUrl = PhotosEntity
+                val photos = PhotosEntity
                     .find { PhotosTable.carId eq car.id }
-                    .firstOrNull() { it.filePath.endsWith("1.webp") }
-                    ?.filePath
+                    .toList()
+
+                val photoUrl =
+                    photos.firstOrNull { it.filePath.endsWith("1.webp") }
+                        ?.filePath
+                        ?: photos.randomOrNull()
+                            ?.filePath
 
                 car.toCarListItemResponse(baseUrl, photoUrl)
             }
-
         }
+
 }
