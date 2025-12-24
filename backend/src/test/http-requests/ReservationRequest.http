@@ -85,8 +85,12 @@ Accept: application/json
   "endDate": "2025-11-27T12:00:00"
 }
 
-
 ### Delete a reservation
 DELETE {{baseUrl}}/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Reservation list
+GET {{baseUrl}}/reservations/user/reservationList/e85d12bf-b2d7-42ce-b16a-9474f8422236
 Authorization: Bearer {{access_token}}
 Accept: application/json
