@@ -120,7 +120,6 @@ class RidesRepository {
                     carBrand = car!!.brand,
                     carModel = car.model,
                     photoCoverPhotoUrl = coverPhotoUrl,
-                    userId = reservation.userId,
                     startX = ride.startX,
                     startY = ride.startY,
                     endX = ride.endX,
