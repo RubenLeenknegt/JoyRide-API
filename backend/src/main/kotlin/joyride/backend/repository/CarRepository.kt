@@ -136,4 +136,5 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
                 car.toCarListItemResponse(coverPhotoUrl)
             }
         }
+
 }
