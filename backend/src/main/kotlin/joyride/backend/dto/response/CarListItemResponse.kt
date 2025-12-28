@@ -3,7 +3,7 @@ package joyride.backend.dto.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CarListItemDto(
+data class CarListItemResponse(
     val id: String,
     val brand: String,
     val model: String,

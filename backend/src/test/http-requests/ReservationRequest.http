@@ -91,6 +91,6 @@ Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Reservation list
-GET {{baseUrl}}/reservations/user/reservationList/e85d12bf-b2d7-42ce-b16a-9474f8422236
+GET {{baseUrl}}/reservations/user/reservationList/77bd9124-e817-4c1e-b522-33f9b0721ce1
 Authorization: Bearer {{access_token}}
 Accept: application/json

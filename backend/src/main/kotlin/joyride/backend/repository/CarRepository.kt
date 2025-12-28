@@ -1,6 +1,5 @@
 package joyride.backend.repository
 
-import io.ktor.server.application.call
 import joyride.backend.dao.CarEntity
 import joyride.backend.domain.Car
 import joyride.backend.dao.CarsTable
@@ -9,14 +8,14 @@ import joyride.backend.dao.PhotosTable
 import org.jetbrains.exposed.sql.transactions.transaction
 import joyride.backend.mappers.CarMapper.toDomain
 import joyride.backend.dto.request.*
-import joyride.backend.dto.response.CarListItemDto
+import joyride.backend.dto.response.CarListItemResponse
 import joyride.backend.mappers.CarMapper
 import joyride.backend.mappers.CarMapper.fromDomain
 import joyride.backend.mappers.CarMapper.toCarCpkDataRequest
 import joyride.backend.mappers.CarMapper.toCarListItemResponse
 import joyride.backend.mappers.CarMapper.toCarLocationRequest
 import joyride.backend.mappers.CarMapper.toCarTcoDataRequest
-import joyride.backend.utils.baseUrl
+import joyride.backend.utils.getCoverPhotoUrl
 
 /**
  * Repository providing database operations for [Car] entities.
@@ -125,19 +124,16 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
     }
 
-    fun getCarList(params: Map<String, List<String>>, baseUrl: String): List<CarListItemDto> =
+    fun getCarList(
+        params: Map<String, List<String>>,
+        baseUrl: String
+    ): List<CarListItemResponse> =
         transaction {
-            val cars = findWithFilters(params)
-            val baseUrl = baseUrl
+            findWithFilters(params).map { car ->
+                val photoPath = getCoverPhotoUrl(car.id)
+                val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" }
 
-            cars.map { car ->
-                val photoUrl = PhotosEntity
-                    .find { PhotosTable.carId eq car.id }
-                    .firstOrNull() { it.filePath.endsWith("1.webp") }
-                    ?.filePath
-
-                car.toCarListItemResponse(baseUrl, photoUrl)
+                car.toCarListItemResponse(coverPhotoUrl)
             }
-
         }
 }

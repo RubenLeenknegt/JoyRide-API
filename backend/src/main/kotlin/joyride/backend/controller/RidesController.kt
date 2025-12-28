@@ -9,6 +9,8 @@ import io.ktor.server.routing.*
 import joyride.backend.repository.RidesRepository
 import joyride.backend.dto.request.RideCreate
 import io.ktor.server.auth.authenticate
+import io.ktor.util.toMap
+import joyride.backend.utils.baseUrl
 
 /**
  * Configures routing for ride-related endpoints.
@@ -101,6 +103,17 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                     call.respond(HttpStatusCode.NotFound, "No ride with id $id")
             }
 
+            // GET rideList
+            get("/ridelist/{userId}") {
+               val rideList = ridesRepository.getRideList(baseUrl = call.baseUrl())
+
+                if (rideList.isEmpty())
+                    call.respond(HttpStatusCode.NotFound, "No rides found")
+                else
+                    call.respond(HttpStatusCode.OK, rideList)
+
+            }
+            }
+
         }
     }
-}
