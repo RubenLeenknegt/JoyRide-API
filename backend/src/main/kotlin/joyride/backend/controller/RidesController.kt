@@ -70,7 +70,7 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
             }
 
             // GET rideList
-            get("ridelist/user/{userId}") {
+            get("/ridelist/user/{userId}") {
                 val userId = call.parameters["userId"]
                     ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing userId")
 
