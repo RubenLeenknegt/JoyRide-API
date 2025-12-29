@@ -103,30 +103,38 @@ class RidesRepository {
         }
     }
 
-    fun getRideList(baseUrl: String): List<RideListItemResponse> =
+    fun getRideList(
+        baseUrl: String,
+        userId: String
+    ): List<RideListItemResponse> =
         transaction {
-            getAll().map { ride ->
-                val baseUrl = baseUrl
-                val reservation = ReservationEntity.findById(ride.reservationId)!!
-                val car = CarEntity.findById(reservation.carId)
-                val photoPath = getCoverPhotoUrl(reservation.carId)
-                val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" } ?: ""
+            RideEntity
+                .all()
+                .filter { ride ->
+                    val reservation = ReservationEntity.findById(ride.reservationId)
+                    reservation?.userId == userId
+                }
+                .map { ride ->
+                    val reservation = ReservationEntity.findById(ride.reservationId)!!
+                    val car = CarEntity.findById(reservation.carId)!!
+                    val photoPath = getCoverPhotoUrl(reservation.carId)
+                    val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" } ?: ""
 
-                RideListItemResponse(
-                    id = ride.id,
-                    reservationId = reservation.id.value,
-                    reservationStart = reservation.startDate,
-                    reservationEnd = reservation.endDate,
-                    carBrand = car!!.brand,
-                    carModel = car.model,
-                    coverPhotoUrl = coverPhotoUrl,
-                    startX = ride.startX,
-                    startY = ride.startY,
-                    endX = ride.endX,
-                    endY = ride.endY,
-                    length = ride.length,
-                    duration = ride.duration
-                )
-            }
+                    RideListItemResponse(
+                        id = ride.id.value,
+                        reservationId = reservation.id.value,
+                        reservationStart = reservation.startDate,
+                        reservationEnd = reservation.endDate,
+                        carBrand = car.brand,
+                        carModel = car.model,
+                        coverPhotoUrl = coverPhotoUrl,
+                        startX = ride.startX,
+                        startY = ride.startY,
+                        endX = ride.endX,
+                        endY = ride.endY,
+                        length = ride.length,
+                        duration = ride.duration
+                    )
+                }
         }
 }
