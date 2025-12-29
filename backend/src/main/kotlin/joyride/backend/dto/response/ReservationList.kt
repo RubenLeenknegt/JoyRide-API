@@ -28,5 +28,5 @@ data class ReservationList(
     val endDate: LocalDateTime,
     val carBrand: String,
     val carModel: String,
-    val coverPhotoUrl: String
+    val coverPhotoUrl: String?
 )

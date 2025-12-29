@@ -17,6 +17,5 @@ data class RideListItemResponse(
     val reservationEnd: LocalDateTime,
     val carBrand: String,
     val carModel: String,
-    val photoCoverPhotoUrl: String,
-    val userId: String
+    val coverPhotoUrl: String?
 )
