@@ -70,6 +70,6 @@ Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get ridelist
-GET {{baseUrl}}/rides/ridelist/78573c62-b93b-49ed-a725-f5d20086940b
+GET {{baseUrl}}/rides/ridelist/user/bbd351df-6a1f-4a0d-a95a-a0548eefd487
 Authorization: Bearer {{access_token}}
 Accept: application/json

@@ -104,16 +104,17 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
             }
 
             // GET rideList
-            get("/ridelist/{userId}") {
-               val rideList = ridesRepository.getRideList(baseUrl = call.baseUrl())
+            get("ridelist/user/{userId}") {
+                val userId = call.parameters["userId"]
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing userId")
 
-                if (rideList.isEmpty())
-                    call.respond(HttpStatusCode.NotFound, "No rides found")
-                else
-                    call.respond(HttpStatusCode.OK, rideList)
+                val rideList = ridesRepository.getRideList(
+                    userId = userId,
+                    baseUrl = call.baseUrl()
+                )
 
+                call.respond(HttpStatusCode.OK, rideList)
             }
-            }
-
         }
     }
+}
