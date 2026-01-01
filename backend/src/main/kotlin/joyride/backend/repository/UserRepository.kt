@@ -128,7 +128,6 @@ class UserRepository {
      *
      * @param id The ID of the user to delete.
      */
-// File: `backend/src/main/kotlin/joyride/backend/repository/UserRepository.kt`
     fun deleteUser(id: String): Boolean = transaction {
         val user = UserEntity.findById(id)
         if (user == null) {

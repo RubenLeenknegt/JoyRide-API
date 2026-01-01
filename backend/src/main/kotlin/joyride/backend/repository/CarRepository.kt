@@ -1,13 +1,11 @@
 package joyride.backend.repository
 
 import joyride.backend.dao.CarEntity
-import joyride.backend.domain.Car
 import joyride.backend.dao.CarsTable
-import joyride.backend.dao.PhotosEntity
-import joyride.backend.dao.PhotosTable
-import org.jetbrains.exposed.sql.transactions.transaction
-import joyride.backend.mappers.CarMapper.toDomain
-import joyride.backend.dto.request.*
+import joyride.backend.domain.Car
+import joyride.backend.dto.request.CarCpkDataRequest
+import joyride.backend.dto.request.CarLocationRequest
+import joyride.backend.dto.request.CarTcoDataRequest
 import joyride.backend.dto.response.CarListItemResponse
 import joyride.backend.mappers.CarMapper
 import joyride.backend.mappers.CarMapper.fromDomain
@@ -15,7 +13,9 @@ import joyride.backend.mappers.CarMapper.toCarCpkDataRequest
 import joyride.backend.mappers.CarMapper.toCarListItemResponse
 import joyride.backend.mappers.CarMapper.toCarLocationRequest
 import joyride.backend.mappers.CarMapper.toCarTcoDataRequest
+import joyride.backend.mappers.CarMapper.toDomain
 import joyride.backend.utils.getCoverPhotoUrl
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * Repository providing database operations for [Car] entities.
@@ -137,4 +137,15 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
             }
         }
 
+    fun getCarByUserId(
+        userId: String, baseUrl: String
+    ): List<CarListItemResponse> = transaction {
+        val cars = CarEntity.find { CarsTable.ownerId eq userId }.toList()
+
+        cars.map { car ->
+            val photoPath = getCoverPhotoUrl(car.id.value)
+            val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" }
+            car.toDomain().toCarListItemResponse(coverPhotoUrl)
+        }
+    }
 }
