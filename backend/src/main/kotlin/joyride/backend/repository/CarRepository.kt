@@ -124,6 +124,15 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
     }
 
+    /**
+     * Retrieves a list of cars based on the provided filter parameters.
+     *
+     * @param params a map where the keys represent filter criteria (e.g., column names) and
+     *               the values are lists of strings used as filter values
+     * @param baseUrl the base URL used to construct the full URL for the car's cover photo
+     * @return a list of car details in the form of [CarListItemResponse], including optional
+     *         cover photo URLs
+     */
     fun getCarList(
         params: Map<String, List<String>>,
         baseUrl: String
@@ -137,6 +146,14 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
             }
         }
 
+    /**
+     * Retrieves a list of cars associated with a specific user ID.
+     *
+     * @param userId the unique identifier of the user whose cars are being retrieved
+     * @param baseUrl the base URL used to construct cover photo URLs for the cars
+     * @return a list of [CarListItemResponse] objects containing the details of the cars associated with the user,
+     *         or an empty list if no cars are found
+     */
     fun getCarByUserId(
         userId: String, baseUrl: String
     ): List<CarListItemResponse> = transaction {
