@@ -68,3 +68,8 @@ Content-Type: application/json
 DELETE {{baseUrl}}/rides/6d485f64-5717-4562-b3fc-2c963f66d009
 Authorization: Bearer {{access_token}}
 Accept: application/json
+
+### Get ridelist
+GET {{baseUrl}}/rides/ridelist/user/bbd351df-6a1f-4a0d-a95a-a0548eefd487
+Authorization: Bearer {{access_token}}
+Accept: application/json

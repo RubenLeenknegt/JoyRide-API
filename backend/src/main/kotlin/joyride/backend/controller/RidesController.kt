@@ -9,6 +9,8 @@ import io.ktor.server.routing.*
 import joyride.backend.repository.RidesRepository
 import joyride.backend.dto.request.RideCreate
 import io.ktor.server.auth.authenticate
+import io.ktor.util.toMap
+import joyride.backend.utils.baseUrl
 
 /**
  * Configures routing for ride-related endpoints.
@@ -67,40 +69,57 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                     call.respond(HttpStatusCode.OK, rides)
             }
 
-            // POST a new ride
-            post {
-                try {
-                    val req = call.receive<RideCreate>()
-                    // Create a new ride record using the repository
-                    val created = ridesRepository.create(
-                        startX = req.startX,
-                        startY = req.startY,
-                        endX = req.endX,
-                        endY = req.endY,
-                        length = req.length,
-                        duration = req.duration,
-                        reservationId = req.reservationId
-                    )
-                    call.respond(HttpStatusCode.Created, created)
-                } catch (e: ContentTransformationException) {
-                    // Handle invalid or missing JSON body
-                    call.respond(HttpStatusCode.BadRequest, "Invalid or missing JSON body.")
-                }
-            }
+            // GET rideList
+            get("/ridelist/user/{userId}") {
+                val userId = call.parameters["userId"]
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing userId")
 
-            // DELETE a ride
-            delete("/{id}") {
-                val id = call.parameters["id"]
-                    ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
+                val rideList = ridesRepository.getRideList(
+                    userId = userId,
+                    baseUrl = call.baseUrl()
+                )
 
-                val deleted = ridesRepository.delete(id)
-
-                if (deleted)
-                    call.respond(HttpStatusCode.NoContent)
+                if (rideList.isEmpty())
+                    call.respond(HttpStatusCode.NoContent, "No rides found for user $userId")
                 else
-                    call.respond(HttpStatusCode.NotFound, "No ride with id $id")
+                    call.respond(HttpStatusCode.OK, rideList)
             }
-
         }
+
+        // POST a new ride
+        post {
+            try {
+                val req = call.receive<RideCreate>()
+                // Create a new ride record using the repository
+                val created = ridesRepository.create(
+                    startX = req.startX,
+                    startY = req.startY,
+                    endX = req.endX,
+                    endY = req.endY,
+                    length = req.length,
+                    duration = req.duration,
+                    reservationId = req.reservationId
+                )
+                call.respond(HttpStatusCode.Created, created)
+            } catch (e: ContentTransformationException) {
+                // Handle invalid or missing JSON body
+                call.respond(HttpStatusCode.BadRequest, "Invalid or missing JSON body.")
+            }
+        }
+
+        // DELETE a ride
+        delete("/{id}") {
+            val id = call.parameters["id"]
+                ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
+
+            val deleted = ridesRepository.delete(id)
+
+            if (deleted)
+                call.respond(HttpStatusCode.NoContent)
+            else
+                call.respond(HttpStatusCode.NotFound, "No ride with id $id")
+        }
+
+
     }
 }

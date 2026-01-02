@@ -1,9 +1,13 @@
 package joyride.backend.repository
 
+import joyride.backend.dao.CarEntity
+import joyride.backend.dao.ReservationEntity
 import joyride.backend.dao.RideEntity
 import joyride.backend.dao.RidesTable
 import joyride.backend.dao.toDomain
 import joyride.backend.domain.Ride
+import joyride.backend.dto.response.RideListItemResponse
+import joyride.backend.utils.getCoverPhotoUrl
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
@@ -98,4 +102,39 @@ class RidesRepository {
             false
         }
     }
+
+    fun getRideList(
+        baseUrl: String,
+        userId: String
+    ): List<RideListItemResponse> =
+        transaction {
+            RideEntity
+                .all()
+                .filter { ride ->
+                    val reservation = ReservationEntity.findById(ride.reservationId)
+                    reservation?.userId == userId
+                }
+                .map { ride ->
+                    val reservation = ReservationEntity.findById(ride.reservationId)!!
+                    val car = CarEntity.findById(reservation.carId)!!
+                    val photoPath = getCoverPhotoUrl(reservation.carId)
+                    val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" } ?: ""
+
+                    RideListItemResponse(
+                        id = ride.id.value,
+                        reservationId = reservation.id.value,
+                        reservationStart = reservation.startDate,
+                        reservationEnd = reservation.endDate,
+                        carBrand = car.brand,
+                        carModel = car.model,
+                        coverPhotoUrl = coverPhotoUrl,
+                        startX = ride.startX,
+                        startY = ride.startY,
+                        endX = ride.endX,
+                        endY = ride.endY,
+                        length = ride.length,
+                        duration = ride.duration
+                    )
+                }
+        }
 }

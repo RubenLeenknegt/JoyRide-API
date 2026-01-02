@@ -9,6 +9,7 @@ import joyride.backend.dao.ReservationsTable
 import joyride.backend.dao.toDomain
 import joyride.backend.domain.Reservation
 import joyride.backend.dto.response.ReservationList
+import joyride.backend.utils.getCoverPhotoUrl
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -84,14 +85,8 @@ class ReservationRepository {
                 // Get the car details
                 val car = CarEntity.findById(reservation.carId)
 
-                // Get the cover photo (first photo ending with 1.webp, similar to carList logic)
-                val photoUrl = PhotosEntity
-                    .find { PhotosTable.carId eq reservation.carId }
-                    .firstOrNull { it.filePath.endsWith("1.webp") }
-                    ?.filePath
-
-                // Construct full photo URL
-                val coverPhotoUrl = photoUrl?.let { "$baseUrl/$it" } ?: ""
+                val photoPath = getCoverPhotoUrl(reservation.carId)
+                val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" } ?: ""
 
                 ReservationList(
                     id = reservation.id,
