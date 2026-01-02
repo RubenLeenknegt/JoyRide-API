@@ -1,13 +1,11 @@
 package joyride.backend.repository
 
 import joyride.backend.dao.CarEntity
-import joyride.backend.domain.Car
 import joyride.backend.dao.CarsTable
-import joyride.backend.dao.PhotosEntity
-import joyride.backend.dao.PhotosTable
-import org.jetbrains.exposed.sql.transactions.transaction
-import joyride.backend.mappers.CarMapper.toDomain
-import joyride.backend.dto.request.*
+import joyride.backend.domain.Car
+import joyride.backend.dto.request.CarCpkDataRequest
+import joyride.backend.dto.request.CarLocationRequest
+import joyride.backend.dto.request.CarTcoDataRequest
 import joyride.backend.dto.response.CarListItemResponse
 import joyride.backend.mappers.CarMapper
 import joyride.backend.mappers.CarMapper.fromDomain
@@ -15,7 +13,9 @@ import joyride.backend.mappers.CarMapper.toCarCpkDataRequest
 import joyride.backend.mappers.CarMapper.toCarListItemResponse
 import joyride.backend.mappers.CarMapper.toCarLocationRequest
 import joyride.backend.mappers.CarMapper.toCarTcoDataRequest
+import joyride.backend.mappers.CarMapper.toDomain
 import joyride.backend.utils.getCoverPhotoUrl
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * Repository providing database operations for [Car] entities.
@@ -124,6 +124,15 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
         }
     }
 
+    /**
+     * Retrieves a list of cars based on the provided filter parameters.
+     *
+     * @param params a map where the keys represent filter criteria (e.g., column names) and
+     *               the values are lists of strings used as filter values
+     * @param baseUrl the base URL used to construct the full URL for the car's cover photo
+     * @return a list of car details in the form of [CarListItemResponse], including optional
+     *         cover photo URLs
+     */
     fun getCarList(
         params: Map<String, List<String>>,
         baseUrl: String
@@ -137,4 +146,23 @@ class CarRepository : SharedRepository<Car>(CarsTable, CarMapper::toCar) {
             }
         }
 
+    /**
+     * Retrieves a list of cars associated with a specific user ID.
+     *
+     * @param userId the unique identifier of the user whose cars are being retrieved
+     * @param baseUrl the base URL used to construct cover photo URLs for the cars
+     * @return a list of [CarListItemResponse] objects containing the details of the cars associated with the user,
+     *         or an empty list if no cars are found
+     */
+    fun getCarByUserId(
+        userId: String, baseUrl: String
+    ): List<CarListItemResponse> = transaction {
+        val cars = CarEntity.find { CarsTable.ownerId eq userId }.toList()
+
+        cars.map { car ->
+            val photoPath = getCoverPhotoUrl(car.id.value)
+            val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" }
+            car.toDomain().toCarListItemResponse(coverPhotoUrl)
+        }
+    }
 }

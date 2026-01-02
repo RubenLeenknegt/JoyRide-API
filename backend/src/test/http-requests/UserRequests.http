@@ -25,8 +25,8 @@ POST {{baseUrl}}/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "JohnJackson@hotmail.com",
-  "password": "Ditismijnwachtwoord"
+  "emailAddress": "niels.verhoeven@outlook.com",
+  "password": "hash12"
 }
 > {%
     client.global.set("access_token", response.body.accessToken);
@@ -34,7 +34,7 @@ Content-Type: application/json
 
 %}
 
-### Refresh cookcie
+### Refresh cookie
 POST {{baseUrl}}/refresh
 #Save the access token in a variable
 
@@ -42,7 +42,7 @@ POST {{baseUrl}}/refresh
     client.global.set("access_token", response.body.accessToken);
 %}
 
-### Update acount item like name or password
+### Update account item like name or password
 PUT {{baseUrl}}/users/account/{{user_id}}/firstName
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
@@ -57,4 +57,8 @@ Authorization: Bearer {{access_token}}
 
 ###
 POST {{baseUrl}}/auth/autologin
+Authorization: Bearer {{access_token}}
+
+###
+GET {{baseUrl}}/cars/owned
 Authorization: Bearer {{access_token}}

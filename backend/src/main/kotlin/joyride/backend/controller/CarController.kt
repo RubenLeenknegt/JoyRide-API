@@ -1,21 +1,20 @@
 package joyride.backend.controller
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.routing.*
-import io.ktor.server.response.*
+import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
-import io.ktor.server.request.receive
-import io.ktor.util.toMap
-import kotlinx.datetime.toJavaLocalDateTime
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.util.*
 import joyride.backend.dto.request.CarCreateOrUpdateRequest
 import joyride.backend.repository.CarRepository
 import joyride.backend.repository.ReservationRepository
 import joyride.backend.services.CarService
 import joyride.backend.services.JwtConfig.dotenv
 import joyride.backend.utils.baseUrl
+import kotlinx.datetime.toJavaLocalDateTime
 import java.time.LocalDateTime
 
 /**
@@ -260,6 +259,17 @@ fun Route.carRouting(carRepository: CarRepository) {
                 else
                     call.respond(HttpStatusCode.OK, carList)
 
+            }
+            get("owned") {
+                val jwtPrincipal = call.principal<JWTPrincipal>()
+                val idClaim = jwtPrincipal?.getClaim("id", String::class)
+
+                if (idClaim.isNullOrEmpty()) {
+                    return@get call.respond(HttpStatusCode.Unauthorized, "No valid user ID found in token")
+                }
+
+                val cars = carRepository.getCarByUserId(idClaim, call.baseUrl())
+                call.respond(HttpStatusCode.OK, cars)
             }
         }
     }
