@@ -43,19 +43,6 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                 call.respond(HttpStatusCode.OK, rides)
             }
 
-            // GET a ride by Id
-            get("{id}") {
-                val id = call.parameters["id"]
-                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
-
-                val ride = ridesRepository.getById(id)
-
-                if (ride == null)
-                    call.respond(HttpStatusCode.NotFound, "No ride with id $id")
-                else
-                    call.respond(HttpStatusCode.OK, ride)
-            }
-
             // GET a ride by reservationId
             get("/reservation/{reservationId}") {
                 val reservationId = call.parameters["reservationId"]
@@ -85,6 +72,19 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                     call.respond(HttpStatusCode.OK, rideList)
             }
         }
+
+            // GET a ride by Id
+            get("/{id}") {
+                val id = call.parameters["id"]
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
+
+                val ride = ridesRepository.getById(id)
+
+                if (ride == null)
+                    call.respond(HttpStatusCode.NotFound, "No ride with id $id")
+                else
+                    call.respond(HttpStatusCode.OK, ride)
+            }
 
         // POST a new ride
         post {
