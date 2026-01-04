@@ -43,7 +43,7 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                 call.respond(HttpStatusCode.OK, rides)
             }
 
-            // GET a ride by reservationId
+            // GET rides by reservationId
             get("/reservation/{reservationId}") {
                 val reservationId = call.parameters["reservationId"]
                     ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing reservationId")
@@ -56,7 +56,7 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                     call.respond(HttpStatusCode.OK, rides)
             }
 
-            // GET rideList
+            // GET ride list by userId
             get("/ridelist/user/{userId}") {
                 val userId = call.parameters["userId"]
                     ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing userId")
@@ -67,13 +67,12 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                 )
 
                 if (rideList.isEmpty())
-                    call.respond(HttpStatusCode.NoContent, "No rides found for user $userId")
+                    call.respond(HttpStatusCode.NoContent)
                 else
                     call.respond(HttpStatusCode.OK, rideList)
             }
-        }
 
-            // GET a ride by Id
+            // GET ride by id
             get("/{id}") {
                 val id = call.parameters["id"]
                     ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing id")
@@ -86,40 +85,42 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                     call.respond(HttpStatusCode.OK, ride)
             }
 
-        // POST a new ride
-        post {
-            try {
-                val req = call.receive<RideCreate>()
-                // Create a new ride record using the repository
-                val created = ridesRepository.create(
-                    startX = req.startX,
-                    startY = req.startY,
-                    endX = req.endX,
-                    endY = req.endY,
-                    length = req.length,
-                    duration = req.duration,
-                    reservationId = req.reservationId
-                )
-                call.respond(HttpStatusCode.Created, created)
-            } catch (e: ContentTransformationException) {
-                // Handle invalid or missing JSON body
-                call.respond(HttpStatusCode.BadRequest, "Invalid or missing JSON body.")
+            // POST create ride
+            post {
+                try {
+                    val req = call.receive<RideCreate>()
+
+                    val created = ridesRepository.create(
+                        startX = req.startX,
+                        startY = req.startY,
+                        endX = req.endX,
+                        endY = req.endY,
+                        length = req.length,
+                        duration = req.duration,
+                        reservationId = req.reservationId
+                    )
+
+                    call.respond(HttpStatusCode.Created, created)
+                } catch (_: ContentTransformationException) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        "Invalid or missing JSON body."
+                    )
+                }
+            }
+
+            // DELETE ride by id
+            delete("/{id}") {
+                val id = call.parameters["id"]
+                    ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
+
+                val deleted = ridesRepository.delete(id)
+
+                if (deleted)
+                    call.respond(HttpStatusCode.NoContent)
+                else
+                    call.respond(HttpStatusCode.NotFound, "No ride with id $id")
             }
         }
-
-        // DELETE a ride
-        delete("/{id}") {
-            val id = call.parameters["id"]
-                ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
-
-            val deleted = ridesRepository.delete(id)
-
-            if (deleted)
-                call.respond(HttpStatusCode.NoContent)
-            else
-                call.respond(HttpStatusCode.NotFound, "No ride with id $id")
-        }
-
-
     }
 }
