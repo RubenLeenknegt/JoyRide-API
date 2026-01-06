@@ -28,6 +28,8 @@ class ReservationEntity(id: EntityID<String>) : Entity<String>(id) {
     var startDate by ReservationsTable.startDate
 
     var endDate by ReservationsTable.endDate
+
+    var status by ReservationsTable.status
 }
 
 /**
@@ -47,5 +49,7 @@ fun ReservationEntity.toDomain(): Reservation = Reservation(
 
     startDate = this.startDate,
 
-    endDate = this.endDate
+    endDate = this.endDate,
+
+    status = this.status
 )

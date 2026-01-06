@@ -21,7 +21,8 @@ data class Reservation(
     val userId: String,
     val carId: String,
     val startDate: LocalDateTime,
-    val endDate: LocalDateTime
+    val endDate: LocalDateTime,
+    val status: ReservationStatus
 ) {
     init {
         require(endDate > startDate) { "Reservation end date must be after start date" }

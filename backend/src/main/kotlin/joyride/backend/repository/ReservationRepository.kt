@@ -1,16 +1,15 @@
 package joyride.backend.repository
 
 import joyride.backend.dao.CarEntity
-import joyride.backend.dao.PhotosEntity
-import joyride.backend.dao.PhotosTable
-import kotlinx.datetime.LocalDateTime
 import joyride.backend.dao.ReservationEntity
 import joyride.backend.dao.ReservationsTable
 import joyride.backend.dao.toDomain
 import joyride.backend.domain.Reservation
+import joyride.backend.domain.ReservationStatus
 import joyride.backend.dto.response.ReservationList
 import joyride.backend.utils.getCoverPhotoUrl
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.dao.id.EntityID
@@ -26,26 +25,52 @@ import java.util.UUID
 class ReservationRepository {
 
     /**
+     * Updates reservation status from UPCOMING to ACTIVE if the start date has passed.
+     * Only transitions UPCOMING -> ACTIVE automatically. Other transitions are manual.
+     *
+     * @param reservation The reservation to check and potentially update.
+     * @return The reservation with updated status if applicable.
+     */
+    private fun autoUpdateStatusIfNeeded(reservation: Reservation): Reservation {
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+        // Only auto-transition from UPCOMING to ACTIVE
+        if (reservation.status == ReservationStatus.UPCOMING && now >= reservation.startDate) {
+            transaction {
+                ReservationEntity.findById(reservation.id)?.let {
+                    it.status = ReservationStatus.ACTIVE
+                }
+            }
+            return reservation.copy(status = ReservationStatus.ACTIVE)
+        }
+
+        return reservation
+    }
+
+    /**
      * Returns all reservations in the database as domain objects.
+     * Automatically updates UPCOMING reservations to ACTIVE if their start date has passed.
      *
      * @return List of [Reservation] objects.
      */
     fun getAll(): List<Reservation> = transaction {
         ReservationEntity.all().map { it.toDomain() }
-    }
+    }.map { autoUpdateStatusIfNeeded(it) }
 
     /**
      * Returns a reservation by its ID.
+     * Automatically updates UPCOMING reservation to ACTIVE if its start date has passed.
      *
      * @param id The unique reservation ID.
      * @return [Reservation] object if found, or null otherwise.
      */
     fun getById(id: String): Reservation? = transaction {
         ReservationEntity.findById(id)?.toDomain()
-    }
+    }?.let { autoUpdateStatusIfNeeded(it) }
 
     /**
      * Returns all reservations for a specific user.
+     * Automatically updates UPCOMING reservations to ACTIVE if their start date has passed.
      *
      * @param userId The unique ID of the user.
      * @return List of [Reservation] objects belonging to the user.
@@ -53,7 +78,7 @@ class ReservationRepository {
     fun getByUserId(userId: String): List<Reservation> = transaction {
         ReservationEntity.find { ReservationsTable.userId eq userId }
             .map { it.toDomain() }
-    }
+    }.map { autoUpdateStatusIfNeeded(it) }
 
     /**
      * Retrieves a list of reservations for a specific user, enriched with car details and cover photos.
@@ -67,6 +92,7 @@ class ReservationRepository {
      * with the corresponding car's brand, model, and cover photo URL. This combined data is optimized
      * for displaying reservation lists in the UI without requiring additional API calls.
      *
+     * Automatically updates UPCOMING reservations to ACTIVE if their start date has passed.
      *
      * @param userId The unique identifier of the user whose reservations should be retrieved.
      * @param baseUrl The base URL of the application, used to construct full URLs for cover photos.
@@ -94,28 +120,30 @@ class ReservationRepository {
                     carId = reservation.carId,
                     startDate = reservation.startDate,
                     endDate = reservation.endDate,
+                    status = reservation.status,
                     carBrand = car?.brand ?: "",
                     carModel = car?.model ?: "",
                     coverPhotoUrl = coverPhotoUrl
                 )
             }
 
-            // Split into categories
-            val active = reservationList.filter { it.startDate <= now && it.endDate >= now }
+            // Split into categories based on status
+            val active = reservationList.filter { it.status == ReservationStatus.ACTIVE }
                 .sortedBy { it.startDate }
 
-            val upcoming = reservationList.filter { it.startDate > now }
+            val upcoming = reservationList.filter { it.status == ReservationStatus.UPCOMING }
                 .sortedBy { it.startDate }
 
-            val past = reservationList.filter { it.endDate < now }
+            val completed = reservationList.filter { it.status == ReservationStatus.COMPLETED }
                 .sortedByDescending { it.endDate }
 
             // Combine in desired order
-            active + upcoming + past
+            active + upcoming + completed
         }
 
     /**
      * Returns all reservations for a specific car.
+     * Automatically updates UPCOMING reservations to ACTIVE if their start date has passed.
      *
      * @param carId The unique ID of the car.
      * @return List of [Reservation] objects for the car.
@@ -123,7 +151,7 @@ class ReservationRepository {
     fun getByCarId(carId: String): List<Reservation> = transaction {
         ReservationEntity.find { ReservationsTable.carId eq carId }
             .map { it.toDomain() }
-    }
+    }.map { autoUpdateStatusIfNeeded(it) }
 
     /**
      * Checks if a given time window overlaps with existing reservations for a car.
@@ -138,9 +166,9 @@ class ReservationRepository {
         val query = ReservationEntity.find {
             (ReservationsTable.carId eq carId) and
                     (
-                        (ReservationsTable.startDate less end) and
-                            (ReservationsTable.endDate greater start)
-                    )
+                            (ReservationsTable.startDate less end) and
+                                    (ReservationsTable.endDate greater start)
+                            )
         }
 
         excludeId?.let { idToSkip ->
@@ -152,6 +180,7 @@ class ReservationRepository {
      * Creates a new reservation.
      *
      * Generates a new UUID for the reservation ID.
+     * New reservations always start with status UPCOMING.
      *
      * @param userId The user ID making the reservation.
      * @param carId The car ID being reserved.
@@ -165,6 +194,7 @@ class ReservationRepository {
             this.carId = carId
             this.startDate = startDate
             this.endDate = endDate
+            this.status = ReservationStatus.UPCOMING
         }.toDomain()
     }
 
@@ -190,6 +220,20 @@ class ReservationRepository {
     }
 
     /**
+     * Updates the status of an existing reservation.
+     * Used for manual status transitions initiated by users.
+     *
+     * @param id The reservation ID to update.
+     * @param newStatus The new status to set.
+     * @return Updated [Reservation] object if found, null otherwise.
+     */
+    fun updateStatus(id: String, newStatus: ReservationStatus): Reservation? = transaction {
+        val entity = ReservationEntity.findById(id) ?: return@transaction null
+        entity.status = newStatus
+        entity.toDomain()
+    }
+
+    /**
      * Deletes a reservation record from the database by its ID.
      *
      * Executes the delete operation inside an Exposed [transaction].
@@ -207,5 +251,4 @@ class ReservationRepository {
             false
         }
     }
-
 }

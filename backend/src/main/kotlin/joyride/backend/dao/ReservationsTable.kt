@@ -1,5 +1,7 @@
 package joyride.backend.dao
 
+import joyride.backend.domain.ReservationStatus
+import joyride.backend.domain.UserType
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
@@ -31,5 +33,8 @@ object ReservationsTable : IdTable<String>("Reservations") {
 
     val startDate = datetime("start_date")
     val endDate = datetime("end_date")
+
+    val status = enumerationByName("status", 10, ReservationStatus::class)
+
     override val primaryKey = PrimaryKey(id)
 }
