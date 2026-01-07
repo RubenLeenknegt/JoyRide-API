@@ -1,5 +1,6 @@
 package joyride.backend.dto.request
 
+import joyride.backend.domain.ReservationStatus
 import kotlinx.serialization.Serializable
 
 /**
@@ -16,5 +17,6 @@ data class ReservationCreateOrUpdateRequest (
     val userId: String,
     val carId: String,
     val startDate: String,
-    val endDate: String
+    val endDate: String,
+    val status: ReservationStatus
 )
