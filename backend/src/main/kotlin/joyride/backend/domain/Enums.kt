@@ -52,3 +52,14 @@ enum class UserType {
     OWNER,
     RENTER
 }
+
+/**
+ * Enum representing the types of reservation status in the system.
+ * This enum is used to specify whether a user is an owner or a renter.
+ */
+@Serializable
+enum class ReservationStatus {
+    UPCOMING,
+    ACTIVE,
+    COMPLETED
+}

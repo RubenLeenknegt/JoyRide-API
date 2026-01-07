@@ -8,6 +8,7 @@ import joyride.backend.dao.toDomain
 import joyride.backend.domain.Ride
 import joyride.backend.dto.response.RideListItemResponse
 import joyride.backend.utils.getCoverPhotoUrl
+import kotlinx.datetime.LocalDateTime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
@@ -73,7 +74,11 @@ class RidesRepository {
         endY: Float,
         length: Int,
         duration: Int,
-        reservationId: String
+        reservationId: String,
+        dateTimeStart: LocalDateTime,
+        dateTimeEnd: LocalDateTime,
+        distanceTravelled: Double,
+        name: String? = null
     ): Ride = transaction {
         val entity = RideEntity.new(UUID.randomUUID().toString()) {
             this.startX = startX
@@ -83,6 +88,10 @@ class RidesRepository {
             this.length = length
             this.duration = duration
             this.reservationId = reservationId
+            this.dateTimeStart = dateTimeStart
+            this.dateTimeEnd = dateTimeEnd
+            this.distanceTravelled = distanceTravelled
+            this.name = name
         }
         entity.toDomain()
     }
@@ -133,7 +142,11 @@ class RidesRepository {
                         endX = ride.endX,
                         endY = ride.endY,
                         length = ride.length,
-                        duration = ride.duration
+                        duration = ride.duration,
+                        dateTimeStart = ride.dateTimeStart,
+                        dateTimeEnd = ride.dateTimeEnd,
+                        distanceTravelled = ride.distanceTravelled,
+                        name = ride.name
                     )
                 }
         }

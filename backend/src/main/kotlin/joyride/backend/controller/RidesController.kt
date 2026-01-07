@@ -11,6 +11,8 @@ import joyride.backend.dto.request.RideCreate
 import io.ktor.server.auth.authenticate
 import io.ktor.util.toMap
 import joyride.backend.utils.baseUrl
+import kotlinx.datetime.LocalDateTime
+import kotlin.String
 
 /**
  * Configures routing for ride-related endpoints.
@@ -97,7 +99,11 @@ fun Route.RidesRouting(ridesRepository: RidesRepository) {
                         endY = req.endY,
                         length = req.length,
                         duration = req.duration,
-                        reservationId = req.reservationId
+                        reservationId = req.reservationId,
+                        dateTimeStart = req.dateTimeStart,
+                        dateTimeEnd = req.dateTimeEnd,
+                        distanceTravelled = req.distanceTravelled,
+                        name = req.name
                     )
 
                     call.respond(HttpStatusCode.Created, created)
