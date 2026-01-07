@@ -7,15 +7,19 @@ import org.jetbrains.exposed.dao.EntityClass
 import joyride.backend.domain.Reservation
 
 /**
- * DAO (Data Access Object) representing a row in the [ReservationTable].
+ * Exposed DAO entity representing a single reservation record.
  *
- * This class allows object-oriented access to reservation data in the database using Exposed.
- * Each instance corresponds to a single reservation, identified by its `id`.
+ * This entity provides object-oriented access to a row in [ReservationsTable] and
+ * is used exclusively within the persistence layer.
  *
- * @property userId The ID of the user who made the reservation.
- * @property carId The ID of the car being reserved.
- * @property startDate The start date and time of the reservation.
- * @property endDate The end date and time of the reservation.
+ * Foreign keys are represented as raw identifiers rather than navigable DAO
+ * relationships.
+ *
+ * @property userId Identifier of the user who made the reservation.
+ * @property carId Identifier of the car being reserved.
+ * @property startDate Start date and time of the reservation.
+ * @property endDate End date and time of the reservation.
+ * @property status Current lifecycle status of the reservation.
  */
 class ReservationEntity(id: EntityID<String>) : Entity<String>(id) {
 
@@ -33,12 +37,15 @@ class ReservationEntity(id: EntityID<String>) : Entity<String>(id) {
 }
 
 /**
- * Converts this [ReservationEntity] (DAO) into a domain-level [Reservation] object.
+ * Converts this [ReservationEntity] into its corresponding domain model [Reservation].
  *
- * This allows the application to work with a pure domain model without exposing
- * database-specific details or Exposed internals.
+ * This function maps all persisted fields from the DAO entity into a pure domain
+ * representation, removing all database- and Exposed-specific concerns.
  *
- * @return a [Reservation] domain object with the same data as this DAO.
+ * Domain-level invariants (such as valid date ranges) are enforced by the
+ * [Reservation] constructor.
+ *
+ * @return A [Reservation] domain object containing the data represented by this entity.
  */
 fun ReservationEntity.toDomain(): Reservation = Reservation(
     id = this.id.value,

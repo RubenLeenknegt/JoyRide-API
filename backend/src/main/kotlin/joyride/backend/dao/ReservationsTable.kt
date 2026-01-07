@@ -7,15 +7,25 @@ import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
 /**
- * Exposed DAO table representing car reservations in the database.
+ * Exposed DAO table representing car reservations stored in the database.
  *
- * @property id Unique identifier for the reservation.
- * @property userId Foreign key referencing [UsersTable.id]; deletes cascade when the user is removed.
- * @property carId Foreign key referencing [CarsTable.id]; deletes cascade when the car is removed.
+ * This table persists reservation data, including the associated user and car,
+ * the reservation time window, and its current lifecycle status.
+ *
+ * @property id Unique identifier of the reservation (UUID stored as VARCHAR).
+ * @property userId Identifier of the user who made the reservation.
+ * This column enforces a foreign key constraint to [UsersTable.id] and cascades
+ * deletes when the referenced user is removed.
+ * @property carId Identifier of the car being reserved.
+ * This column enforces a foreign key constraint to [CarsTable.id] and cascades
+ * deletes when the referenced car is removed.
  * @property startDate Start date and time of the reservation.
  * @property endDate End date and time of the reservation.
+ * @property status Current lifecycle status of the reservation, stored as a
+ * string-backed enumeration.
  *
- * Ensures that each reservation links a user to a specific car for a defined time window.
+ * Each row represents a single reservation linking a user to a car for a defined
+ * time window.
  */
 
 object ReservationsTable : IdTable<String>("Reservations") {

@@ -1,5 +1,6 @@
 package joyride.backend.dto.request
 
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 /**
@@ -24,5 +25,9 @@ data class RideCreate(
     val endY: Float,
     val length: Int,
     val duration: Int,
-    val reservationId: String
+    val reservationId: String,
+    val dateTimeStart: LocalDateTime,
+    val dateTimeEnd: LocalDateTime,
+    var distanceTravelled: Double,
+    var name: String? = null
 )

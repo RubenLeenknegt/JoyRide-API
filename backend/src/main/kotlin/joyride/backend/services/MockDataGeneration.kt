@@ -24,6 +24,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 object MockDataGeneration {
@@ -1096,84 +1097,68 @@ object MockDataGeneration {
         }
     }
 
-
-
     fun generateRidesMock() {
-        data class RideCoords(val startX: Float, val startY: Float, val endX: Float, val endY: Float)
 
-        val hardcodedRideCoords: List<RideCoords> = listOf(
-            // Utrecht -> Amsterdam
-            RideCoords(
-                startX = 52.0905f,
-                startY = 5.1214f,
-                endX = 52.3720f,
-                endY = 4.8952f
-            ),
-            // Eindhoven -> Nijmegen
-            RideCoords(
-                startX = 51.4416f,
-                startY = 5.4697f,
-                endX = 51.9853f,
-                endY = 5.9112f
-            ),
-            // Groningen -> The Hague
-            RideCoords(
-                startX = 53.2194f,
-                startY = 6.5665f,
-                endX = 52.0790f,
-                endY = 4.3130f
-            )
+        data class RideCoords(
+            val startX: Float, val startY: Float,
+            val endX: Float, val endY: Float
         )
-        val listOfRideDates: MutableList<List<LocalDateTime>> = mutableListOf()
-        val now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val today: LocalDate = now.date
 
-        fun atHour(date: LocalDate, hour: Int) =
-            LocalDateTime(date.year, date.monthNumber, date.dayOfMonth, hour, 0)
+        val routes = listOf(
+            RideCoords(52.0905f, 5.1214f, 52.3720f, 4.8952f), // Utrecht → Amsterdam
+            RideCoords(51.4416f, 5.4697f, 51.9853f, 5.9112f), // Eindhoven → Nijmegen
+            RideCoords(53.2194f, 6.5665f, 52.0790f, 4.3130f)  // Groningen → The Hague
+        )
 
-        // Ride 1: 30-40 days ago
-        run {
-            val d1 = today.plus(DatePeriod(days = -35))
-            val start1 = atHour(d1, 9)
-            val end1 = atHour(d1, 17)
-            listOfRideDates.add(listOf(start1, end1))
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+        // Only COMPLETED or ACTIVE reservations
+        val eligibleReservations = createdReservations.filter {
+            it.status == ReservationStatus.COMPLETED || it.status == ReservationStatus.ACTIVE
         }
 
-        // Ride 2: 15-20 days ago
-        run {
-            val d2 = today.plus(DatePeriod(days = -18))
-            val start2 = atHour(d2, 10)
-            val end2 = atHour(d2, 16)
-            listOfRideDates.add(listOf(start2, end2))
-        }
+        eligibleReservations.forEach { reservation ->
 
-        // Ride 3: 5-10 days ago
-        run {
-            val d3 = today.plus(DatePeriod(days = -7))
-            val start3 = atHour(d3, 8)
-            val end3 = atHour(d3, 14)
-            listOfRideDates.add(listOf(start3, end3))
-        }
+            val ridesCount = Random.nextInt(1, 4) // 1-3 rides per reservation
 
-        // Create rides for each car (3 rides per car)
-        var i = 0
-        hardcodedRideCoords.forEach { rideCoords ->
-            createdCars.forEach { car ->
+            repeat(ridesCount) {
+
+                val route = routes.random()
+
+                // Generate random ride start date in past 30 days
+                val daysAgo = Random.nextInt(1, 31)
+                val startHour = Random.nextInt(6, 22)
+                val startMinute = Random.nextInt(0, 4) * 15 // 0,15,30,45
+                val rideStart = now.date.minus(DatePeriod(days = daysAgo))
+                    .let { date ->
+                        LocalDateTime(date.year, date.monthNumber, date.dayOfMonth, startHour, startMinute)
+                    }
+
+                // Ride duration 1-4 hours
+                val durationHours = Random.nextInt(1, 5)
+                val endHour = (startHour + durationHours).coerceAtMost(23)
+                val endMinute = startMinute
+                val rideEnd = LocalDateTime(rideStart.year, rideStart.monthNumber, rideStart.dayOfMonth, endHour, endMinute)
+
+                // Random distance between 50 and 300 km
+                val distanceKm = ((Random.nextDouble(50.0, 300.0) * 10).roundToInt()) / 10.0
+                val lengthMeters = (distanceKm * 1000).toInt()
+                val durationSeconds = durationHours * 3600
+
                 val ride = ridesRepository.create(
-                    startX = rideCoords.startX,
-                    startY = rideCoords.startY,
-                    endX = rideCoords.endX,
-                    endY = rideCoords.endY,
-                    length = 100,
-                    duration = 60,
-                    reservationId = createdReservations.first { it.carId == car.id }.id
+                    startX = route.startX,
+                    startY = route.startY,
+                    endX = route.endX,
+                    endY = route.endY,
+                    length = lengthMeters,
+                    duration = durationSeconds,
+                    reservationId = reservation.id,
+                    dateTimeStart = rideStart,
+                    dateTimeEnd = rideEnd,
+                    distanceTravelled = distanceKm
                 )
-                createdRides.add(ride)
-                i++
-                if (i >= 6) {
-                    i = 0
-                }
 
+                createdRides.add(ride)
             }
         }
     }
