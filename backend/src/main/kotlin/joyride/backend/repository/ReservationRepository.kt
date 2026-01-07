@@ -198,6 +198,12 @@ class ReservationRepository {
         }.toDomain()
     }
 
+    fun updateStatus(id: String, newStatus: ReservationStatus): Reservation? = transaction {
+        val entity = ReservationEntity.findById(id) ?: return@transaction null
+        entity.status = newStatus
+        entity.toDomain()
+    }
+
     /**
      * Updates an existing reservation by ID.
      *
@@ -216,20 +222,6 @@ class ReservationRepository {
         entity.startDate = startDate
         entity.endDate = endDate
 
-        entity.toDomain()
-    }
-
-    /**
-     * Updates the status of an existing reservation.
-     * Used for manual status transitions initiated by users.
-     *
-     * @param id The reservation ID to update.
-     * @param newStatus The new status to set.
-     * @return Updated [Reservation] object if found, null otherwise.
-     */
-    fun updateStatus(id: String, newStatus: ReservationStatus): Reservation? = transaction {
-        val entity = ReservationEntity.findById(id) ?: return@transaction null
-        entity.status = newStatus
         entity.toDomain()
     }
 

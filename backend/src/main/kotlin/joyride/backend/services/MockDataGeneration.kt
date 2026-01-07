@@ -929,109 +929,174 @@ object MockDataGeneration {
 
     }
 
-    fun generateReservationsMock() {
-        val listOfReservationDates: MutableList<List<LocalDateTime>> = mutableListOf()
-        val now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val today: LocalDate = now.date
+    fun generateAvailabilitiesMock() {
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val today = now.date
 
         fun atHour(date: LocalDate, hour: Int) =
             LocalDateTime(date.year, date.monthNumber, date.dayOfMonth, hour, 0)
 
-        // Add 2 reservations more than 5 days before now to list
-        run {
-            val d1 = today.plus(DatePeriod(days = -6))
-            val start1 = atHour(d1, 9)
-            val end1 = atHour(d1, 15)
-            listOfReservationDates.add(listOf(start1, end1))
-            val d2 = today.plus(DatePeriod(days = -8))
-            val start2 = atHour(d2, 10)
-            val end2 = atHour(d2, 14)
-            listOfReservationDates.add(listOf(start2, end2))
-        }
-        // Add 2 reservations within +/- 5 days of now (one in the past few days, one upcoming) to list
-        run {
-            val d1 = today.plus(DatePeriod(days = -2))
-            val start1 = atHour(d1, 9)
-            val end1 = atHour(d1, 14)
-            listOfReservationDates.add(listOf(start1, end1))
-
-            val d2 = today.plus(DatePeriod(days = 3))
-            val start2 = atHour(d2, 11)
-            val end2 = atHour(d2, 18)
-            listOfReservationDates.add(listOf(start2, end2))
-        }
-
-        // Add 2 reservations more than 5 days after now to list
-        run {
-            val d1 = today.plus(DatePeriod(days = 6))
-            val start1 = atHour(d1, 8)
-            val end1 = atHour(d1, 16)
-            listOfReservationDates.add(listOf(start1, end1))
-
-            val d2 = today.plus(DatePeriod(days = 10))
-            val start2 = atHour(d2, 9)
-            val end2 = atHour(d2, 15)
-            listOfReservationDates.add(listOf(start2, end2))
-        }
-
-        //        id, user_id, car_id, start_date, end_date
-        var i = 0
         createdCars.forEach { car ->
-            listOfReservationDates.forEach { (start, end) ->
+            // First availability window: covers all reservations
+            // From 60 days ago to 45 days in the future
+            availabilitiesRepository.create(
+                carId = car.id,
+                startDate = atHour(today.plus(DatePeriod(days = -60)), 6),
+                endDate = atHour(today.plus(DatePeriod(days = 45)), 20)
+            )
+
+            // Gap of 3-7 days (randomized)
+            val gapDays = Random.nextInt(3, 8)
+            val secondWindowStart = today.plus(DatePeriod(days = 45 + gapDays))
+
+            // Second availability window: random duration (10-30 days)
+            val secondWindowDuration = Random.nextInt(10, 31)
+            val secondWindowEnd = secondWindowStart.plus(DatePeriod(days = secondWindowDuration))
+
+            availabilitiesRepository.create(
+                carId = car.id,
+                startDate = atHour(secondWindowStart, 8),
+                endDate = atHour(secondWindowEnd, 20)
+            )
+        }
+    }
+
+    fun generateReservationsMock() {
+        val now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val today: LocalDate = now.date
+
+        fun atHour(date: LocalDate, hour: Int, minute: Int = 0) =
+            LocalDateTime(date.year, date.monthNumber, date.dayOfMonth, hour, minute)
+
+        // Helper function to create a reservation with random duration and time offset
+        fun createReservationPeriod(
+            startDate: LocalDate,
+            minDuration: Int = 2,
+            maxDuration: Int = 7,
+            hourOffset: Int = 0
+        ): Pair<LocalDateTime, LocalDateTime> {
+            val duration = Random.nextInt(minDuration, maxDuration + 1)
+            val startHour = 8 + Random.nextInt(-2 + hourOffset, 3 + hourOffset).coerceIn(8, 18)
+            val startMinute = Random.nextInt(0, 4) * 15 // 0, 15, 30, or 45
+
+            val start = atHour(startDate, startHour, startMinute)
+            val endDate = startDate.plus(DatePeriod(days = duration))
+            val endHour = 8 + Random.nextInt(-2, 3).coerceIn(8, 20)
+            val endMinute = Random.nextInt(0, 4) * 15
+            val end = atHour(endDate, endHour, endMinute)
+
+            return Pair(start, end)
+        }
+
+        // Create different types of reservations for each car
+        var renterIndex = 0
+
+        createdCars.forEach { car ->
+            // 1. COMPLETED: 2 reservations in the past
+            run {
+                val startDate1 = today.plus(DatePeriod(days = -20))
+                val (start1, end1) = createReservationPeriod(startDate1, minDuration = 2, maxDuration = 5)
+
+                val reservation1 = reservationRepo.createReservation(
+                    userId = createdRenters[renterIndex].id,
+                    carId = car.id,
+                    startDate = start1,
+                    endDate = end1
+                )
+                reservationRepo.updateStatus(reservation1.id, ReservationStatus.COMPLETED)
+                createdReservations.add(reservation1.copy(status = ReservationStatus.COMPLETED))
+
+                renterIndex = (renterIndex + 1) % createdRenters.count()
+
+                val startDate2 = today.plus(DatePeriod(days = -12))
+                val (start2, end2) = createReservationPeriod(startDate2, minDuration = 2, maxDuration = 4)
+
+                val reservation2 = reservationRepo.createReservation(
+                    userId = createdRenters[renterIndex].id,
+                    carId = car.id,
+                    startDate = start2,
+                    endDate = end2
+                )
+                reservationRepo.updateStatus(reservation2.id, ReservationStatus.COMPLETED)
+                createdReservations.add(reservation2.copy(status = ReservationStatus.COMPLETED))
+
+                renterIndex = (renterIndex + 1) % createdRenters.count()
+            }
+
+            // 2. ACTIVE: 1 reservation that includes today
+            run {
+                val daysBeforeToday = Random.nextInt(1, 3)
+                val startDate = today.plus(DatePeriod(days = -daysBeforeToday))
+                val daysAfterToday = Random.nextInt(1, 4)
+                val duration = daysBeforeToday + daysAfterToday
+
+                val startHour = 8 + Random.nextInt(-2, 3).coerceIn(8, 18)
+                val start = atHour(startDate, startHour, Random.nextInt(0, 4) * 15)
+
+                val endDate = startDate.plus(DatePeriod(days = duration))
+                val endHour = 8 + Random.nextInt(-2, 3).coerceIn(8, 20)
+                val end = atHour(endDate, endHour, Random.nextInt(0, 4) * 15)
+
                 val reservation = reservationRepo.createReservation(
-                    userId = createdRenters[i].id,
+                    userId = createdRenters[renterIndex].id,
                     carId = car.id,
                     startDate = start,
                     endDate = end
                 )
-                createdReservations.add(reservation)
+                reservationRepo.updateStatus(reservation.id, ReservationStatus.ACTIVE)
+                createdReservations.add(reservation.copy(status = ReservationStatus.ACTIVE))
+
+                renterIndex = (renterIndex + 1) % createdRenters.count()
             }
-            i++
-            if (i >= createdRenters.count()) {
-                i = 0
-            }
-        }
-    }
 
-    fun generateAvailabilitiesMock() {
-        val listOfAvailabilityPeriods: MutableList<List<LocalDateTime?>> = mutableListOf()
-        val now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val today: LocalDate = now.date
+            // 3. UPCOMING: 3 reservations in the future
+            run {
+                // Near future (3-7 days from now)
+                val startDate1 = today.plus(DatePeriod(days = Random.nextInt(3, 8)))
+                val (start1, end1) = createReservationPeriod(startDate1, minDuration = 2, maxDuration = 6)
 
-        fun atHour(date: LocalDate, hour: Int) =
-            LocalDateTime(date.year, date.monthNumber, date.dayOfMonth, hour, 0)
-
-        // Availability for next 30 days (8am-8pm)
-        run {
-            val start = atHour(today.plus(DatePeriod(days = 1)), 8)
-            val end = atHour(today.plus(DatePeriod(days = 30)), 20)
-            listOfAvailabilityPeriods.add(listOf(start, end))
-        }
-
-        // Availability for 31-60 days from now (8am-8pm)
-        run {
-            val start = atHour(today.plus(DatePeriod(days = 31)), 8)
-            val end = atHour(today.plus(DatePeriod(days = 60)), 20)
-            listOfAvailabilityPeriods.add(listOf(start, end))
-        }
-
-        // Open-ended availability starting 61 days from now
-        run {
-            val start = atHour(today.plus(DatePeriod(days = 61)), 8)
-            listOfAvailabilityPeriods.add(listOf(start, null))
-        }
-
-        // Create availabilities for each car
-        createdCars.forEach { car ->
-            listOfAvailabilityPeriods.forEach { period ->
-                availabilitiesRepository.create(
+                val reservation1 = reservationRepo.createReservation(
+                    userId = createdRenters[renterIndex].id,
                     carId = car.id,
-                    startDate = period[0]!!,
-                    endDate = period.getOrNull(1)
+                    startDate = start1,
+                    endDate = end1
                 )
+                createdReservations.add(reservation1)
+
+                renterIndex = (renterIndex + 1) % createdRenters.count()
+
+                // Mid future (10-20 days from now)
+                val startDate2 = today.plus(DatePeriod(days = Random.nextInt(10, 21)))
+                val (start2, end2) = createReservationPeriod(startDate2, minDuration = 3, maxDuration = 7)
+
+                val reservation2 = reservationRepo.createReservation(
+                    userId = createdRenters[renterIndex].id,
+                    carId = car.id,
+                    startDate = start2,
+                    endDate = end2
+                )
+                createdReservations.add(reservation2)
+
+                renterIndex = (renterIndex + 1) % createdRenters.count()
+
+                // Far future (25-40 days from now)
+                val startDate3 = today.plus(DatePeriod(days = Random.nextInt(25, 41)))
+                val (start3, end3) = createReservationPeriod(startDate3, minDuration = 3, maxDuration = 8)
+
+                val reservation3 = reservationRepo.createReservation(
+                    userId = createdRenters[renterIndex].id,
+                    carId = car.id,
+                    startDate = start3,
+                    endDate = end3
+                )
+                createdReservations.add(reservation3)
+
+                renterIndex = (renterIndex + 1) % createdRenters.count()
             }
         }
     }
+
+
 
     fun generateRidesMock() {
         data class RideCoords(val startX: Float, val startY: Float, val endX: Float, val endY: Float)
@@ -1174,5 +1239,4 @@ object MockDataGeneration {
             }
         }
     }
-
 }
