@@ -184,6 +184,61 @@ object MockDataGeneration {
                 "NL10BANK000000010",
                 "Timo Smits",
                 "52.3840,4.6383"
+            ),
+            listOf(
+                "Alexia",
+                "Brooks",
+                "1989-02-06",
+                "Alexia.Brooks@gmail.com",
+                "hash21",
+                "RENTER",
+                "NL10BANK000000011",
+                "Alexia Brooks",
+                "51.8999,4.8597"
+            ),
+            listOf(
+                "Antonio",
+                "Winters",
+                "1997-05-01",
+                "antonio.winters@gmail.com",
+                "hash22",
+                "RENTER",
+                "NL10BANK000000012",
+                "Antonio Winters",
+                "52.6816,5.5593"
+            ),
+            listOf(
+                "Safiya",
+                "Webster",
+                "1988-09-02",
+                "safiya.webster@gmail.com",
+                "hash23",
+                "RENTER",
+                "NL10BANK000000013",
+                "Safiya Webster",
+                "52.1122,4.7726"
+            ),
+            listOf(
+                "Diego",
+                "Hernandez",
+                "1994-08-03",
+                "diego.hernandez@gmail.com",
+                "hash24",
+                "RENTER",
+                "NL10BANK000000014",
+                "Diego Hernandez",
+                "51.9466,4.7031"
+            ),
+            listOf(
+                "Joseph",
+                "Gonzalez",
+                "1987-05-01",
+                "joseph.gonzalez@gmail.com",
+                "hash25",
+                "RENTER",
+                "NL10BANK000000015",
+                "Joseph Gonzalez",
+                "51.1752,6.1134"
             )
         )
         users.forEach { user ->
