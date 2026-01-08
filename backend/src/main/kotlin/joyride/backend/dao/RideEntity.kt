@@ -4,11 +4,9 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import joyride.backend.domain.Ride
-import joyride.backend.dto.response.RideListItemResponse
-import kotlinx.datetime.LocalDateTime
 
 /**
- * Exposed DAO entity representing a ride record in the database.
+ * Exposed DAO entity representing a single ride record.
  *
  * Maps to [RidesTable] and stores spatial and temporal information about a ride
  * linked to a specific reservation.
@@ -17,9 +15,13 @@ import kotlinx.datetime.LocalDateTime
  * @property startY Starting Y-coordinate of the ride.
  * @property endX Ending X-coordinate of the ride.
  * @property endY Ending Y-coordinate of the ride.
- * @property length Total distance of the ride in meters.
+ * @property length Total distance between start and end point in meters.
  * @property duration Duration of the ride in seconds.
- * @property reservationId Identifier of the reservation this ride is associated with.
+ * @property reservationId Identifier of the reservation this ride belongs to.
+ * @property dateTimeStart Start date and time of the ride.
+ * @property dateTimeEnd End date and time of the ride.
+ * @property distanceTravelled Total distance travelled during the ride, expressed in kilometers.
+ * @property name Optional human-readable name or label for the ride.
  */
 
 class RideEntity(id: EntityID<String>) : Entity<String>(id) {
@@ -38,12 +40,25 @@ class RideEntity(id: EntityID<String>) : Entity<String>(id) {
     var duration by RidesTable.duration
 
     var reservationId by RidesTable.reservationId
+
+    var dateTimeStart by RidesTable.dateTimeStart
+
+    var dateTimeEnd by RidesTable.dateTimeEnd
+
+    var distanceTravelled by RidesTable.distanceTravelled
+
+    var name by RidesTable.name
 }
 
 /**
- * Extension function to convert a [RideEntity] to its domain model [Ride].
+ * Converts this [RideEntity] into its corresponding domain model [Ride].
  *
- * Maps all entity properties to the domain data class.
+ * This function maps all persisted fields from the DAO entity into the domain layer,
+ * translating database-backed values into a pure, persistence-agnostic representation.
+ *
+ * No validation or business logic is applied during this conversion.
+ *
+ * @return A [Ride] domain object containing the data represented by this entity.
  */
 
 fun RideEntity.toDomain(): Ride = Ride(
@@ -54,6 +69,10 @@ fun RideEntity.toDomain(): Ride = Ride(
     endY = this.endY,
     length = this.length,
     duration = this.duration,
-    reservationId = this.reservationId
+    reservationId = this.reservationId,
+    dateTimeStart = this.dateTimeStart,
+    dateTimeEnd = this.dateTimeEnd,
+    distanceTravelled = this.distanceTravelled,
+    name = this.name
 )
 
