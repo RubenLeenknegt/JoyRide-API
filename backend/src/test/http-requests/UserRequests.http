@@ -17,32 +17,31 @@ Content-Type: application/json
 
 > {%
     client.global.set("access_token", response.body.accessToken);
-    client.global.set("user_id", response.body.user.id)
+    client.global.set("user_id", response.body.user.id);
 %}
 
-### Log in to api and key jwt
+### Login
 POST {{baseUrl}}/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "niels.verhoeven@outlook.com",
-  "password": "hash12"
+  "emailAddress": "JohnJackson@hotmail.com",
+  "password": "Ditismijnwachtwoord"
 }
+
 > {%
     client.global.set("access_token", response.body.accessToken);
-    client.global.set("user_id", response.body.user.id)
-
+    client.global.set("user_id", response.body.user.id);
 %}
 
-### Refresh cookie
+### Refresh token
 POST {{baseUrl}}/refresh
-#Save the access token in a variable
 
 > {%
     client.global.set("access_token", response.body.accessToken);
 %}
 
-### Update account item like name or password
+### Update first name
 PUT {{baseUrl}}/users/account/{{user_id}}/firstName
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
@@ -51,14 +50,21 @@ Content-Type: application/json
   "value": "Halloooo"
 }
 
-### Delete user account with its id
-DELETE {{baseUrl}}/users/account/{{user_id}}
-Authorization: Bearer {{access_token}}
-
-###
+### Autologin
 POST {{baseUrl}}/auth/autologin
 Authorization: Bearer {{access_token}}
 
-###
+### Get owned cars
 GET {{baseUrl}}/cars/owned
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+> {%
+    if (response.body.length > 0) {
+        client.global.set("car_id", response.body[0].id);
+    }
+%}
+
+### Delete user account
+DELETE {{baseUrl}}/users/account/{{user_id}}
 Authorization: Bearer {{access_token}}
