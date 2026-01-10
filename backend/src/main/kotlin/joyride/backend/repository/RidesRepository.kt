@@ -1,5 +1,7 @@
 package joyride.backend.repository
 
+import joyride.backend.dao.BonusPointsEntity
+import joyride.backend.dao.BonusPointsTable
 import joyride.backend.dao.CarEntity
 import joyride.backend.dao.ReservationEntity
 import joyride.backend.dao.RideEntity
@@ -128,6 +130,11 @@ class RidesRepository {
                     val car = CarEntity.findById(reservation.carId)!!
                     val photoPath = getCoverPhotoUrl(reservation.carId)
                     val coverPhotoUrl = photoPath?.let { "$baseUrl/$it" } ?: ""
+                    val bonusPoints = BonusPointsEntity
+                        .find { BonusPointsTable.rideId eq ride.id }
+                        .firstOrNull()
+                        ?.points ?: 0
+
 
                     RideListItemResponse(
                         id = ride.id.value,
@@ -146,7 +153,8 @@ class RidesRepository {
                         dateTimeStart = ride.dateTimeStart,
                         dateTimeEnd = ride.dateTimeEnd,
                         distanceTravelled = ride.distanceTravelled,
-                        name = ride.name
+                        name = ride.name,
+                        bonusPoints = bonusPoints
                     )
                 }
         }
