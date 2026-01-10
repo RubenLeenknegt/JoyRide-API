@@ -1221,15 +1221,13 @@ object MockDataGeneration {
     fun generateBonusPointsMock() {
         createdRides.forEach { ride ->
             val bonusPoints = bonusPointsRepository.create(
-                points = Random.nextInt(),
+                points = Random.nextInt(-2,6),
                 userId = createdReservations.first { it.id == ride.reservationId }.userId,
                 rideId = ride.id
             )
             createdBonusPoints.add(bonusPoints!!)
         }
     }
-
-
 
     private val imageExts = setOf("jpg", "jpeg", "png", "webp", "gif")
     fun Path.isImageFile(): Boolean = Files.isRegularFile(this) && imageExts.contains(fileName.toString().substringAfterLast('.', "").lowercase())
