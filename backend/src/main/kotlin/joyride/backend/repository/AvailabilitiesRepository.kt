@@ -147,7 +147,7 @@ class AvailabilitiesRepository {
             }
         }
 
-        result
+        result.sortedBy { it.startDate }
     }
 
     /**
