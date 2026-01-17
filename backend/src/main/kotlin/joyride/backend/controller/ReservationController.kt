@@ -11,6 +11,7 @@ import joyride.backend.dto.request.ReservationCreateOrUpdateRequest
 import joyride.backend.repository.ReservationRepository
 import joyride.backend.repository.AvailabilitiesRepository
 import joyride.backend.utils.baseUrl
+import joyride.backend.dto.request.UpdateReservationStatusRequest
 
 /**
  * Configures routing for reservation-related endpoints.
@@ -177,6 +178,22 @@ fun Route.reservationRouting(reservationRepository: ReservationRepository, avail
 
                 // Step 4: Update
                 val updated = reservationRepository.updateReservation(id, userId, carId, startDate, endDate)
+
+                if (updated == null) {
+                    call.respond(HttpStatusCode.NotFound, "No reservation found with id $id")
+                } else {
+                    call.respond(HttpStatusCode.OK, updated)
+                }
+            }
+
+            // PUT update reservation status
+            put("{id}/status") {
+                val id = call.parameters["id"]
+                    ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing id")
+
+                val request = call.receive<UpdateReservationStatusRequest>()
+
+                val updated = reservationRepository.updateStatus(id, request.status)
 
                 if (updated == null) {
                     call.respond(HttpStatusCode.NotFound, "No reservation found with id $id")
