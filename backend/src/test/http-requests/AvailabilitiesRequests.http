@@ -1,51 +1,40 @@
 @baseUrl = http://localhost:8081
 
-### Register new user
-POST {{baseUrl}}/auth/users/register
-Content-Type: application/json
-
-{
-  "emailAddress": "PaulJackson@hotmail.com",
-  "firstName": "Paul",
-  "lastName": "Jackson",
-  "birthDate": "1993-02-05",
-  "userType": "OWNER",
-  "bankAccount": "ojghbjsk234820348",
-  "bankAccountName": "HR P Jackson",
-  "password": "Ditismijnwachtwoord"
-}
-
-> {%
-    client.global.set("access_token", response.body.accessToken);
-    client.global.set("user_id", response.body.user.id)
-%}
-
-### Log in to api and key jwt
+### Log in
 POST {{baseUrl}}/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "PaulJackson@hotmail.com",
-  "password": "Ditismijnwachtwoord"
+  "emailAddress": "niels.verhoeven@outlook.com",
+  "password": "hash12"
 }
 > {%
     client.global.set("access_token", response.body.accessToken);
-    client.global.set("user_id", response.body.user.id)
-
+    client.global.set("user_id", response.body.user.id);
 %}
+
+### Get my cars
+GET {{baseUrl}}/cars/owned
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+> {%
+    client.global.set("car_id", response.body[0].id);
+%}
+
 
 ### Get all availabilities
 GET {{baseUrl}}/availabilities
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
-### Get availability by ID
-GET {{baseUrl}}/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
+### Get availability by ID (uses stored id)
+GET {{baseUrl}}/availabilities/{{availability_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get availability by carId
-GET {{baseUrl}}/availabilities/car/4b285f64-5717-4562-b3fc-2c963f66b001
+GET {{baseUrl}}/availabilities/car/{{car_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
@@ -59,8 +48,13 @@ GET {{baseUrl}}/availabilities/available?startDate=2025-10-01T06:00&endDate=2025
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
-### Get available availabilities filterd by carId
-GET {{baseUrl}}/availabilities/available/car/4b285f64-5717-4562-b3fc-2c963f66b005
+### Get available availabilities filtered by carId
+GET {{baseUrl}}/availabilities/available/car/{{car_id}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Get all availabilities for a user
+GET {{baseUrl}}/availabilities/owned
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
@@ -71,25 +65,27 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "carId": "7f57db8e-9684-4257-92fe-5d942e4e8cd2",
+  "carId": "{{car_id}}",
   "startDate": "2025-10-22T08:00:00",
   "endDate": "2025-10-22T12:00:00"
 }
-
+> {%
+    client.global.set("availability_id", response.body.id);
+%}
 
 ### Update an existing availability
-PUT {{baseUrl}}/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
+PUT {{baseUrl}}/availabilities/{{availability_id}}
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-  "carId": "7f57db8e-9684-4257-92fe-5d942e4e8cd2",
+  "carId": "{{car_id}}",
   "startDate": "2025-10-23T09:00:00",
   "endDate": "2025-10-23T15:00:00"
 }
 
 ### Delete an availability
-DELETE {{baseUrl}}/availabilities/9d785f64-5717-4562-b3fc-2c963f66d004
+DELETE {{baseUrl}}/availabilities/{{availability_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
