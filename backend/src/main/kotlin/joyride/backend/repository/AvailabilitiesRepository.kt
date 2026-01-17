@@ -196,9 +196,10 @@ class AvailabilitiesRepository {
      * Executes the update inside an Exposed [transaction]. If an availability
      * with the given ID exists, its fields are updated to the provided values.
      *
-     * Before updating, this method checks whether the new time range conflicts
-     * with any existing reservations for the same car. If at least one reservation
-     * overlaps with the new availability range, the update is rejected.
+     * Before updating, this method checks whether the availability already has
+     * one or more existing reservations. If any reservation is found within the
+     * current availability time range, the update is rejected to prevent
+     * breaking existing bookings.
      *
      * @param id The unique identifier of the availability to update.
      * @param carId The ID of the car this availability belongs to.
@@ -206,7 +207,7 @@ class AvailabilitiesRepository {
      * @param endDate The updated optional end date and time of the car's availability.
      * @return The updated [Availability] domain object, or `null` if no availability exists with the given ID.
      *
-     * @throws IllegalStateException if the new availability range overlaps with one or more existing reservations.
+     * @throws IllegalStateException if the availability already contains one or more reservations.
      */
 
     fun update(
@@ -218,21 +219,24 @@ class AvailabilitiesRepository {
 
         val entity = AvailabilitiesEntity.findById(id) ?: return@transaction null
 
-        val hasConflicts = if (endDate != null) {
+        val existingStart = entity.startDate
+        val existingEnd = entity.endDate
+
+        val hasReservations = if (existingEnd != null) {
             ReservationEntity.find {
-                (ReservationsTable.carId eq carId) and
-                        (ReservationsTable.startDate less endDate) and
-                        (ReservationsTable.endDate greater startDate)
+                (ReservationsTable.carId eq entity.carId) and
+                        (ReservationsTable.startDate less existingEnd) and
+                        (ReservationsTable.endDate greater existingStart)
             }
         } else {
             ReservationEntity.find {
-                (ReservationsTable.carId eq carId) and
-                        (ReservationsTable.endDate greater startDate)
+                (ReservationsTable.carId eq entity.carId) and
+                        (ReservationsTable.endDate greater existingStart)
             }
         }.any()
 
-        if (hasConflicts) {
-            error("Cannot update availability: overlapping reservations exist")
+        if (hasReservations) {
+            error("Cannot edit availability: it has existing reservations")
         }
 
         entity.apply {
@@ -241,6 +245,7 @@ class AvailabilitiesRepository {
             this.endDate = endDate
         }.toDomain()
     }
+
 
     /**
      * Deletes an availability record from the database by its ID.
@@ -288,8 +293,6 @@ class AvailabilitiesRepository {
         entity.delete()
         0
     }
-
-
 
     /**
      * Checks if a car is available for the specified time period.
