@@ -14,10 +14,22 @@ import joyride.backend.dao.ReservationsTable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 
+/**
+ * Repository for managing photo database operations.
+ *
+ * Supports creating, fetching, and deleting photos associated with:
+ * - Cars
+ * - Users
+ * - Reservations
+ */
 class PhotoRepository {
 
     /**
-     * Creates a new photo record in the database
+     * Creates a new photo record in the database.
+     *
+     * @param entityType "cars", "users", or "reservations"
+     * @param entityId UUID of the entity
+     * @param filePath Path to the stored photo file
      */
     fun createPhoto(entityType: String, entityId: String, filePath: String): Photo {
         return transaction {
@@ -25,7 +37,8 @@ class PhotoRepository {
                 when (entityType) {
                     "cars" -> this.carId = EntityID(entityId, CarsTable)
                     "users" -> this.userId = EntityID(entityId, UsersTable)
-                    "rentals" -> this.reservationId = EntityID(entityId, ReservationsTable)
+                    "reservations" -> this.reservationId = EntityID(entityId, ReservationsTable)
+                    else -> throw IllegalArgumentException("Invalid entity type: $entityType")
                 }
                 this.filePath = filePath
             }.toDomain()
@@ -35,27 +48,34 @@ class PhotoRepository {
     /**
      * Returns all photos for a given entity type and entity ID.
      *
-     * @param entityType One of "cars", "users", "rentals"
+     * @param entityType One of "cars", "users", "reservations"
      * @param entityId The UUID of the entity
      * @param baseUrl Optional base URL to prepend to file paths for client usage
      */
-    fun getPhotosByEntity(entityType: String, entityId: String, baseUrl: String = ""): List<Photo> {
+    fun getPhotosByEntity(
+        entityType: String,
+        entityId: String,
+        baseUrl: String = ""
+    ): List<Photo> {
         return transaction {
-            val column = when (entityType) {
-                "cars" -> PhotosTable.carId
-                "users" -> PhotosTable.userId
-                "rentals" -> PhotosTable.reservationId
+            val (column, table) = when (entityType) {
+                "cars" -> PhotosTable.carId to CarsTable
+                "users" -> PhotosTable.userId to UsersTable
+                "reservations" -> PhotosTable.reservationId to ReservationsTable
                 else -> throw IllegalArgumentException("Invalid entity type: $entityType")
             }
 
-            PhotosTable.select { column eq entityId }
+            val entityIdObj = EntityID(entityId, table)
+
+            PhotosTable
+                .select { column eq entityIdObj }
                 .map {
                     val filePath = it[PhotosTable.filePath]
                     Photo(
                         id = it[PhotosTable.id].value,
                         carId = if (entityType == "cars") entityId else null,
                         userId = if (entityType == "users") entityId else null,
-                        reservationId = if (entityType == "rentals") entityId else null,
+                        reservationId = if (entityType == "reservations") entityId else null,
                         filePath = if (baseUrl.isNotEmpty()) "$baseUrl/$filePath" else filePath
                     )
                 }
@@ -63,21 +83,25 @@ class PhotoRepository {
     }
 
     /**
-     * Delete all photos for a given entity
+     * Deletes all photos for a given entity type and entity ID.
+     *
+     * @param entityType "cars", "users", or "reservations"
+     * @param entityId UUID of the entity
+     * @return number of rows deleted
      */
     fun deletePhotosByEntity(entityType: String, entityId: String): Int {
         return transaction {
             val column = when (entityType) {
                 "cars" -> PhotosTable.carId
                 "users" -> PhotosTable.userId
-                "rentals" -> PhotosTable.reservationId
+                "reservations" -> PhotosTable.reservationId
                 else -> throw IllegalArgumentException("Invalid entity type: $entityType")
             }
 
             val table = when (entityType) {
                 "cars" -> CarsTable
                 "users" -> UsersTable
-                "rentals" -> ReservationsTable
+                "reservations" -> ReservationsTable
                 else -> throw IllegalArgumentException("Invalid entity type: $entityType")
             }
 

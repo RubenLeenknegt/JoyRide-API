@@ -39,7 +39,6 @@ GET {{baseUrl}}/reservations
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
-
 ### Get reservation by ID
 GET {{baseUrl}}/reservations/ffb94c34-dada-487b-8700-8db2fe1d7c96
 Authorization: Bearer {{access_token}}
@@ -85,6 +84,16 @@ Accept: application/json
   "startDate": "2026-01-12T09:00:00",
   "endDate": "2026-01-14T12:00:00",
   "status": "UPCOMING"
+}
+
+### Update reservation status
+PUT {{baseUrl}}/reservations/2855e05b-b42a-4830-9795-a2bb8a52b7c5/status
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "COMPLETED"
 }
 
 ### Delete a reservation
