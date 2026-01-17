@@ -5,6 +5,8 @@ import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
 import io.ktor.server.request.ContentTransformationException
 import io.ktor.server.request.receive
 import kotlinx.datetime.LocalDateTime
@@ -96,6 +98,17 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                 call.respond(HttpStatusCode.OK, availableSlots)
             }
 
+            // GET all Availabilities for a user
+            get("owned") {
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.getClaim("id", String::class)
+                    ?: return@get call.respond(HttpStatusCode.Unauthorized, "No user ID in token")
+
+                val availabilities = AvailabilitiesRepository.getByOwnerId(userId)
+                call.respond(HttpStatusCode.OK, availabilities)
+            }
+
+
             // POST new availability
             post {
                 try {
@@ -120,6 +133,7 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
 
                 try {
                     val req = call.receive<AvailibilityCreateOrUpdate>()
+
                     val updated = AvailabilitiesRepository.update(
                         id = id,
                         carId = req.carId,
@@ -131,22 +145,44 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                         call.respond(HttpStatusCode.OK, updated)
                     else
                         call.respond(HttpStatusCode.NotFound, "No availability with id $id")
+
+                } catch (e: IllegalStateException) {
+                    // conflict met bestaande reservations
+                    call.respond(
+                        HttpStatusCode.Conflict,
+                        e.message ?: "Availability conflicts with existing reservations"
+                    )
+
                 } catch (e: ContentTransformationException) {
                     call.respond(HttpStatusCode.BadRequest, "Invalid or missing JSON body.")
                 }
             }
+
 
             // DELETE an availability
             delete("{id}") {
                 val id = call.parameters["id"]
                     ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
 
-                val deleted = AvailabilitiesRepository.delete(id)
+                try {
+                    val result = AvailabilitiesRepository.delete(id)
 
-                if (deleted)
-                    call.respond(HttpStatusCode.NoContent)
-                else
-                    call.respond(HttpStatusCode.NotFound, "No availability with id $id")
+                    when (result) {
+                        -1 -> call.respond(HttpStatusCode.NotFound, "Availability not found")
+                        0 -> call.respond(HttpStatusCode.NoContent)
+                    }
+
+                } catch (e: IllegalStateException) {
+                    val count = e.message?.toIntOrNull() ?: 0
+
+                    call.respond(
+                        HttpStatusCode.Conflict,
+                        mapOf(
+                            "message" to "Availability has active reservations",
+                            "reservationCount" to count
+                        )
+                    )
+                }
             }
 
         }
