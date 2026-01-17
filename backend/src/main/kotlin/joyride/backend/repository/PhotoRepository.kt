@@ -52,16 +52,23 @@ class PhotoRepository {
      * @param entityId The UUID of the entity
      * @param baseUrl Optional base URL to prepend to file paths for client usage
      */
-    fun getPhotosByEntity(entityType: String, entityId: String, baseUrl: String = ""): List<Photo> {
+    fun getPhotosByEntity(
+        entityType: String,
+        entityId: String,
+        baseUrl: String = ""
+    ): List<Photo> {
         return transaction {
-            val column = when (entityType) {
-                "cars" -> PhotosTable.carId
-                "users" -> PhotosTable.userId
-                "reservations" -> PhotosTable.reservationId
+            val (column, table) = when (entityType) {
+                "cars" -> PhotosTable.carId to CarsTable
+                "users" -> PhotosTable.userId to UsersTable
+                "reservations" -> PhotosTable.reservationId to ReservationsTable
                 else -> throw IllegalArgumentException("Invalid entity type: $entityType")
             }
 
-            PhotosTable.select { column eq entityId }
+            val entityIdObj = EntityID(entityId, table)
+
+            PhotosTable
+                .select { column eq entityIdObj }
                 .map {
                     val filePath = it[PhotosTable.filePath]
                     Photo(
