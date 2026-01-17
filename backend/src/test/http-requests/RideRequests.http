@@ -1,37 +1,17 @@
 @baseUrl = http://localhost:8081
 
-### Register new user
-POST {{baseUrl}}/auth/users/register
-Content-Type: application/json
-
-{
-  "emailAddress": "HenkKlaasen@hotmail.com",
-  "firstName": "Henk",
-  "lastName": "Klaasen",
-  "birthDate": "1998-01-05",
-  "userType": "OWNER",
-  "bankAccount": "ojghbjsk234820348",
-  "bankAccountName": "HR P Jackson",
-  "password": "Ditismijnwachtwoord"
-}
-
-> {%
-    client.global.set("access_token", response.body.accessToken);
-    client.global.set("user_id", response.body.user.id)
-%}
-
-### Log in to api and key jwt
+### Log in
 POST {{baseUrl}}/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "HenkKlaasen@hotmail.com",
-  "password": "Ditismijnwachtwoord"
+  "emailAddress": "eva.degroot@gmail.com",
+  "password": "hash11"
 }
+
 > {%
     client.global.set("access_token", response.body.accessToken);
-    client.global.set("user_id", response.body.user.id)
-
+    client.global.set("user_id", response.body.user.id);
 %}
 
 ### Get all rides
@@ -39,17 +19,24 @@ GET {{baseUrl}}/rides
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
-### Get ride by id
-GET {{baseUrl}}/rides/6d485f64-5717-4562-b3fc-2c963f66d009
+> {%
+    if (response.body.length > 0) {
+        client.global.set("ride_id", response.body[0].id);
+        client.global.set("reservation_id", response.body[0].reservationId);
+    }
+%}
+
+### Get ride by id (dynamic)
+GET {{baseUrl}}/rides/{{ride_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
-### Get rides by reservationId
-GET {{baseUrl}}/rides/reservation/5c385f64-5717-4562-b3fc-2c963f66c003
+### Get rides by reservationId (dynamic)
+GET {{baseUrl}}/rides/reservation/{{reservation_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
-### Create a new ride
+### Create a new ride (dynamic reservationId)
 POST {{baseUrl}}/rides
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
@@ -61,15 +48,22 @@ Content-Type: application/json
   "endY": 4.8965,
   "length": 1500,
   "duration": 600,
-  "reservationId": "5c385f64-5717-4562-b3fc-2c963f66c009"
+  "reservationId": "{{reservation_id}}",
+  "dateTimeStart": "2025-12-22T13:15",
+  "dateTimeEnd": "2025-12-22T15:15",
+  "distanceTravelled": 156
 }
 
-### Delete a ride
-DELETE {{baseUrl}}/rides/6d485f64-5717-4562-b3fc-2c963f66d009
+> {%
+    client.global.set("created_ride_id", response.body.id);
+%}
+
+### Delete the newly created ride
+DELETE {{baseUrl}}/rides/{{created_ride_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
-### Get ridelist
-GET {{baseUrl}}/rides/ridelist/user/bbd351df-6a1f-4a0d-a95a-a0548eefd487
+### Get ridelist for user (dynamic)
+GET {{baseUrl}}/rides/ridelist/user/{{user_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json

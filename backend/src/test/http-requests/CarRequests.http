@@ -1,25 +1,19 @@
-@baseUrl = https://fl-prod.gielvangaal.dev
+@baseUrl = http://localhost:8081
 
-### Register new user
-POST {{baseUrl}}/auth/users/register
+### Log in
+POST {{baseUrl}}/auth/users/login
 Content-Type: application/json
 
 {
-  "emailAddress": "PeterJackson1@hotmail.com",
-  "firstName": "Peter",
-  "lastName": "Jackson",
-  "birthDate": "1998-01-05",
-  "userType": "OWNER",
-  "bankAccount": "ojghbjsk234820348",
-  "bankAccountName": "HR P Jackson",
-  "vehicleLocation": "0342309480",
-  "password": "Ditismijnwachtwoord"
+  "emailAddress": "eva.degroot@gmail.com",
+  "password": "hash11"
 }
 
 > {%
     client.global.set("access_token", response.body.accessToken);
-    client.global.set("user_id", response.body.user.id)
+    client.global.set("user_id", response.body.user.id);
 %}
+
 
 
 
@@ -28,8 +22,14 @@ GET {{baseUrl}}/cars
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
-### Get car by id
-GET {{baseUrl}}/cars/id/1dcdc1b0-ccdf-436a-9c66-77acb5eb5a39
+> {%
+    if (response.body.length > 0) {
+        client.global.set("car_id", response.body[0].id);
+    }
+%}
+
+### Get car by id (dynamic)
+GET {{baseUrl}}/cars/id/{{car_id}}
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
@@ -37,7 +37,6 @@ Authorization: Bearer {{access_token}}
 GET {{baseUrl}}/cars/location
 Accept: application/json
 Authorization: Bearer {{access_token}}
-
 
 ### Create a new car
 POST {{baseUrl}}/cars
@@ -71,14 +70,17 @@ Authorization: Bearer {{access_token}}
   "averageConsumption": 20
 }
 
-### Update a car
-### For this test to work, you must be logged in, else ownerId is absent
-PUT {{baseUrl}}/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+> {%
+    client.global.set("created_car_id", response.body.id);
+%}
+
+### Update created car
+PUT {{baseUrl}}/cars/id/{{created_car_id}}
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "ownerId": "3fa85f64-5717-4562-b3fc-2c963f66a002",
+  "ownerId": "{{user_id}}",
   "brand": "Land Rover",
   "model": "Series 3",
   "buildYear": 1975,
@@ -110,18 +112,13 @@ GET {{baseUrl}}/cars?phonemount=false&color=GREY&color=RED
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
-### Delete a car
-DELETE {{baseUrl}}/cars/id/4b285f64-5717-4562-b3fc-2c963f66b001
+### Get TCO (dynamic)
+GET {{baseUrl}}/cars/tco/{{created_car_id}}
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
-### Get TCO
-GET {{baseUrl}}/cars/tco/1dcdc1b0-ccdf-436a-9c66-77acb5eb5a39
-Accept: application/json
-Authorization: Bearer {{access_token}}
-
-### Get CPK
-GET {{baseUrl}}/cars/cpk/1dcdc1b0-ccdf-436a-9c66-77acb5eb5a39
+### Get CPK (dynamic)
+GET {{baseUrl}}/cars/cpk/{{created_car_id}}
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
@@ -129,7 +126,6 @@ Authorization: Bearer {{access_token}}
 GET {{baseUrl}}/cars/carlist
 Accept: application/json
 Authorization: Bearer {{access_token}}
-
 
 ### Log in to api and key jwt
 POST {{baseUrl}}/auth/users/login
@@ -147,6 +143,11 @@ Content-Type: application/json
 
 ### Get owned cars
 GET {{baseUrl}}/cars/owned
+Accept: application/json
+Authorization: Bearer {{access_token}}
+
+### Delete created car
+DELETE {{baseUrl}}/cars/id/{{created_car_id}}
 Accept: application/json
 Authorization: Bearer {{access_token}}
 

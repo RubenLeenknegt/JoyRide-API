@@ -1,5 +1,6 @@
 package joyride.backend.dto.response
 
+import joyride.backend.domain.ReservationStatus
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
@@ -26,6 +27,7 @@ data class ReservationList(
     val carId: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
+    val status: ReservationStatus,
     val carBrand: String,
     val carModel: String,
     val coverPhotoUrl: String?

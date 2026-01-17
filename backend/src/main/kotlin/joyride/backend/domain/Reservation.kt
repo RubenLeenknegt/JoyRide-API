@@ -8,11 +8,15 @@ import kotlinx.serialization.Serializable
  *
  * @property id Unique identifier of the reservation.
  * @property userId Identifier of the user who made the reservation.
- * @property carId Identifier of the reserved car.
+ * @property carId Identifier of the car being reserved.
  * @property startDate Start date and time of the reservation.
- * @property endDate End date and time of the reservation; must be later than [startDate].
+ * @property endDate End date and time of the reservation.
+ * @property status Current lifecycle status of the reservation.
  *
- * Ensures valid time range by enforcing that [endDate] occurs after [startDate].
+ * A reservation always links exactly one user to one car and enforces a valid
+ * time range by requiring [endDate] to occur after [startDate].
+ *
+ * @throws IllegalArgumentException if [endDate] is not later than [startDate].
  */
 
 @Serializable
@@ -21,7 +25,8 @@ data class Reservation(
     val userId: String,
     val carId: String,
     val startDate: LocalDateTime,
-    val endDate: LocalDateTime
+    val endDate: LocalDateTime,
+    val status: ReservationStatus
 ) {
     init {
         require(endDate > startDate) { "Reservation end date must be after start date" }

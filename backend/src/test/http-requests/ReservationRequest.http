@@ -41,19 +41,19 @@ Accept: application/json
 
 
 ### Get reservation by ID
-GET {{baseUrl}}/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+GET {{baseUrl}}/reservations/ffb94c34-dada-487b-8700-8db2fe1d7c96
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
 
 ### Get reservations by userId
-GET {{baseUrl}}/reservations/user/3fa85f64-5717-4562-b3fc-2c963f66a009
+GET {{baseUrl}}/reservations/user/8a6d3b58-a110-4f5e-91ed-d4e690be4358
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
 
 ### Get reservations by carId
-GET {{baseUrl}}/reservations/car/4b285f64-5717-4562-b3fc-2c963f66b010
+GET {{baseUrl}}/reservations/car/88de78dd-c3af-4c39-94a5-729305af26c3
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
@@ -65,32 +65,34 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "userId": "3fa85f64-5717-4562-b3fc-2c963f66a009",
-  "carId": "4b285f64-5717-4562-b3fc-2c963f66b010",
-  "startDate": "2025-11-01T09:00:00",
-  "endDate": "2025-11-12T12:00:00"
+  "userId": "ab92991c-6d83-4f65-8efd-c18c6af8d0df",
+  "carId": "88de78dd-c3af-4c39-94a5-729305af26c3",
+  "startDate": "2026-01-11T09:00:00",
+  "endDate": "2026-01-14T12:00:00",
+  "status": "UPCOMING"
 }
 
 
 ### Update an existing reservation
-PUT {{baseUrl}}/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+PUT {{baseUrl}}/reservations/38ddcba3-1e06-4c3a-9da8-842ebe0167b1
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-  "userId": "3fa85f64-5717-4562-b3fc-2c963f66a009",
-  "carId": "4b285f64-5717-4562-b3fc-2c963f66b010",
-  "startDate": "2025-11-15T09:00:00",
-  "endDate": "2025-11-27T12:00:00"
+  "userId": "ab92991c-6d83-4f65-8efd-c18c6af8d0df",
+  "carId": "88de78dd-c3af-4c39-94a5-729305af26c3",
+  "startDate": "2026-01-12T09:00:00",
+  "endDate": "2026-01-14T12:00:00",
+  "status": "UPCOMING"
 }
 
 ### Delete a reservation
-DELETE {{baseUrl}}/reservations/5c385f64-5717-4562-b3fc-2c963f66c010
+DELETE {{baseUrl}}/reservations/38ddcba3-1e06-4c3a-9da8-842ebe0167b1
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Reservation list
-GET {{baseUrl}}/reservations/user/reservationList/77bd9124-e817-4c1e-b522-33f9b0721ce1
+GET {{baseUrl}}/reservations/user/reservationList/ab92991c-6d83-4f65-8efd-c18c6af8d0df
 Authorization: Bearer {{access_token}}
 Accept: application/json

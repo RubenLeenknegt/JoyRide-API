@@ -13,9 +13,14 @@ data class RideListItemResponse(
     val length: Int,
     val duration: Int,
     val reservationId: String,
+    val dateTimeStart: LocalDateTime,
+    val dateTimeEnd: LocalDateTime,
+    var distanceTravelled: Double,
+    var name: String? = null,
     val reservationStart: LocalDateTime,
     val reservationEnd: LocalDateTime,
     val carBrand: String,
     val carModel: String,
-    val coverPhotoUrl: String?
+    val coverPhotoUrl: String?,
+    val bonusPoints: Int
 )
