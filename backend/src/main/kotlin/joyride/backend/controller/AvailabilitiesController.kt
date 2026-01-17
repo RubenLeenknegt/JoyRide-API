@@ -147,10 +147,9 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                         call.respond(HttpStatusCode.NotFound, "No availability with id $id")
 
                 } catch (e: IllegalStateException) {
-                    // conflict met bestaande reservations
                     call.respond(
                         HttpStatusCode.Conflict,
-                        e.message ?: "Availability conflicts with existing reservations"
+                        "Cannot edit availability because it already has reservations"
                     )
 
                 } catch (e: ContentTransformationException) {
