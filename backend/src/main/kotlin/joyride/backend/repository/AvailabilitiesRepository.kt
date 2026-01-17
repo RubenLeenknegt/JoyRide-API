@@ -3,15 +3,17 @@ package joyride.backend.repository
 import kotlinx.datetime.LocalDateTime
 import joyride.backend.dao.AvailabilitiesEntity
 import joyride.backend.dao.AvailabilitiesTable
+import joyride.backend.dao.CarsTable
 import joyride.backend.dao.ReservationEntity
 import joyride.backend.dao.ReservationsTable
 import joyride.backend.dao.toDomain
 import joyride.backend.domain.Availability
 import joyride.backend.dto.request.AvailibilityCreateOrUpdate
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 import org.jetbrains.exposed.sql.and
-
+import org.jetbrains.exposed.sql.select
 
 
 /**
@@ -151,6 +153,27 @@ class AvailabilitiesRepository {
     }
 
     /**
+     * Retrieves all availabilities for cars owned by the specified user.
+     *
+     * This method performs a join between [AvailabilitiesTable] and [CarsTable]
+     * to filter availabilities based on the owner of the car. Only availabilities
+     * belonging to cars where the `ownerId` matches the provided [userId] are returned.
+     *
+     * The query is executed inside an Exposed [transaction] and the resulting
+     * database rows are mapped to domain [Availability] objects.
+     *
+     * @param userId The unique identifier of the user who owns the cars.
+     * @return A list of [Availability] objects belonging to the user's cars.
+     *         Returns an empty list if the user owns no cars or no availabilities exist.
+     */
+    fun getByOwnerId(userId: String): List<Availability> = transaction {
+        (AvailabilitiesTable innerJoin CarsTable)
+            .select { CarsTable.ownerId eq userId }
+            .map { AvailabilitiesEntity.wrapRow(it).toDomain() }
+    }
+
+
+    /**
      * Creates a new availability record in the database.
      *
      * @param carId The ID of the car this availability belongs to.
@@ -173,43 +196,102 @@ class AvailabilitiesRepository {
      * Executes the update inside an Exposed [transaction]. If an availability
      * with the given ID exists, its fields are updated to the provided values.
      *
+     * Before updating, this method checks whether the availability already has
+     * one or more existing reservations. If any reservation is found within the
+     * current availability time range, the update is rejected to prevent
+     * breaking existing bookings.
+     *
      * @param id The unique identifier of the availability to update.
      * @param carId The ID of the car this availability belongs to.
      * @param startDate The updated start date and time of the car's availability.
      * @param endDate The updated optional end date and time of the car's availability.
      * @return The updated [Availability] domain object, or `null` if no availability exists with the given ID.
+     *
+     * @throws IllegalStateException if the availability already contains one or more reservations.
      */
-    fun update( id: String, carId: String, startDate: LocalDateTime, endDate: LocalDateTime? ): Availability? = transaction {
-        val entity = AvailabilitiesEntity.findById(id)
 
-        if (entity != null) {
-            entity.apply {
-                this.carId = carId
-                this.startDate = startDate
-                this.endDate = endDate
-            }.toDomain()
+    fun update(
+        id: String,
+        carId: String,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime?
+    ): Availability? = transaction {
+
+        val entity = AvailabilitiesEntity.findById(id) ?: return@transaction null
+
+        val existingStart = entity.startDate
+        val existingEnd = entity.endDate
+
+        val hasReservations = if (existingEnd != null) {
+            ReservationEntity.find {
+                (ReservationsTable.carId eq entity.carId) and
+                        (ReservationsTable.startDate less existingEnd) and
+                        (ReservationsTable.endDate greater existingStart)
+            }
         } else {
-            null
+            ReservationEntity.find {
+                (ReservationsTable.carId eq entity.carId) and
+                        (ReservationsTable.endDate greater existingStart)
+            }
+        }.any()
+
+        if (hasReservations) {
+            error("Cannot edit availability: it has existing reservations")
         }
+
+        entity.apply {
+            this.carId = carId
+            this.startDate = startDate
+            this.endDate = endDate
+        }.toDomain()
     }
+
 
     /**
      * Deletes an availability record from the database by its ID.
      *
      * Executes the delete operation inside an Exposed [transaction].
-     * If an availability with the given ID exists, it is removed from the database.
+     *
+     * Before deleting, this method checks whether there are existing reservations
+     * that overlap with the availability's time range. If one or more overlapping
+     * reservations are found, the deletion is rejected to prevent breaking
+     * existing bookings.
      *
      * @param id The unique identifier of the availability to delete.
-     * @return `true` if the record was successfully deleted, or `false` if no availability exists with the given ID.
+     * @return
+     *  - `-1` if no availability exists with the given ID.
+     *  - `0` if the availability was successfully deleted.
+     *
+     * @throws IllegalStateException if there are one or more existing reservations
+     *         that overlap with this availability. The exception message contains
+     *         the number of conflicting reservations.
      */
-    fun delete(id: String): Boolean = transaction {
-        val entity = AvailabilitiesEntity.findById(id)
-        if (entity != null) {
-            entity.delete()
-            true
+
+    fun delete(id: String): Int = transaction {
+        val entity = AvailabilitiesEntity.findById(id) ?: return@transaction -1
+
+        val endDate = entity.endDate
+        val startDate = entity.startDate
+
+        val count = if (endDate != null) {
+            ReservationEntity.find {
+                (ReservationsTable.carId eq entity.carId) and
+                        (ReservationsTable.startDate less endDate) and
+                        (ReservationsTable.endDate greater startDate)
+            }
         } else {
-            false
+            ReservationEntity.find {
+                (ReservationsTable.carId eq entity.carId) and
+                        (ReservationsTable.endDate greater startDate)
+            }
+        }.count()
+
+        if (count > 0) {
+            throw IllegalStateException(count.toString())
         }
+
+        entity.delete()
+        0
     }
 
     /**
