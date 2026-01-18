@@ -267,32 +267,12 @@ class AvailabilitiesRepository {
      *         the number of conflicting reservations.
      */
 
-    fun delete(id: String): Int = transaction {
-        val entity = AvailabilitiesEntity.findById(id) ?: return@transaction -1
-
-        val endDate = entity.endDate
-        val startDate = entity.startDate
-
-        val count = if (endDate != null) {
-            ReservationEntity.find {
-                (ReservationsTable.carId eq entity.carId) and
-                        (ReservationsTable.startDate less endDate) and
-                        (ReservationsTable.endDate greater startDate)
-            }
-        } else {
-            ReservationEntity.find {
-                (ReservationsTable.carId eq entity.carId) and
-                        (ReservationsTable.endDate greater startDate)
-            }
-        }.count()
-
-        if (count > 0) {
-            throw IllegalStateException(count.toString())
-        }
-
+    fun delete(id: String): Boolean = transaction {
+        val entity = AvailabilitiesEntity.findById(id) ?: return@transaction false
         entity.delete()
-        0
+        true
     }
+
 
     /**
      * Checks if a car is available for the specified time period.
