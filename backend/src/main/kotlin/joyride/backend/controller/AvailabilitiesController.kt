@@ -163,25 +163,15 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                 val id = call.parameters["id"]
                     ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing id")
 
-                try {
-                    val result = AvailabilitiesRepository.delete(id)
+                val deleted = AvailabilitiesRepository.delete(id)
 
-                    if (result == 0) {
-                        call.respond(HttpStatusCode.OK, "Deleted")
-                    } else {
-                        call.respond(HttpStatusCode.NotFound, "Availability not found")
-                    }
-
-                } catch (e: IllegalStateException) {
-                    val count = e.message?.toIntOrNull() ?: 0
-
-                    call.respond(
-                        HttpStatusCode.Conflict,
-                        "Availability has active reservations ($count)"
-                    )
+                if (deleted) {
+                    call.respond(HttpStatusCode.OK, "Deleted")
+                } else {
+                    call.respond(HttpStatusCode.NotFound, "Availability not found")
                 }
-            }
 
+            }
         }
     }
 }
