@@ -1,85 +1,120 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" version="28.2.8">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0" version="29.3.1">
   <diagram name="Page-1" id="cgcpWy4TFKK_UnoXK6Ne">
-    <mxGraphModel dx="1226" dy="719" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2565" dy="922" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-1" target="64vrGLdwPOYyoQQf0DfH-2">
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-3" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="2XRaO119pImv_1jM78aA-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-1" target="64vrGLdwPOYyoQQf0DfH-21">
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-22" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="64vrGLdwPOYyoQQf0DfH-21">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-1" value="Inloggen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="365" y="50" width="120" height="60" as="geometry" />
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Inloggen" vertex="1">
+          <mxGeometry height="60" width="120" x="277" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-2" target="64vrGLdwPOYyoQQf0DfH-4">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-2" target="64vrGLdwPOYyoQQf0DfH-6">
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-5" edge="1" parent="1" source="2XRaO119pImv_1jM78aA-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="64vrGLdwPOYyoQQf0DfH-4">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="426" y="300" as="targetPoint" />
+            <mxPoint x="493" y="240" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-2" target="64vrGLdwPOYyoQQf0DfH-10">
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-7" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="2XRaO119pImv_1jM78aA-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="425.5" y="270" as="sourcePoint" />
+            <mxPoint x="425" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-12" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="64vrGLdwPOYyoQQf0DfH-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="425.5" y="270" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-14" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="64vrGLdwPOYyoQQf0DfH-9">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="425.5" y="270" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-18" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="64vrGLdwPOYyoQQf0DfH-15">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="425.5" y="270" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2XRaO119pImv_1jM78aA-14" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" target="2XRaO119pImv_1jM78aA-13">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-2" target="64vrGLdwPOYyoQQf0DfH-9">
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Kaart view" vertex="1">
+          <mxGeometry height="60" width="132" x="359" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Rides overzicht" vertex="1">
+          <mxGeometry height="60" width="120" x="200" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-13" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;startArrow=classic;startFill=1;" target="64vrGLdwPOYyoQQf0DfH-11">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-2" target="64vrGLdwPOYyoQQf0DfH-15">
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Reserveringen overzicht" vertex="1">
+          <mxGeometry height="60" width="120" x="530" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-26" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="64vrGLdwPOYyoQQf0DfH-25">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-2" target="64vrGLdwPOYyoQQf0DfH-19">
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Lopende reserveringen/Reservering details/Lopende ride details" vertex="1">
+          <mxGeometry height="60" width="200" x="530" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-17" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="64vrGLdwPOYyoQQf0DfH-16">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-2" value="Auto overzichtspagina" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="358" y="180" width="135" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-4" value="Kaart view" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="180" y="180" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-6" value="Auto zoek pagina" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="365" y="350" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-9" target="64vrGLdwPOYyoQQf0DfH-23">
+        <mxCell id="2XRaO119pImv_1jM78aA-6" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="2XRaO119pImv_1jM78aA-5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-9" value="Rides overzicht" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="200" y="350" width="120" height="60" as="geometry" />
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Profieldetails overzicht/Settings" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="350" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-10" target="64vrGLdwPOYyoQQf0DfH-11">
+        <mxCell id="2XRaO119pImv_1jM78aA-12" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="2XRaO119pImv_1jM78aA-11">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-10" value="Reserveringen overzicht" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="530" y="350" width="120" height="60" as="geometry" />
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;div&gt;Auto beheer&lt;/div&gt;&lt;div&gt;(Alleen voor verhuurders)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="460" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-11" target="64vrGLdwPOYyoQQf0DfH-25">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="2XRaO119pImv_1jM78aA-10" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="2XRaO119pImv_1jM78aA-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="502" y="190" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-11" value="Lopende reserveringen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="530" y="460" width="120" height="60" as="geometry" />
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Account aanmaken" vertex="1">
+          <mxGeometry height="60" width="120" x="442" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="64vrGLdwPOYyoQQf0DfH-15" target="64vrGLdwPOYyoQQf0DfH-16">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="64vrGLdwPOYyoQQf0DfH-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Navigatie naar gehuurde auto" vertex="1">
+          <mxGeometry height="60" width="120" x="530" y="560" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-15" value="Account overzicht" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="350" width="120" height="60" as="geometry" />
+        <mxCell id="2XRaO119pImv_1jM78aA-7" edge="1" parent="1" source="2XRaO119pImv_1jM78aA-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;startArrow=none;startFill=0;endArrow=none;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="337.46153846153834" y="269.99999999999994" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-16" value="&lt;div&gt;Auto beheer&lt;/div&gt;&lt;div&gt;(Alleen voor verhuurders)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="460" width="120" height="60" as="geometry" />
+        <mxCell id="2XRaO119pImv_1jM78aA-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Begin pagina" vertex="1">
+          <mxGeometry height="60" width="135" x="270" y="160" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-19" value="Settings" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="700" y="350" width="120" height="60" as="geometry" />
+        <mxCell id="2XRaO119pImv_1jM78aA-15" edge="1" parent="1" source="2XRaO119pImv_1jM78aA-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" target="2XRaO119pImv_1jM78aA-13">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="380" />
+              <mxPoint x="510" y="590" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-21" value="Account aanmaken" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="530" y="50" width="120" height="60" as="geometry" />
+        <mxCell id="2XRaO119pImv_1jM78aA-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Auto overzichts- / zoekpagina" vertex="1">
+          <mxGeometry height="60" width="135" x="358" y="350" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-23" value="Lopende ride overzicht" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="200" y="460" width="120" height="60" as="geometry" />
+        <mxCell id="2XRaO119pImv_1jM78aA-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;div&gt;Account aanpassen&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="-110" y="460" as="geometry" />
         </mxCell>
-        <mxCell id="64vrGLdwPOYyoQQf0DfH-25" value="Navigatie naar gehuurde auto" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="530" y="560" width="120" height="60" as="geometry" />
+        <mxCell id="2XRaO119pImv_1jM78aA-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;div&gt;Auto toevoegen&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="2XRaO119pImv_1jM78aA-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Auto details" vertex="1">
+          <mxGeometry height="60" width="132" x="359" y="560" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
