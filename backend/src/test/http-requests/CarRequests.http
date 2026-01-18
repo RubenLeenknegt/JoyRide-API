@@ -15,6 +15,8 @@ Content-Type: application/json
 %}
 
 
+
+
 ### Get all cars
 GET {{baseUrl}}/cars
 Accept: application/json
@@ -125,6 +127,20 @@ GET {{baseUrl}}/cars/carlist
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
+### Log in to api and key jwt
+POST {{baseUrl}}/auth/users/login
+Content-Type: application/json
+
+{
+  "emailAddress": "niels.verhoeven@outlook.com",
+  "password": "hash12"
+}
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("user_id", response.body.user.id)
+
+%}
+
 ### Get owned cars
 GET {{baseUrl}}/cars/owned
 Accept: application/json
@@ -134,3 +150,4 @@ Authorization: Bearer {{access_token}}
 DELETE {{baseUrl}}/cars/id/{{created_car_id}}
 Accept: application/json
 Authorization: Bearer {{access_token}}
+

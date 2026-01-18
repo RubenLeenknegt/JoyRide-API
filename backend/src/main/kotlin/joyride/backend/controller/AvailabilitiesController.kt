@@ -166,9 +166,10 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
                 try {
                     val result = AvailabilitiesRepository.delete(id)
 
-                    when (result) {
-                        -1 -> call.respond(HttpStatusCode.NotFound, "Availability not found")
-                        0 -> call.respond(HttpStatusCode.NoContent)
+                    if (result == 0) {
+                        call.respond(HttpStatusCode.OK, "Deleted")
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, "Availability not found")
                     }
 
                 } catch (e: IllegalStateException) {
@@ -176,10 +177,7 @@ fun Route.AvailabilitiesRouting(AvailabilitiesRepository: AvailabilitiesReposito
 
                     call.respond(
                         HttpStatusCode.Conflict,
-                        mapOf(
-                            "message" to "Availability has active reservations",
-                            "reservationCount" to count
-                        )
+                        "Availability has active reservations ($count)"
                     )
                 }
             }
