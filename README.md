@@ -1,12 +1,10 @@
-# Fantastic Lamp
+# JoyRide API
 
-A Kotlin/Ktor backend with MySQL, containerized with Docker. This repository contains:
+The JoyRide API is the backend service powering the [JoyRide platform](https://github.com/RubenLeenknegt/JoyRide-Android-App), a peer-to-peer car-sharing service focused on unique driving experiences rather than just transportation.
 
-- A Ktor HTTP API (Kotlin/JVM 17) using Exposed ORM and HikariCP
-- MySQL 8 with schema and seed data via db-init/init.sql
-- Docker Compose configurations for local, acceptance, and production
+It provides a RESTful API that enables users to discover, book, and manage distinctive vehicles—ranging from convertibles for summer weekends to classic cars for special occasions. The API supports both renters and vehicle owners by handling core functionality such as user authentication, vehicle management, reservations, availability, and pricing.
 
-If you are new to the project, start with Quick Start.
+Designed as a scalable and containerized service, the JoyRide API serves as the central data and business logic layer for client applications, including the mobile app, ensuring consistent and reliable access to platform features across environments.
 
 ---
 
@@ -34,7 +32,7 @@ If you are new to the project, start with Quick Start.
 Create a .env in the project root: \
 If you are running tests, then also create a .env file in src/test/resources/.env otherwise tests that use a .env will not work.
 
-```env
+```env 
 # JWT (required by the app). Choose your own secrets/values
 JWT_SECRET=dev-secret
 JWT_ISSUER=joyride-backend
@@ -52,8 +50,6 @@ MYSQL_DATABASE=testdb
 MYSQL_USER=local_user
 MYSQL_PASSWORD=local_pass
 ```
-
-
 
 Build the backend fat JAR and start the stack:
 
@@ -239,15 +235,10 @@ Unit tests and the test database
 - Acceptance → docker-compose.acc.yml (image tag: acc, ports: backend 8081, phpMyAdmin 8083)
 - Production → docker-compose.prod.yml (image tag: prod, ports: backend 8080, phpMyAdmin 8084)
 
-CI/CD
-
-Database init in non-local envs
-
-- db-init/init.sql is mounted by compose files. Ensure volumes and permissions are correct on the target host.
-- TODO: Confirm whether manual init is still required on VPS and document the exact procedure if so.
-
 ---
 
-## License
+## Contributors
 
-MIT (if unsure, confirm with the maintainers). TODO: Verify license and update if different.
+- Giel van Gaal   - [LinkedIn](https://www.linkedin.com/in/gielvangaal/)
+- Ivar Visser     - [LinkedIn](https://www.linkedin.com/in/ivar-visser-4202b9194/)
+- Ruben Leenknegt - [LinkedIn](https://www.linkedin.com/in/ruben-leenknegt-94a67a199/)
